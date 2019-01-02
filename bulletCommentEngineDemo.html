@@ -20,7 +20,7 @@
                     bulletCommentEngine.addBulletComment({
                         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
                         speed: 0.15 + Math.random() / 90,
-                        size: 25,
+                        size: 22,
                         color: 'white',
                         borderCorol: 'black',
                         type: (Math.random() > 0.4) ? 0 : 2,
@@ -30,7 +30,7 @@
                     bulletCommentEngine.addBulletComment({
                         text: "橘里橘气",
                         speed: 0.1 + Math.random() / 90,
-                        size: 24,
+                        size: 23,
                         color: '#FFCC66',
                         borderCorol: '#FF9933',
                         type: (Math.random() > 0.4) ? 0 : 2,
@@ -66,9 +66,9 @@
 </head>
 
 <body>
-    <div style="width:800px;height:450px;">
+    <div style="width:720px;height:480px;">
         <div style="width:100%;height:100%;background-color: black;"></div>
-        <div id="bulletCommentsDiv" width="800" height="450" style="width:800px;height:450px;position:relative;left:0;top:-450px;z-index:1000;"></div>
+        <div id="bulletCommentsDiv" width="720" height="480" style="width:720px;height:480px;position:relative;left:0;top:-480px;z-index:1000;"></div>
     </div>
     <p><input type="text" style="width:500px;" id="BulletCommentText">&nbsp;<a href="#" onclick="sendBulletComment();">发送</a></p>
     <p>时间：<b id="time"></b> fps：<b id="fps"></b></p>
