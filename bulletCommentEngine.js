@@ -552,11 +552,11 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
         );
         webglContext.bufferData(webglContext.ARRAY_BUFFER, new Float32Array(
             [0, 0,
-                1, 0,
-                0, 1,
-                0, 1,
-                1, 0,
-                1, 1]
+            1, 0,
+            0, 1,
+            0, 1,
+            1, 0,
+            1, 1]
         ), webglContext.STATIC_DRAW);
         return {
             canvas: canvas,
