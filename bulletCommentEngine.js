@@ -1,5 +1,5 @@
-//弹幕对象（参数：加载到的元素，选项, 渲染模式：默认为canvas, 可选css3， webgl）
-let BulletComments = function (element, option, renderMode = 'canvas') {
+//弹幕引擎对象（参数：加载到的元素，选项, 渲染模式：默认为canvas, 可选css3， webgl）
+let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
     //变量初始化
     let startTime; //开始时间
     let pauseTime = 0; //暂停时间
@@ -605,4 +605,4 @@ let BulletComments = function (element, option, renderMode = 'canvas') {
         }
     }
 }
-window.BulletComments = BulletComments;
+window.BulletCommentEngine = BulletCommentEngine;

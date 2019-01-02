@@ -3,21 +3,21 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>弹幕测试</title>
+    <title>弹幕引擎Demo</title>
     <script src="lib/linkedList.js"></script>
     <script src="bulletComments.js"></script>
     <script>
         let bulletComment;
         window.onload = function () {
-            bulletComments = new BulletComments(document.getElementById('bulletCommentsDiv'), { timeOutDiscard: true }, 'canvas');
-            loadData(bulletComments);
+            bulletCommentEngine = new BulletCommentEngine(document.getElementById('bulletCommentsDiv'), { timeOutDiscard: true }, 'canvas');
+            loadData(bulletCommentEngine);
             setInterval(showDebugInfo, 500);
         }
-        let loadData = function (bulletComments) {
+        let loadData = function (bulletCommentEngine) {
             let _startTime = 5000;
             for (let i = 0; i < 10000; i++) {
                 if (Math.random() > 0.6)
-                    bulletComments.addBulletComment({
+                    bulletCommentEngine.addBulletComment({
                         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
                         speed: 0.15 + Math.random() / 90,
                         size: 25,
@@ -27,7 +27,7 @@
                         startTime: _startTime
                     });
                 else
-                    bulletComments.addBulletComment({
+                    bulletCommentEngine.addBulletComment({
                         text: "橘里橘气",
                         speed: 0.1 + Math.random() / 90,
                         size: 24,
@@ -40,7 +40,7 @@
             }
         }
         let showDebugInfo = function () {
-            let debugInfo = bulletComments.getDebugInfo();
+            let debugInfo = bulletCommentEngine.getDebugInfo();
             document.getElementById("time").innerText = debugInfo.time.toString();
             document.getElementById("delay").innerText = debugInfo.delay.toString();
             document.getElementById("fps").innerText = debugInfo.fps.toString();
@@ -51,7 +51,7 @@
         function sendBulletComment() {
             let bulletCommentText = document.getElementById("BulletCommentText").value;
             document.getElementById("BulletCommentText").value = '';
-            bulletComments.addBulletComment({
+            bulletCommentEngine.addBulletComment({
                 text: bulletCommentText,
                 speed: 0.18,
                 size: 25,
@@ -74,9 +74,9 @@
     <p>时间：<b id="time"></b> fps：<b id="fps"></b></p>
     <p>实时弹幕条数：<b id="bulletCommentsOnScreenCount"></b>&nbsp;剩余弹幕条数：<b id="bulletCommentsCount"></b></p>
     <p>延迟：<b id="delay"></b>ms 延迟丢弃丢弃弹幕数：<b id="delayBulletCommentsCount"></b></p>
-    <a href="#" onclick="bulletComments.play();">开始</a>&nbsp;<a href="#" onclick="bulletComments.pause();">暂停</a>&nbsp;
-    <a href="#" onclick="bulletComments.option.playSpeed = 1;">1倍速</a>&nbsp;<a href="#" onclick="bulletComments.option.playSpeed = 1.5;">1.5倍数</a>&nbsp;
-    <a href="#" onclick="bulletComments.option.playSpeed = 2;">2倍速</a>&nbsp;<a href="#" onclick="bulletComments.option.playSpeed = 2.5;">2.5倍数</a>&nbsp;
+    <a href="#" onclick="bulletCommentEngine.play();">开始</a>&nbsp;<a href="#" onclick="bulletCommentEngine.pause();">暂停</a>&nbsp;
+    <a href="#" onclick="bulletCommentEngine.option.playSpeed = 1;">1倍速</a>&nbsp;<a href="#" onclick="bulletCommentEngine.option.playSpeed = 1.5;">1.5倍数</a>&nbsp;
+    <a href="#" onclick="bulletCommentEngine.option.playSpeed = 2;">2倍速</a>&nbsp;<a href="#" onclick="bulletCommentEngine.option.playSpeed = 2.5;">2.5倍数</a>&nbsp;
 </body>
 
 </html>
