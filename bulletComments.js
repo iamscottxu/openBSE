@@ -1,5 +1,5 @@
-//弹幕对象（参数：加载到的元素，选项, 渲染模式：默认为css3, 可选canvas）
-let BulletComments = function (element, option, renderMode = "css3") {
+//弹幕对象（参数：加载到的元素，选项, 渲染模式：默认为canvas, 可选css3， webgl）
+let BulletComments = function (element, option, renderMode = 'canvas') {
     //变量初始化
     let startTime; //开始时间
     let pauseTime = 0; //暂停时间
@@ -24,10 +24,12 @@ let BulletComments = function (element, option, renderMode = "css3") {
     //初始化
     let canvas;
     let div;
+    let webgl;
     let elementWidth = element.clientWidth;
     let elementHeight = element.clientHeight
-    if (renderMode == "css3") div = initDIV(element); //添加DIV
-    else canvas = initCanvas(element); //添加canvas
+    if (renderMode == 'css3') div = initDIV(element); //添加DIV
+    else if (renderMode == 'canvas') canvas = initCanvas(element); //添加Canvas
+    else if (renderMode == 'webgl') webgl = initWebGLCanvas(element); //添加WebGL Canvas
 
     setInterval(setSize, 100);
 
@@ -176,43 +178,58 @@ let BulletComments = function (element, option, renderMode = "css3") {
         let hideCanvas = document.createElement('canvas');
         hideCanvas.width = canvas.width;
         hideCanvas.height = canvas.height;
-        let hideCanvasContext = hideCanvas.getContext("2d");
+        let hideCanvasContext = hideCanvas.getContext('2d');
         bulletCommentsOnScreen.forEach((bulletCommentOnScreen) => {
             hideCanvasContext.drawImage(bulletCommentOnScreen.hideCanvas, bulletCommentOnScreen.x - 4, bulletCommentOnScreen.actualY - 4);
         }, true);
 
-        let canvasContext = canvas.getContext("2d");
+        let canvasContext = canvas.getContext('2d');
         canvasContext.clearRect(0, 0, elementWidth, elementHeight);
         canvasContext.drawImage(hideCanvas, 0, 0);
     }
 
     //绘制函数WebGL Canvas
     function drawOnTheWebGLCanvas() {
-        let webglContext = canvas.getContext("webgl");
-        webglContext.clear(webglContext.COLOR_BUFFER_BIT | webglContext.DEPTH_BUFFER_BIT);
+        let webglContext = webgl.webglContext;
+        // 清空画布
+        webglContext.clear(webglContext.COLOR_BUFFER_BIT);
         bulletCommentsOnScreen.forEach((bulletCommentOnScreen) => {
-            webglContext.textBaseline = "top";
-            webglContext.shadowColor = "black";
-            webglContext.font = "700 " + bulletCommentOnScreen.size + "px sans-serif";
-            if (bulletCommentOnScreen.bulletComment.color != null) {
-                webglContext.shadowBlur = option.shadowBlur + 0.5;
-                webglContext.fillStyle = bulletCommentOnScreen.bulletComment.color;
-                webglContext.fillText(bulletCommentOnScreen.bulletComment.text, bulletCommentOnScreen.x, bulletCommentOnScreen.actualY);
-            }
-            if (bulletCommentOnScreen.bulletComment.borderColor != null) {
-                webglContext.shadowBlur = 0;
-                webglContext.lineWidth = 0.5;
-                webglContext.strokeStyle = bulletCommentOnScreen.bulletComment.borderColor;
-                webglContext.strokeText(bulletCommentOnScreen.bulletComment.text, bulletCommentOnScreen.x, bulletCommentOnScreen.actualY);
-            }
-            if (bulletCommentOnScreen.bulletComment.boxColor != null) {
-                webglContext.shadowBlur = 0;
-                webglContext.lineWidth = 1;
-                webglContext.strokeStyle = bulletCommentOnScreen.bulletComment.boxColor;
-                webglContext.strokeRect(bulletCommentOnScreen.x - 4, bulletCommentOnScreen.actualY - 4,
-                    bulletCommentOnScreen.width + 8, bulletCommentOnScreen.height + 8);
-            }
-
+            // 四个顶点坐标
+            let x1 = bulletCommentOnScreen.x - 4;
+            let x2 = x1 + bulletCommentOnScreen.width + 8;
+            let y1 = bulletCommentOnScreen.actualY - 4;
+            let y2 = y1 + bulletCommentOnScreen.height + 8;
+            //绑定纹理
+            webglContext.bindTexture(webglContext.TEXTURE_2D, bulletCommentOnScreen.texture2D);
+            //绑定范围
+            let positionBuffer = webglContext.createBuffer();
+            // 将绑定点绑定到缓冲数据（positionBuffer）
+            webglContext.bindBuffer(webglContext.ARRAY_BUFFER, positionBuffer);
+            webglContext.enableVertexAttribArray(webgl.positionAttributeLocation);
+            // 告诉属性怎么从positionBuffer中读取数据 (ARRAY_BUFFER)
+            webglContext.vertexAttribPointer(
+                webgl.positionAttributeLocation,
+                2,                   //size 每次迭代运行提取两个单位数据
+                webglContext.FLOAT,  //type 每个单位的数据类型是32位浮点型
+                false,               //normalize 不需要归一化数据
+                0,                   //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
+                // 每次迭代运行运动多少内存到下一个数据开始点
+                0                    //offset 从缓冲起始位置开始读取
+            );
+            webglContext.bufferData(webglContext.ARRAY_BUFFER, new Float32Array(
+                [x1, y1,
+                x2, y1,
+                x1, y2,
+                x1, y2,
+                x2, y1,
+                x2, y2]
+            ), webglContext.STATIC_DRAW);
+            //绘制
+            webglContext.drawArrays(
+                webglContext.TRIANGLES, //primitiveType
+                0,                      //offset
+                6                       //count
+            );
         }, true);
     }
 
@@ -225,7 +242,7 @@ let BulletComments = function (element, option, renderMode = "css3") {
                     if (bulletCommentOnScreen.x > -bulletCommentOnScreen.width) {
                         bulletCommentOnScreen.x -= bulletCommentOnScreen.bulletComment.speed * option.playSpeed / refreshRate;
                     } else {
-                        if (canvas == null) div.removeChild(bulletCommentOnScreen.element);
+                        if (renderMode === 'css3') div.removeChild(bulletCommentOnScreen.element);
                         return { remove: true };
                     }
                     break;
@@ -233,14 +250,14 @@ let BulletComments = function (element, option, renderMode = "css3") {
                     if (bulletCommentOnScreen.x < elementWidth) {
                         bulletCommentOnScreen.x += bulletCommentOnScreen.bulletComment.speed * option.playSpeed / refreshRate;
                     } else {
-                        if (canvas == null) div.removeChild(bulletCommentOnScreen.element);
+                        if (renderMode === 'css3') div.removeChild(bulletCommentOnScreen.element);
                         return { remove: true };
                     }
                     break;
                 case 2:
                 case 3:
                     if (bulletCommentOnScreen.endTime < nowTime) {
-                        if (canvas == null) div.removeChild(bulletCommentOnScreen.element);
+                        if (renderMode === 'css3') div.removeChild(bulletCommentOnScreen.element);
                         return { remove: true };
                     }
                     break;
@@ -275,7 +292,7 @@ let BulletComments = function (element, option, renderMode = "css3") {
         element.style.position = 'absolute';
         element.style.webkitUserSelect = 'none';
         element.style.whiteSpace = 'nowrap';
-        element.style.font = '700 ' + bulletCommentOnScreen.size.toString() + 'px sans-serif';
+        element.style.font = '600 ' + bulletCommentOnScreen.size.toString() + 'px sans-serif';
         element.style.lineHeight = bulletCommentOnScreen.size.toString() + 'px';
         element.style.padding = '3px';
         element.style.textShadow = '0 0 ' + option.shadowBlur.toString() + 'px black';
@@ -302,7 +319,7 @@ let BulletComments = function (element, option, renderMode = "css3") {
         let hideCanvasContext = hideCanvas.getContext("2d");
         hideCanvasContext.textBaseline = "top";
         hideCanvasContext.shadowColor = "black";
-        hideCanvasContext.font = "700 " + bulletCommentOnScreen.size + "px sans-serif";
+        hideCanvasContext.font = "600 " + bulletCommentOnScreen.size + "px sans-serif";
         if (bulletCommentOnScreen.bulletComment.color != null) {
             hideCanvasContext.shadowBlur = option.shadowBlur + 0.5;
             hideCanvasContext.fillStyle = bulletCommentOnScreen.bulletComment.color;
@@ -323,6 +340,22 @@ let BulletComments = function (element, option, renderMode = "css3") {
         return hideCanvas;
     }
 
+    //WebGL：创建弹幕纹理
+    function creatBulletCommentHideTexture2D(bulletCommentOnScreen) {
+        let _canvas = creatBulletCommentHideCanvas(bulletCommentOnScreen);
+        let webglContext = webgl.webglContext;
+        let texture = webglContext.createTexture();
+        webglContext.bindTexture(webglContext.TEXTURE_2D, texture);
+        // 设置参数
+        webglContext.texParameteri(webglContext.TEXTURE_2D, webglContext.TEXTURE_MIN_FILTER, webglContext.NEAREST);
+        webglContext.texParameteri(webglContext.TEXTURE_2D, webglContext.TEXTURE_MAG_FILTER, webglContext.NEAREST);
+        webglContext.texParameteri(webglContext.TEXTURE_2D, webglContext.TEXTURE_WRAP_S, webglContext.CLAMP_TO_EDGE);
+        webglContext.texParameteri(webglContext.TEXTURE_2D, webglContext.TEXTURE_WRAP_T, webglContext.CLAMP_TO_EDGE);
+
+        webglContext.texImage2D(webglContext.TEXTURE_2D, 0, webglContext.RGBA, webglContext.RGBA, webglContext.UNSIGNED_BYTE, _canvas);
+        return texture;
+    }
+
     //生成屏幕弹幕对象函数
     function getBulletCommentOnScreen(nowTime, bulletComment) {
         delay = nowTime - bulletComment.startTime;
@@ -337,10 +370,14 @@ let BulletComments = function (element, option, renderMode = "css3") {
         }
         else if (renderMode === 'canvas' || renderMode === 'webgl') {
             //计算宽度
-            let canvasContext = canvas.getContext("2d");
-            canvasContext.font = "700 " + bulletCommentOnScreen.size + "px sans-serif";
-            bulletCommentOnScreen.width = canvasContext.measureText(bulletComment.text).width; //弹幕的宽度：像素
-            bulletCommentOnScreen.hideCanvas = creatBulletCommentHideCanvas(bulletCommentOnScreen); //创建Canvas
+            let hideCanvas = document.createElement('canvas');
+            let hideCanvasContext = hideCanvas.getContext('2d');
+            hideCanvasContext.font = '600 ' + bulletCommentOnScreen.size.toString() + 'px sans-serif';
+            bulletCommentOnScreen.width = hideCanvasContext.measureText(bulletComment.text).width; //弹幕的宽度：像素
+            if (renderMode === 'canvas')
+                bulletCommentOnScreen.hideCanvas = creatBulletCommentHideCanvas(bulletCommentOnScreen); //创建Canvas
+            else
+                bulletCommentOnScreen.texture2D = creatBulletCommentHideTexture2D(bulletCommentOnScreen); //创建Texture2D
         }
         bulletCommentOnScreen.endTime = parseInt(nowTime + (elementWidth + bulletCommentOnScreen.width) / (bulletComment.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
         switch (bulletComment.type) {
@@ -419,7 +456,7 @@ let BulletComments = function (element, option, renderMode = "css3") {
         return bulletCommentOnScreen;
     }
 
-    //添加canvas
+    //添加Canvas
     function initCanvas(element) {
         let canvas = document.createElement('canvas'); //canvas对象
         canvas.style.width = element.clientWidth + 'px';
@@ -429,6 +466,104 @@ let BulletComments = function (element, option, renderMode = "css3") {
         element.innerHTML = '';
         element.appendChild(canvas);
         return canvas;
+    }
+
+    //添加WebGL Canvas
+    function initWebGLCanvas(element) {
+        // 创建着色器方法，输入参数：渲染上下文，着色器类型，数据源
+        let createShader = function (gl, type, source) {
+            let shader = gl.createShader(type); // 创建着色器对象
+            gl.shaderSource(shader, source); // 提供数据源
+            gl.compileShader(shader); // 编译 -> 生成着色器
+            let success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+            if (success) {
+                return shader;
+            }
+            gl.deleteShader(shader);
+        }
+        // 创建着色程序，输入参数：渲染上下文，顶点着色器，片段着色器
+        let createProgram = function (gl, vertexShader, fragmentShader) {
+            let program = gl.createProgram();
+            gl.attachShader(program, vertexShader);
+            gl.attachShader(program, fragmentShader);
+            gl.linkProgram(program);
+            let success = gl.getProgramParameter(program, gl.LINK_STATUS);
+            if (success) {
+                return program;
+            }
+            gl.deleteProgram(program);
+        }
+        //顶点着色器代码
+        let vertexShaderSource = 'attribute vec2 a_position;';
+        vertexShaderSource += 'attribute vec2 a_texcoord;';
+        vertexShaderSource += 'uniform vec2 u_resolution;';
+        vertexShaderSource += 'varying vec2 v_texcoord;';
+        vertexShaderSource += 'void main() {';
+        // 从像素坐标转换到 0.0 到 1.0
+        vertexShaderSource += 'vec2 zeroToOne = a_position / u_resolution;';
+        // 再把 0->1 转换 0->2
+        vertexShaderSource += 'vec2 zeroToTwo = zeroToOne * 2.0;';
+        // 把 0->2 转换到 -1->+1 (裁剪空间)
+        vertexShaderSource += 'vec2 clipSpace = zeroToTwo - 1.0;';
+        vertexShaderSource += 'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);';
+        // 传递纹理坐标到片断着色器
+        vertexShaderSource += 'v_texcoord = a_texcoord;';
+        vertexShaderSource += '}';
+
+        //片段着色器代码
+        let fragmentShaderSource = 'precision mediump float;';
+        // 从顶点着色器中传入的值
+        fragmentShaderSource += 'varying vec2 v_texcoord;';
+        // 纹理
+        fragmentShaderSource += 'uniform sampler2D u_texture;';
+        fragmentShaderSource += 'void main() {';
+        fragmentShaderSource += 'gl_FragColor = texture2D(u_texture, v_texcoord);';
+        fragmentShaderSource += '}';
+
+        let canvas = initCanvas(element);
+        let webglContext = canvas.getContext('webgl');
+        webglContext.enable(webglContext.BLEND); //开启混合功能
+        webglContext.clearColor(0, 0, 0, 0); //设置清除颜色
+        webglContext.blendFunc(webglContext.SRC_ALPHA, webglContext.ONE_MINUS_SRC_ALPHA);
+        let vertexShader = createShader(webglContext, webglContext.VERTEX_SHADER, vertexShaderSource); //创建顶点着色器
+        let fragmentShader = createShader(webglContext, webglContext.FRAGMENT_SHADER, fragmentShaderSource); //创建片段着色器
+        let program = createProgram(webglContext, vertexShader, fragmentShader); //创建着色程序
+        webglContext.useProgram(program);
+        let positionAttributeLocation = webglContext.getAttribLocation(program, 'a_position');
+        let texcoordAttributeLocation = webglContext.getAttribLocation(program, 'a_texcoord');
+        let resolutionUniformLocation = webglContext.getUniformLocation(program, 'u_resolution');
+
+        webglContext.viewport(0, 0, element.clientWidth, element.clientHeight);
+        webglContext.uniform2f(resolutionUniformLocation, element.clientWidth, element.clientHeight); // 设置全局变量 分辨率
+        //绑定范围
+        let texcoordBuffer = webglContext.createBuffer();
+        // 将绑定点绑定到缓冲数据（texcoordBuffer）
+        webglContext.bindBuffer(webglContext.ARRAY_BUFFER, texcoordBuffer);
+        webglContext.enableVertexAttribArray(texcoordAttributeLocation);
+        // 以浮点型格式传递纹理坐标
+        webglContext.vertexAttribPointer(
+            texcoordAttributeLocation,
+            2,                   //size 每次迭代运行提取两个单位数据
+            webglContext.FLOAT,  //type 每个单位的数据类型是32位浮点型
+            false,               //normalize 不需要归一化数据 
+            0,                   //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
+            // 每次迭代运行运动多少内存到下一个数据开始点
+            0                    //offset 从缓冲起始位置开始读取
+        );
+        webglContext.bufferData(webglContext.ARRAY_BUFFER, new Float32Array(
+            [0, 0,
+                1, 0,
+                0, 1,
+                0, 1,
+                1, 0,
+                1, 1]
+        ), webglContext.STATIC_DRAW);
+        return {
+            canvas: canvas,
+            positionAttributeLocation: positionAttributeLocation,
+            resolutionUniformLocation: resolutionUniformLocation,
+            webglContext: webglContext
+        };
     }
 
     //添加DIV
@@ -451,14 +586,21 @@ let BulletComments = function (element, option, renderMode = "css3") {
             elementHeight != element.clientHeight) {
             elementWidth = element.clientWidth;
             elementHeight = element.clientHeight;
-            if (canvas == null) {
+            if (renderMode == 'css3') {
                 div.style.width = elementWidth + 'px';
                 div.style.height = elementHeight + 'px';
-            } else {
+            } else if (renderMode == 'canvas') {
                 canvas.style.width = elementWidth + 'px';
                 canvas.style.height = elementHeight + 'px';
                 canvas.width = elementWidth;
                 canvas.height = elementHeight;
+            } else if (renderMode == 'webgl') {
+                webgl.canvas.style.width = elementWidth + 'px';
+                webgl.canvas.style.height = elementHeight + 'px';
+                webgl.canvas.width = elementWidth;
+                webgl.canvas.height = elementHeight;
+                webgl.webglContext.viewport(0, 0, elementWidth, elementHeight);
+                webgl.webglContext.uniform2f(webgl.resolutionUniformLocation, elementWidth, elementHeight); // 设置全局变量 分辨率
             }
         }
     }
