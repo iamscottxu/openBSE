@@ -1,7 +1,7 @@
 {
   "name": "BulletScreenEngine",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0",
+  "description": "高性能弹幕引擎。A high-performance JavaScript bullet screen (danmaku) engine.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -11,9 +11,9 @@
     "type": "git",
     "url": "git+https://github.com/iamscottxu/BulletScreenEngine.git"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": ["弹幕", "bullet screen", "引擎", "engine", "danmaku", "コメント"],
+  "author": "Scott Xu",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/iamscottxu/BulletScreenEngine/issues"
   },
