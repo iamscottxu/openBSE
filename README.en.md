@@ -11,7 +11,7 @@ A high-performance JavaScript bullet-screen (danmaku) engine. 1000+ at the same 
 This is a high-performance JavaScript bullet-screen (danmaku) engine and it is very simple and easy to use. This bullet-screen engine support use CSS3, Canvas 2D, and WebGL to render bullet-screen. This bullet screen engine can render top, bottom and backward bullet-screen. Use Canvas 2D can render at lest 1000 bullet-screens at the same time. (some times can render 1600 ullet-screens at the same time)
 
 ## Contact
-If you have any issue please write [issue](https://github.com/iamscottxu/BulletScreenEngine/issues).<br/>
+If you have any issue please write [issues](https://github.com/iamscottxu/BulletScreenEngine/issues).<br/>
 E-mail：[scottxu@scottxublog.com](mailto:scottxu@scottxublog.com)
 
 ## Copyright
