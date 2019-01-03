@@ -3,13 +3,15 @@
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
+[English Version](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.en.md)
+
 高性能弹幕引擎。同屏弹幕1000+
 
 ## 简介
 一个高性能弹幕引擎，简单易用。支持CSS3、Canvas 2D、WebGL渲染方式。支持顶部、底部、逆向弹幕渲染。使用Canvas 2D渲染方式可流程渲染同屏1000条弹幕（可达1600条，与电脑配置有关）。
 
 ## 联系作者
-如果有任何问题请写 [issus](https://github.com/iamscottxu/BulletScreenEngine/issues) 。<br/>
+如果有任何问题请写下 [issues](https://github.com/iamscottxu/BulletScreenEngine/issues) 。<br/>
 E-mail：[scottxu@scottxublog.com](mailto:scottxu@scottxublog.com)
 
 ## 版权声明
