@@ -1,5 +1,5 @@
 //双向链表
-let LinkedList = function () {
+const LinkedList = function() {
     //双向链表结点
     let node = function (element) { 
         this.element = element;
@@ -98,4 +98,4 @@ let LinkedList = function () {
         }
     }
 }
-window.LinkedList = LinkedList;
+export {LinkedList}

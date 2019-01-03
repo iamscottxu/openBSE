@@ -1,5 +1,8 @@
+import {LinkedList} from './linkedList'
+const VERSION = '1.0'; //版本号
+const BUILE_DATE = '2019/1/3'; //构建日期
 //弹幕引擎对象（参数：加载到的元素，选项, 渲染模式：默认为canvas, 可选css3， webgl）
-let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
+const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
     //变量初始化
     let startTime; //开始时间
     let pauseTime = 0; //暂停时间
@@ -12,13 +15,15 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
     let hide = false; //隐藏弹幕
 
     //默认参数
-    option = setValue(option, new Object());
+    option = setValue(option, {});
     option.verticalInterval = setValue(option.verticalInterval, 8); //垂直间距
     option.playSpeed = setValue(option.playSpeed, 1); //播放速度倍数
     option.clock = setValue(option.clock, time => new Date().getTime() - startTime); //时间基准
     option.shadowBlur = setValue(option.shadowBlur, 2); //阴影的模糊级别，0为不显示阴影
     option.scaling = setValue(option.scaling, 1); //缩放比例
     option.timeOutDiscard = setValue(option.timeOutDiscard, true); //超时丢弃
+    option.fontWeight = setValue(option.fontWeight, 600); //字体粗细
+    option.fontFamily = setValue(option.fontFamily, 'sans-serif'); //字体系列
     this.option = option;
 
     //初始化
@@ -36,9 +41,9 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
     //公共函数
     //添加弹幕
     this.addBulletComment = function (bulletComment) {
-        bulletComment = setValue(bulletComment, new Object());
+        bulletComment = setValue(bulletComment, {});
         bulletComment.uuid = setValue(''); //uuid
-        bulletComment.text = setValue(bulletComment.text, '空弹幕'); //弹幕文本
+        bulletComment.text = setValue(bulletComment.text, 'Empty'); //弹幕文本
         bulletComment.boxColor = setValue(bulletComment.boxColor, null); //方框颜色
         bulletComment.speed = setValue(bulletComment.speed, 0.15); //弹幕速度（单位：像素/毫秒） 仅类型0、1有效
         bulletComment.size = setValue(bulletComment.size, 19); //字体大小（单位：像素）
@@ -112,15 +117,15 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
     //隐藏弹幕
     this.hide = function () {
         hide = true;
-        if (canvas) canvas.style.visibility = "hidden";
-        else div.style.visibility = "hidden";
+        if (canvas) canvas.style.visibility = 'hidden';
+        else div.style.visibility = 'hidden';
     }
 
     //显示弹幕
     this.show = function () {
         hide = false;
-        if (canvas) canvas.style.visibility = "visible";
-        else div.style.visibility = "visible";
+        if (canvas) canvas.style.visibility = 'visible';
+        else div.style.visibility = 'visible';
     }
 
     //获取可见性
@@ -133,6 +138,7 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
         return playing;
     }
 
+    //获取调试信息
     this.getDebugInfo = function () {
         return {
             time: playing ? option.clock() : pauseTime,
@@ -141,6 +147,14 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
             delay: delay, //延迟（单位：毫秒）
             delayBulletCommentsCount: delayBulletCommentsCount, //延迟弹幕总数
             fps: playing ? parseInt(refreshRate * 1000) : 0 //帧频
+        }
+    }
+
+    //获取版本号
+    this.getVersion = function () {
+        return {
+            version: VERSION,
+            buildDate: BUILE_DATE
         }
     }
 
@@ -287,12 +301,14 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
     function creatBulletCommentDiv(bulletCommentOnScreen) {
         let bulletComment = bulletCommentOnScreen.bulletComment;
         let element = document.createElement('div');
-        element.className = "bulletCommentDiv";
+        element.className = 'bulletCommentDiv';
         element.setAttribute('data-uuid', bulletComment.uuid);
         element.style.position = 'absolute';
         element.style.webkitUserSelect = 'none';
         element.style.whiteSpace = 'nowrap';
-        element.style.font = '600 ' + bulletCommentOnScreen.size.toString() + 'px sans-serif';
+        element.style.fontWeight = option.fontWeight;
+        element.style.fontSize = bulletCommentOnScreen.size.toString() + 'px';
+        element.style.fontFamily = option.fontFamily;
         element.style.lineHeight = bulletCommentOnScreen.size.toString() + 'px';
         element.style.padding = '3px';
         element.style.textShadow = '0 0 ' + option.shadowBlur.toString() + 'px black';
@@ -316,10 +332,10 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
         let hideCanvas = document.createElement('canvas');
         hideCanvas.width = bulletCommentOnScreen.width + 8;
         hideCanvas.height = bulletCommentOnScreen.height + 8;
-        let hideCanvasContext = hideCanvas.getContext("2d");
-        hideCanvasContext.textBaseline = "top";
-        hideCanvasContext.shadowColor = "black";
-        hideCanvasContext.font = "600 " + bulletCommentOnScreen.size + "px sans-serif";
+        let hideCanvasContext = hideCanvas.getContext('2d');
+        hideCanvasContext.textBaseline = 'top';
+        hideCanvasContext.shadowColor = 'black';
+        hideCanvasContext.font = option.fontWeight + ' ' + bulletCommentOnScreen.size.toString() + 'px ' + option.fontFamily;
         if (bulletCommentOnScreen.bulletComment.color != null) {
             hideCanvasContext.shadowBlur = option.shadowBlur + 0.5;
             hideCanvasContext.fillStyle = bulletCommentOnScreen.bulletComment.color;
@@ -359,7 +375,7 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
     //生成屏幕弹幕对象函数
     function getBulletCommentOnScreen(nowTime, bulletComment) {
         delay = nowTime - bulletComment.startTime;
-        let bulletCommentOnScreen = new Object();
+        let bulletCommentOnScreen = {};
         bulletCommentOnScreen.bulletComment = bulletComment;
         bulletCommentOnScreen.startTime = nowTime; //弹幕头部进屏幕时间
         bulletCommentOnScreen.size = bulletCommentOnScreen.bulletComment.size * option.scaling;
@@ -372,7 +388,7 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
             //计算宽度
             let hideCanvas = document.createElement('canvas');
             let hideCanvasContext = hideCanvas.getContext('2d');
-            hideCanvasContext.font = '600 ' + bulletCommentOnScreen.size.toString() + 'px sans-serif';
+            hideCanvasContext.font =  option.fontWeight + ' ' + bulletCommentOnScreen.size.toString() + 'px ' + option.fontFamily;
             bulletCommentOnScreen.width = hideCanvasContext.measureText(bulletComment.text).width; //弹幕的宽度：像素
             if (renderMode === 'canvas')
                 bulletCommentOnScreen.hideCanvas = creatBulletCommentHideCanvas(bulletCommentOnScreen); //创建Canvas
@@ -605,4 +621,4 @@ let BulletCommentEngine = function (element, option, renderMode = 'canvas') {
         }
     }
 }
-window.BulletCommentEngine = BulletCommentEngine;
+export {BulletCommentEngine}

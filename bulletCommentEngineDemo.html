@@ -4,16 +4,14 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>弹幕引擎Demo</title>
-    <script src="lib/linkedList.js"></script>
-    <script src="bulletCommentEngine.js"></script>
+    <script src="dist/bulletCommentEngine.all.min.js"></script>
     <script>
-        let bulletComment;
         window.onload = function () {
             bulletCommentEngine = new BulletCommentEngine(document.getElementById('bulletCommentsDiv'), { timeOutDiscard: true }, 'canvas');
             loadData(bulletCommentEngine);
             setInterval(showDebugInfo, 500);
         }
-        let loadData = function (bulletCommentEngine) {
+        var loadData = function (bulletCommentEngine) {
             let _startTime = 5000;
             for (let i = 0; i < 10000; i++) {
                 if (Math.random() > 0.6)
@@ -23,7 +21,7 @@
                         size: 22,
                         color: 'white',
                         borderCorol: 'black',
-                        type: (Math.random() > 0.4) ? 0 : 2,
+                        type: 0,
                         startTime: _startTime
                     });
                 else
@@ -36,11 +34,11 @@
                         type: (Math.random() > 0.4) ? 0 : 2,
                         startTime: _startTime
                     });
-                _startTime += parseInt(Math.random() * 500);
+                _startTime += parseInt(Math.random() * 300);
             }
         }
-        let showDebugInfo = function () {
-            let debugInfo = bulletCommentEngine.getDebugInfo();
+        var showDebugInfo = function () {
+            var debugInfo = bulletCommentEngine.getDebugInfo();
             document.getElementById("time").innerText = debugInfo.time.toString();
             document.getElementById("delay").innerText = debugInfo.delay.toString();
             document.getElementById("fps").innerText = debugInfo.fps.toString();
@@ -49,7 +47,7 @@
             document.getElementById("delayBulletCommentsCount").innerText = debugInfo.delayBulletCommentsCount.toString();
         }
         function sendBulletComment() {
-            let bulletCommentText = document.getElementById("BulletCommentText").value;
+            var bulletCommentText = document.getElementById("BulletCommentText").value;
             document.getElementById("BulletCommentText").value = '';
             bulletCommentEngine.addBulletComment({
                 text: bulletCommentText,
