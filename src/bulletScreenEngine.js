@@ -2,12 +2,12 @@ import {LinkedList} from './linkedList'
 const VERSION = '1.0'; //版本号
 const BUILE_DATE = '2019/1/3'; //构建日期
 //弹幕引擎对象（参数：加载到的元素，选项, 渲染模式：默认为canvas, 可选css3， webgl）
-const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
+const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
     //变量初始化
     let startTime; //开始时间
     let pauseTime = 0; //暂停时间
-    let bulletComments = new LinkedList(), bulletCommentsOnScreen = new LinkedList(); //剩余弹幕，屏幕上的弹幕
-    let delayBulletCommentsCount = 0; //延迟弹幕总数
+    let BulletScreens = new LinkedList(), BulletScreensOnScreen = new LinkedList(); //剩余弹幕，屏幕上的弹幕
+    let delayBulletScreensCount = 0; //延迟弹幕总数
     let delay = 0; //延迟（单位：毫秒）
     let playing; //播放标志
     let refreshRate = 0.06; //初始刷新频率
@@ -40,32 +40,32 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
 
     //公共函数
     //添加弹幕
-    this.addBulletComment = function (bulletComment) {
-        bulletComment = setValue(bulletComment, {});
-        bulletComment.uuid = setValue(''); //uuid
-        bulletComment.text = setValue(bulletComment.text, 'Empty'); //弹幕文本
-        bulletComment.boxColor = setValue(bulletComment.boxColor, null); //方框颜色
-        bulletComment.speed = setValue(bulletComment.speed, 0.15); //弹幕速度（单位：像素/毫秒） 仅类型0、1有效
-        bulletComment.size = setValue(bulletComment.size, 19); //字体大小（单位：像素）
-        bulletComment.color = setValue(bulletComment.color, null); //字体颜色
-        bulletComment.borderColor = setValue(bulletComment.borderColor, null); //边框颜色
-        bulletComment.type = setValue(bulletComment.type, 0); //类型：0：从右到左 1:从左到右 2:顶部固定 3:底部固定
-        bulletComment.startTime = setValue(bulletComment.startTime, option.clock()); //弹幕进入时间
-        bulletComment.residenceTime = setValue(bulletComment.endTime, 5000); //弹幕停留时间 仅类型2、3有效
-        bulletComment.canDiscard = setValue(bulletComment.canDiscard, true); //是否允许丢弃
-        if (bulletComment.type <= 3) {
-            let oldLength = bulletComments.getLength();
-            bulletComments.forEach(function (lastBulletComment) {
-                if (bulletComment.startTime > lastBulletComment.startTime)
+    this.addBulletScreen = function (BulletScreen) {
+        BulletScreen = setValue(BulletScreen, {});
+        BulletScreen.uuid = setValue(''); //uuid
+        BulletScreen.text = setValue(BulletScreen.text, 'Empty'); //弹幕文本
+        BulletScreen.boxColor = setValue(BulletScreen.boxColor, null); //方框颜色
+        BulletScreen.speed = setValue(BulletScreen.speed, 0.15); //弹幕速度（单位：像素/毫秒） 仅类型0、1有效
+        BulletScreen.size = setValue(BulletScreen.size, 19); //字体大小（单位：像素）
+        BulletScreen.color = setValue(BulletScreen.color, null); //字体颜色
+        BulletScreen.borderColor = setValue(BulletScreen.borderColor, null); //边框颜色
+        BulletScreen.type = setValue(BulletScreen.type, 0); //类型：0：从右到左 1:从左到右 2:顶部固定 3:底部固定
+        BulletScreen.startTime = setValue(BulletScreen.startTime, option.clock()); //弹幕进入时间
+        BulletScreen.residenceTime = setValue(BulletScreen.endTime, 5000); //弹幕停留时间 仅类型2、3有效
+        BulletScreen.canDiscard = setValue(BulletScreen.canDiscard, true); //是否允许丢弃
+        if (BulletScreen.type <= 3) {
+            let oldLength = BulletScreens.getLength();
+            BulletScreens.forEach(function (lastBulletScreen) {
+                if (BulletScreen.startTime > lastBulletScreen.startTime)
                     return {
                         add: {
                             addToUp: true,
-                            element: bulletComment
+                            element: BulletScreen
                         },
                         stop: true
                     }
             }, true)
-            if (oldLength == bulletComments.getLength()) bulletComments.push(bulletComment, false);
+            if (oldLength == BulletScreens.getLength()) BulletScreens.push(BulletScreen, false);
         }
     }
 
@@ -90,13 +90,13 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
     }
 
     //清空弹幕列表
-    this.cleanBulletCommentList = function () {
-        bulletComments.clean();
+    this.cleanBulletScreenList = function () {
+        BulletScreens.clean();
     }
 
     //清空屏幕弹幕
-    this.cleanBulletCommentListOnScreen = function () {
-        bulletCommentsOnScreen.clean();
+    this.cleanBulletScreenListOnScreen = function () {
+        BulletScreensOnScreen.clean();
         if (div) div.innerHTML = '';
     }
 
@@ -107,8 +107,8 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
         }
         pauseTime = 0;
         startTime = null;
-        this.cleanBulletCommentList();
-        this.cleanBulletCommentListOnScreen();
+        this.cleanBulletScreenList();
+        this.cleanBulletScreenListOnScreen();
         //重新加载
         if (renderMode === 'css3') div = initDIV(element); //添加DIV
         else if (renderMode === 'canvas' || renderMode === 'webgl') canvas = initCanvas(element); //添加canvas
@@ -142,10 +142,10 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
     this.getDebugInfo = function () {
         return {
             time: playing ? option.clock() : pauseTime,
-            bulletCommentsOnScreenCount: bulletCommentsOnScreen.getLength(), //实时弹幕总数
-            bulletCommentsCount: bulletComments.getLength(), //剩余弹幕总数
+            BulletScreensOnScreenCount: BulletScreensOnScreen.getLength(), //实时弹幕总数
+            BulletScreensCount: BulletScreens.getLength(), //剩余弹幕总数
             delay: delay, //延迟（单位：毫秒）
-            delayBulletCommentsCount: delayBulletCommentsCount, //延迟弹幕总数
+            delayBulletScreensCount: delayBulletScreensCount, //延迟弹幕总数
             fps: playing ? parseInt(refreshRate * 1000) : 0 //帧频
         }
     }
@@ -170,8 +170,8 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
         let nowTime = new Date().getTime();
         if (lastRefreshTime != null) refreshRate = 1 / (nowTime - lastRefreshTime);
         lastRefreshTime = nowTime;
-        addBulletCommentsToScreen();
-        moveBulletCommentOnScreen();
+        addBulletScreensToScreen();
+        moveBulletScreenOnScreen();
         if (renderMode === 'css3') drawOnTheDIV();
         else if (renderMode === 'canvas') drawOnTheCanvas();
         else if (renderMode === 'webgl') drawOnTheWebGLCanvas();
@@ -180,9 +180,9 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
 
     //绘制函数CSS3
     function drawOnTheDIV() {
-        bulletCommentsOnScreen.forEach((bulletCommentOnScreen) => {
-            bulletCommentOnScreen.element.style.transform =
-                'translate(' + (bulletCommentOnScreen.x - 4) + 'px,' + (bulletCommentOnScreen.actualY - 4) + 'px)';
+        BulletScreensOnScreen.forEach((BulletScreenOnScreen) => {
+            BulletScreenOnScreen.element.style.transform =
+                'translate(' + (BulletScreenOnScreen.x - 4) + 'px,' + (BulletScreenOnScreen.actualY - 4) + 'px)';
         }, true);
     }
 
@@ -193,8 +193,8 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
         hideCanvas.width = canvas.width;
         hideCanvas.height = canvas.height;
         let hideCanvasContext = hideCanvas.getContext('2d');
-        bulletCommentsOnScreen.forEach((bulletCommentOnScreen) => {
-            hideCanvasContext.drawImage(bulletCommentOnScreen.hideCanvas, bulletCommentOnScreen.x - 4, bulletCommentOnScreen.actualY - 4);
+        BulletScreensOnScreen.forEach((BulletScreenOnScreen) => {
+            hideCanvasContext.drawImage(BulletScreenOnScreen.hideCanvas, BulletScreenOnScreen.x - 4, BulletScreenOnScreen.actualY - 4);
         }, true);
 
         let canvasContext = canvas.getContext('2d');
@@ -207,14 +207,14 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
         let webglContext = webgl.webglContext;
         // 清空画布
         webglContext.clear(webglContext.COLOR_BUFFER_BIT);
-        bulletCommentsOnScreen.forEach((bulletCommentOnScreen) => {
+        BulletScreensOnScreen.forEach((BulletScreenOnScreen) => {
             // 四个顶点坐标
-            let x1 = bulletCommentOnScreen.x - 4;
-            let x2 = x1 + bulletCommentOnScreen.width + 8;
-            let y1 = bulletCommentOnScreen.actualY - 4;
-            let y2 = y1 + bulletCommentOnScreen.height + 8;
+            let x1 = BulletScreenOnScreen.x - 4;
+            let x2 = x1 + BulletScreenOnScreen.width + 8;
+            let y1 = BulletScreenOnScreen.actualY - 4;
+            let y2 = y1 + BulletScreenOnScreen.height + 8;
             //绑定纹理
-            webglContext.bindTexture(webglContext.TEXTURE_2D, bulletCommentOnScreen.texture2D);
+            webglContext.bindTexture(webglContext.TEXTURE_2D, BulletScreenOnScreen.texture2D);
             //绑定范围
             let positionBuffer = webglContext.createBuffer();
             // 将绑定点绑定到缓冲数据（positionBuffer）
@@ -248,30 +248,30 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
     }
 
     //移动弹幕函数
-    function moveBulletCommentOnScreen() {
-        bulletCommentsOnScreen.forEach((bulletCommentOnScreen) => {
+    function moveBulletScreenOnScreen() {
+        BulletScreensOnScreen.forEach((BulletScreenOnScreen) => {
             let nowTime = option.clock();
-            switch (bulletCommentOnScreen.bulletComment.type) {
+            switch (BulletScreenOnScreen.BulletScreen.type) {
                 case 0:
-                    if (bulletCommentOnScreen.x > -bulletCommentOnScreen.width) {
-                        bulletCommentOnScreen.x -= bulletCommentOnScreen.bulletComment.speed * option.playSpeed / refreshRate;
+                    if (BulletScreenOnScreen.x > -BulletScreenOnScreen.width) {
+                        BulletScreenOnScreen.x -= BulletScreenOnScreen.BulletScreen.speed * option.playSpeed / refreshRate;
                     } else {
-                        if (renderMode === 'css3') div.removeChild(bulletCommentOnScreen.element);
+                        if (renderMode === 'css3') div.removeChild(BulletScreenOnScreen.element);
                         return { remove: true };
                     }
                     break;
                 case 1:
-                    if (bulletCommentOnScreen.x < elementWidth) {
-                        bulletCommentOnScreen.x += bulletCommentOnScreen.bulletComment.speed * option.playSpeed / refreshRate;
+                    if (BulletScreenOnScreen.x < elementWidth) {
+                        BulletScreenOnScreen.x += BulletScreenOnScreen.BulletScreen.speed * option.playSpeed / refreshRate;
                     } else {
-                        if (renderMode === 'css3') div.removeChild(bulletCommentOnScreen.element);
+                        if (renderMode === 'css3') div.removeChild(BulletScreenOnScreen.element);
                         return { remove: true };
                     }
                     break;
                 case 2:
                 case 3:
-                    if (bulletCommentOnScreen.endTime < nowTime) {
-                        if (renderMode === 'css3') div.removeChild(bulletCommentOnScreen.element);
+                    if (BulletScreenOnScreen.endTime < nowTime) {
+                        if (renderMode === 'css3') div.removeChild(BulletScreenOnScreen.element);
                         return { remove: true };
                     }
                     break;
@@ -280,85 +280,85 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
     }
 
     //添加弹幕到屏幕函数
-    function addBulletCommentsToScreen() {
-        if (bulletCommentsOnScreen.getLength() == 0) delay = 0;
+    function addBulletScreensToScreen() {
+        if (BulletScreensOnScreen.getLength() == 0) delay = 0;
         let times = refreshRate > 0.02 ? Math.ceil(1 / refreshRate) : 1;
         do {
-            let bulletComment = bulletComments.pop(false, false);
-            if (bulletComment == null) return;
+            let BulletScreen = BulletScreens.pop(false, false);
+            if (BulletScreen == null) return;
             let nowTime = option.clock();
-            if (bulletComment.startTime > nowTime) return;
-            if (!option.timeOutDiscard || !bulletComment.canDiscard || bulletComment.startTime > nowTime - 1 / refreshRate * 1.5)
-                getBulletCommentOnScreen(nowTime, bulletComment); //生成屏幕弹幕对象并添加到屏幕弹幕集合
+            if (BulletScreen.startTime > nowTime) return;
+            if (!option.timeOutDiscard || !BulletScreen.canDiscard || BulletScreen.startTime > nowTime - 1 / refreshRate * 1.5)
+                getBulletScreenOnScreen(nowTime, BulletScreen); //生成屏幕弹幕对象并添加到屏幕弹幕集合
             else
-                delayBulletCommentsCount++;
-            bulletComments.pop(true, false);
+                delayBulletScreensCount++;
+            BulletScreens.pop(true, false);
             times--;
-        } while (bulletCommentsOnScreen.getLength() == 0 || times > 0)
+        } while (BulletScreensOnScreen.getLength() == 0 || times > 0)
     }
 
     //CSS3:创建弹幕元素
-    function creatBulletCommentDiv(bulletCommentOnScreen) {
-        let bulletComment = bulletCommentOnScreen.bulletComment;
+    function creatBulletScreenDiv(BulletScreenOnScreen) {
+        let BulletScreen = BulletScreenOnScreen.BulletScreen;
         let element = document.createElement('div');
-        element.className = 'bulletCommentDiv';
-        element.setAttribute('data-uuid', bulletComment.uuid);
+        element.className = 'BulletScreenDiv';
+        element.setAttribute('data-uuid', BulletScreen.uuid);
         element.style.position = 'absolute';
         element.style.webkitUserSelect = 'none';
         element.style.whiteSpace = 'nowrap';
         element.style.fontWeight = option.fontWeight;
-        element.style.fontSize = bulletCommentOnScreen.size.toString() + 'px';
+        element.style.fontSize = BulletScreenOnScreen.size.toString() + 'px';
         element.style.fontFamily = option.fontFamily;
-        element.style.lineHeight = bulletCommentOnScreen.size.toString() + 'px';
+        element.style.lineHeight = BulletScreenOnScreen.size.toString() + 'px';
         element.style.padding = '3px';
         element.style.textShadow = '0 0 ' + option.shadowBlur.toString() + 'px black';
-        if (bulletComment.color == null) element.style.color = 'rgba(0,0,0,0)';
-        else element.style.color = bulletComment.color;
-        if (bulletComment.borderColor != null) {
+        if (BulletScreen.color == null) element.style.color = 'rgba(0,0,0,0)';
+        else element.style.color = BulletScreen.color;
+        if (BulletScreen.borderColor != null) {
             element.style.webkitTextStroke = '0.5px';
-            element.style.webkitTextStrokeColor = bulletComment.borderColor;
+            element.style.webkitTextStrokeColor = BulletScreen.borderColor;
         }
-        if (bulletComment.boxColor != null) {
+        if (BulletScreen.boxColor != null) {
             element.style.border = '1px solid';
-            element.style.borderColor = bulletComment.boxColor;
+            element.style.borderColor = BulletScreen.boxColor;
         }
-        element.innerText = bulletComment.text;
+        element.innerText = BulletScreen.text;
         div.appendChild(element);
         return element;
     }
 
     //Canvas:创建弹幕画布
-    function creatBulletCommentHideCanvas(bulletCommentOnScreen) {
+    function creatBulletScreenHideCanvas(BulletScreenOnScreen) {
         let hideCanvas = document.createElement('canvas');
-        hideCanvas.width = bulletCommentOnScreen.width + 8;
-        hideCanvas.height = bulletCommentOnScreen.height + 8;
+        hideCanvas.width = BulletScreenOnScreen.width + 8;
+        hideCanvas.height = BulletScreenOnScreen.height + 8;
         let hideCanvasContext = hideCanvas.getContext('2d');
         hideCanvasContext.textBaseline = 'top';
         hideCanvasContext.shadowColor = 'black';
-        hideCanvasContext.font = option.fontWeight + ' ' + bulletCommentOnScreen.size.toString() + 'px ' + option.fontFamily;
-        if (bulletCommentOnScreen.bulletComment.color != null) {
+        hideCanvasContext.font = option.fontWeight + ' ' + BulletScreenOnScreen.size.toString() + 'px ' + option.fontFamily;
+        if (BulletScreenOnScreen.BulletScreen.color != null) {
             hideCanvasContext.shadowBlur = option.shadowBlur + 0.5;
-            hideCanvasContext.fillStyle = bulletCommentOnScreen.bulletComment.color;
-            hideCanvasContext.fillText(bulletCommentOnScreen.bulletComment.text, 4, 4);
+            hideCanvasContext.fillStyle = BulletScreenOnScreen.BulletScreen.color;
+            hideCanvasContext.fillText(BulletScreenOnScreen.BulletScreen.text, 4, 4);
         }
-        if (bulletCommentOnScreen.bulletComment.borderColor != null) {
+        if (BulletScreenOnScreen.BulletScreen.borderColor != null) {
             hideCanvasContext.shadowBlur = 0;
             hideCanvasContext.lineWidth = 0.5;
-            hideCanvasContext.strokeStyle = bulletCommentOnScreen.bulletComment.borderColor;
-            hideCanvasContext.strokeText(bulletCommentOnScreen.bulletComment.text, 4, 4);
+            hideCanvasContext.strokeStyle = BulletScreenOnScreen.BulletScreen.borderColor;
+            hideCanvasContext.strokeText(BulletScreenOnScreen.BulletScreen.text, 4, 4);
         }
-        if (bulletCommentOnScreen.bulletComment.boxColor != null) {
+        if (BulletScreenOnScreen.BulletScreen.boxColor != null) {
             hideCanvasContext.shadowBlur = 0;
             hideCanvasContext.lineWidth = 2;
-            hideCanvasContext.strokeStyle = bulletCommentOnScreen.bulletComment.boxColor;
-            hideCanvasContext.strokeRect(0, 0, bulletCommentOnScreen.width + 8, bulletCommentOnScreen.height + 8);
+            hideCanvasContext.strokeStyle = BulletScreenOnScreen.BulletScreen.boxColor;
+            hideCanvasContext.strokeRect(0, 0, BulletScreenOnScreen.width + 8, BulletScreenOnScreen.height + 8);
         }
         return hideCanvas;
     }
 
     //WebGL：创建弹幕纹理
-    function creatBulletCommentHideTexture2D(bulletCommentOnScreen) {
-        let _canvas = creatBulletCommentHideCanvas(bulletCommentOnScreen);
+    function creatBulletScreenHideTexture2D(BulletScreenOnScreen) {
+        let _canvas = creatBulletScreenHideCanvas(BulletScreenOnScreen);
         let webglContext = webgl.webglContext;
         let texture = webglContext.createTexture();
         webglContext.bindTexture(webglContext.TEXTURE_2D, texture);
@@ -373,103 +373,103 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
     }
 
     //生成屏幕弹幕对象函数
-    function getBulletCommentOnScreen(nowTime, bulletComment) {
-        delay = nowTime - bulletComment.startTime;
-        let bulletCommentOnScreen = {};
-        bulletCommentOnScreen.bulletComment = bulletComment;
-        bulletCommentOnScreen.startTime = nowTime; //弹幕头部进屏幕时间
-        bulletCommentOnScreen.size = bulletCommentOnScreen.bulletComment.size * option.scaling;
-        bulletCommentOnScreen.height = bulletCommentOnScreen.size; //弹幕的高度：像素
+    function getBulletScreenOnScreen(nowTime, BulletScreen) {
+        delay = nowTime - BulletScreen.startTime;
+        let BulletScreenOnScreen = {};
+        BulletScreenOnScreen.BulletScreen = BulletScreen;
+        BulletScreenOnScreen.startTime = nowTime; //弹幕头部进屏幕时间
+        BulletScreenOnScreen.size = BulletScreenOnScreen.BulletScreen.size * option.scaling;
+        BulletScreenOnScreen.height = BulletScreenOnScreen.size; //弹幕的高度：像素
         if (renderMode === 'css3') {
-            bulletCommentOnScreen.element = creatBulletCommentDiv(bulletCommentOnScreen); //创建Div
-            bulletCommentOnScreen.width = bulletCommentOnScreen.element.clientWidth - 8; //弹幕的宽度：像素
+            BulletScreenOnScreen.element = creatBulletScreenDiv(BulletScreenOnScreen); //创建Div
+            BulletScreenOnScreen.width = BulletScreenOnScreen.element.clientWidth - 8; //弹幕的宽度：像素
         }
         else if (renderMode === 'canvas' || renderMode === 'webgl') {
             //计算宽度
             let hideCanvas = document.createElement('canvas');
             let hideCanvasContext = hideCanvas.getContext('2d');
-            hideCanvasContext.font =  option.fontWeight + ' ' + bulletCommentOnScreen.size.toString() + 'px ' + option.fontFamily;
-            bulletCommentOnScreen.width = hideCanvasContext.measureText(bulletComment.text).width; //弹幕的宽度：像素
+            hideCanvasContext.font =  option.fontWeight + ' ' + BulletScreenOnScreen.size.toString() + 'px ' + option.fontFamily;
+            BulletScreenOnScreen.width = hideCanvasContext.measureText(BulletScreen.text).width; //弹幕的宽度：像素
             if (renderMode === 'canvas')
-                bulletCommentOnScreen.hideCanvas = creatBulletCommentHideCanvas(bulletCommentOnScreen); //创建Canvas
+                BulletScreenOnScreen.hideCanvas = creatBulletScreenHideCanvas(BulletScreenOnScreen); //创建Canvas
             else
-                bulletCommentOnScreen.texture2D = creatBulletCommentHideTexture2D(bulletCommentOnScreen); //创建Texture2D
+                BulletScreenOnScreen.texture2D = creatBulletScreenHideTexture2D(BulletScreenOnScreen); //创建Texture2D
         }
-        bulletCommentOnScreen.endTime = parseInt(nowTime + (elementWidth + bulletCommentOnScreen.width) / (bulletComment.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
-        switch (bulletComment.type) {
+        BulletScreenOnScreen.endTime = parseInt(nowTime + (elementWidth + BulletScreenOnScreen.width) / (BulletScreen.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
+        switch (BulletScreen.type) {
             case 0:
-                bulletCommentOnScreen.endTime = parseInt(nowTime + (elementWidth + bulletCommentOnScreen.width) / (bulletComment.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
-                bulletCommentOnScreen.x = elementWidth; //弹幕初始X坐标
-                bulletCommentOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
+                BulletScreenOnScreen.endTime = parseInt(nowTime + (elementWidth + BulletScreenOnScreen.width) / (BulletScreen.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
+                BulletScreenOnScreen.x = elementWidth; //弹幕初始X坐标
+                BulletScreenOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
                 break;
             case 1:
-                bulletCommentOnScreen.endTime = parseInt(nowTime + (elementWidth + bulletCommentOnScreen.width) / (bulletComment.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
-                bulletCommentOnScreen.x = -bulletCommentOnScreen.width; //弹幕初始X坐标
-                bulletCommentOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
+                BulletScreenOnScreen.endTime = parseInt(nowTime + (elementWidth + BulletScreenOnScreen.width) / (BulletScreen.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
+                BulletScreenOnScreen.x = -BulletScreenOnScreen.width; //弹幕初始X坐标
+                BulletScreenOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
                 break;
             case 2:
-                bulletCommentOnScreen.endTime = bulletCommentOnScreen.startTime + bulletComment.residenceTime;
-                bulletCommentOnScreen.x = parseInt((elementWidth - bulletCommentOnScreen.width) / 2); //弹幕初始X坐标
-                bulletCommentOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
+                BulletScreenOnScreen.endTime = BulletScreenOnScreen.startTime + BulletScreen.residenceTime;
+                BulletScreenOnScreen.x = parseInt((elementWidth - BulletScreenOnScreen.width) / 2); //弹幕初始X坐标
+                BulletScreenOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
                 break;
             case 3:
-                bulletCommentOnScreen.endTime = bulletCommentOnScreen.startTime + bulletComment.residenceTime;
-                bulletCommentOnScreen.x = parseInt((elementWidth - bulletCommentOnScreen.width) / 2); //弹幕初始X坐标
-                bulletCommentOnScreen.y = - option.verticalInterval - bulletCommentOnScreen.height; //弹幕初始Y坐标
+                BulletScreenOnScreen.endTime = BulletScreenOnScreen.startTime + BulletScreen.residenceTime;
+                BulletScreenOnScreen.x = parseInt((elementWidth - BulletScreenOnScreen.width) / 2); //弹幕初始X坐标
+                BulletScreenOnScreen.y = - option.verticalInterval - BulletScreenOnScreen.height; //弹幕初始Y坐标
                 break;
         }
-        let oldLength = bulletCommentsOnScreen.getLength();
-        if (bulletComment.type > 1) {
-            bulletCommentsOnScreen.forEach((nextBulletCommentOnScreen) => {
+        let oldLength = BulletScreensOnScreen.getLength();
+        if (BulletScreen.type > 1) {
+            BulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
                 //弹幕不在流中，是固定弹幕
-                if (nextBulletCommentOnScreen.bulletComment.type != bulletComment.type) return; //不是同一种类型的弹幕
-                if (bulletComment.type == 2) {
+                if (nextBulletScreenOnScreen.BulletScreen.type != BulletScreen.type) return; //不是同一种类型的弹幕
+                if (BulletScreen.type == 2) {
                     //如果新弹幕在当前弹幕上方且未与当前弹幕重叠
-                    if (bulletCommentOnScreen.y + bulletCommentOnScreen.height < nextBulletCommentOnScreen.y)
-                        return { add: { addToUp: true, element: setActualY(bulletCommentOnScreen) }, stop: true };
+                    if (BulletScreenOnScreen.y + BulletScreenOnScreen.height < nextBulletScreenOnScreen.y)
+                        return { add: { addToUp: true, element: setActualY(BulletScreenOnScreen) }, stop: true };
                     //如果上一条弹幕的消失时间小于当前弹幕的出现时间
-                    if (nextBulletCommentOnScreen.endTime < nowTime) bulletCommentOnScreen.y = nextBulletCommentOnScreen.y;
-                    else bulletCommentOnScreen.y = nextBulletCommentOnScreen.y + nextBulletCommentOnScreen.height + option.verticalInterval;
+                    if (nextBulletScreenOnScreen.endTime < nowTime) BulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
+                    else BulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + option.verticalInterval;
                 } else {
                     //如果新弹幕在当前弹幕下方且未与当前弹幕重叠
-                    if (bulletCommentOnScreen.y > nextBulletCommentOnScreen.y + nextBulletCommentOnScreen.height) {
-                        return { add: { addToUp: true, element: setActualY(bulletCommentOnScreen) }, stop: true };
+                    if (BulletScreenOnScreen.y > nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height) {
+                        return { add: { addToUp: true, element: setActualY(BulletScreenOnScreen) }, stop: true };
                     }
                     //如果上一条弹幕的消失时间小于当前弹幕的出现时间
-                    if (nextBulletCommentOnScreen.endTime < nowTime) bulletCommentOnScreen.y = nextBulletCommentOnScreen.y;
-                    else bulletCommentOnScreen.y = nextBulletCommentOnScreen.y - bulletCommentOnScreen.height - option.verticalInterval;
+                    if (nextBulletScreenOnScreen.endTime < nowTime) BulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
+                    else BulletScreenOnScreen.y = nextBulletScreenOnScreen.y - BulletScreenOnScreen.height - option.verticalInterval;
                 }
             }, true);
         } else {
             //当前弹幕经过一个点需要的总时长
-            let bulletCommentOnScreenWidthTime = bulletCommentOnScreen.width / (bulletCommentOnScreen.bulletComment.speed * option.playSpeed);
-            bulletCommentsOnScreen.forEach((nextBulletCommentOnScreen) => {
+            let BulletScreenOnScreenWidthTime = BulletScreenOnScreen.width / (BulletScreenOnScreen.BulletScreen.speed * option.playSpeed);
+            BulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
                 //弹幕在流中，是移动弹幕
-                if (nextBulletCommentOnScreen.bulletComment.type > 1) return; //弹幕不在流中，为固定弹幕
+                if (nextBulletScreenOnScreen.BulletScreen.type > 1) return; //弹幕不在流中，为固定弹幕
                 //如果新弹幕在当前弹幕上方且未与当前弹幕重叠
-                if (bulletCommentOnScreen.y + bulletCommentOnScreen.height < nextBulletCommentOnScreen.y)
-                    return { add: { addToUp: true, element: setActualY(bulletCommentOnScreen) }, stop: true };
+                if (BulletScreenOnScreen.y + BulletScreenOnScreen.height < nextBulletScreenOnScreen.y)
+                    return { add: { addToUp: true, element: setActualY(BulletScreenOnScreen) }, stop: true };
                 //上一条弹幕经过一个点需要的总时长
-                let nextBulletCommentOnScreenWidthTime = nextBulletCommentOnScreen.width / (nextBulletCommentOnScreen.bulletComment.speed * option.playSpeed);
+                let nextBulletScreenOnScreenWidthTime = nextBulletScreenOnScreen.width / (nextBulletScreenOnScreen.BulletScreen.speed * option.playSpeed);
                 //如果上一条弹幕的消失时间小于当前弹幕的出现时间
-                if (nextBulletCommentOnScreen.startTime + nextBulletCommentOnScreenWidthTime >= nowTime || //如果上一条弹幕的头进入了，但是尾还没进入
-                    nextBulletCommentOnScreen.endTime >= bulletCommentOnScreen.endTime - bulletCommentOnScreenWidthTime) //如果当前弹幕头出去了，上一条弹幕尾还没出去
-                    bulletCommentOnScreen.y = nextBulletCommentOnScreen.y + nextBulletCommentOnScreen.height + option.verticalInterval;
-                else bulletCommentOnScreen.y = nextBulletCommentOnScreen.y;
+                if (nextBulletScreenOnScreen.startTime + nextBulletScreenOnScreenWidthTime >= nowTime || //如果上一条弹幕的头进入了，但是尾还没进入
+                    nextBulletScreenOnScreen.endTime >= BulletScreenOnScreen.endTime - BulletScreenOnScreenWidthTime) //如果当前弹幕头出去了，上一条弹幕尾还没出去
+                    BulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + option.verticalInterval;
+                else BulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
             }, true);
         }
-        if (bulletCommentsOnScreen.getLength() == oldLength) bulletCommentsOnScreen.push(setActualY(bulletCommentOnScreen), false);
+        if (BulletScreensOnScreen.getLength() == oldLength) BulletScreensOnScreen.push(setActualY(BulletScreenOnScreen), false);
     }
 
     //设置真实的Y坐标
-    function setActualY(bulletCommentOnScreen) {
-        let bulletComment = bulletCommentOnScreen.bulletComment;
-        if (bulletComment.type < 3) {
-            bulletCommentOnScreen.actualY = bulletCommentOnScreen.y % (elementHeight - bulletCommentOnScreen.height);
-        } else if (bulletComment.type == 3) {
-            bulletCommentOnScreen.actualY = elementHeight + bulletCommentOnScreen.y % elementHeight;
+    function setActualY(BulletScreenOnScreen) {
+        let BulletScreen = BulletScreenOnScreen.BulletScreen;
+        if (BulletScreen.type < 3) {
+            BulletScreenOnScreen.actualY = BulletScreenOnScreen.y % (elementHeight - BulletScreenOnScreen.height);
+        } else if (BulletScreen.type == 3) {
+            BulletScreenOnScreen.actualY = elementHeight + BulletScreenOnScreen.y % elementHeight;
         }
-        return bulletCommentOnScreen;
+        return BulletScreenOnScreen;
     }
 
     //添加Canvas
@@ -621,4 +621,4 @@ const BulletCommentEngine = function(element, option, renderMode = 'canvas') {
         }
     }
 }
-export {BulletCommentEngine}
+export {BulletScreenEngine}

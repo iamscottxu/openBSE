@@ -1,5 +1,5 @@
 {
-  "name": "BulletCommentEngine",
+  "name": "BulletScreenEngine",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iamscottxu/BulletCommentEngine.git"
+    "url": "git+https://github.com/iamscottxu/BulletScreenEngine.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/iamscottxu/BulletCommentEngine/issues"
+    "url": "https://github.com/iamscottxu/BulletScreenEngine/issues"
   },
-  "homepage": "https://github.com/iamscottxu/BulletCommentEngine#readme",
+  "homepage": "https://github.com/iamscottxu/BulletScreenEngine#readme",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",

@@ -1,2 +1,2 @@
-import {BulletCommentEngine} from './bulletCommentEngine'
-window.BulletCommentEngine = BulletCommentEngine;
+import {BulletScreenEngine} from './BulletScreenEngine'
+window.BulletScreenEngine = BulletScreenEngine;

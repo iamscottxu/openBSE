@@ -7,20 +7,20 @@ const rename = require("gulp-rename");
 
 gulp.task('build', () => {
     return browserify({
-        entries: ['src/app.js', 'src/bulletCommentEngine.js']
+        entries: ['src/app.js', 'src/BulletScreenEngine.js']
     })
         .transform(babelify, {
             presets: ['@babel/preset-env']
         })
         .bundle()
-        .pipe(source('bulletCommentEngine.all.js'))
+        .pipe(source('BulletScreenEngine.all.js'))
         .pipe(gulp.dest('dist'))
 });
 
 gulp.task('min', () => {
-    return gulp.src('dist/bulletCommentEngine.all.js')
+    return gulp.src('dist/BulletScreenEngine.all.js')
         .pipe(uglify())
-        .pipe(rename('bulletCommentEngine.all.min.js'))
+        .pipe(rename('BulletScreenEngine.all.min.js'))
         .pipe(gulp.dest('dist'))
 });
 
