@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>弹幕引擎Demo</title>
-    <script src="dist/BulletScreenEngine.all.min.js"></script>
+    <script src="dist/bulletScreenEngine.all.min.js"></script>
     <script>
         window.onload = function () {
             bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'), { timeOutDiscard: true }, 'canvas');
@@ -12,8 +12,8 @@
             setInterval(showDebugInfo, 500);
         }
         var loadData = function (bulletScreenEngine) {
-            let _startTime = 5000;
-            for (let i = 0; i < 10000; i++) {
+            var _startTime = 5000;
+            for (var i = 0; i < 10000; i++) {
                 if (Math.random() > 0.6)
                     bulletScreenEngine.addBulletScreen({
                         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
