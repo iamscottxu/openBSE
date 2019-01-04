@@ -1,5 +1,5 @@
 # BulletScreenEngine
-[![Version 1.0](https://img.shields.io/badge/version-1.0-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/1.0)
+[![Version 1.1](https://img.shields.io/badge/version-1.1-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/1.1)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
@@ -13,7 +13,7 @@
 
 ## 安装和使用
 ### 安装
-你可以直接点击[这里](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/1.0)下载最新发行版本，也可以用以下命令安装NPM包，并进行构建。
+你可以直接点击[这里](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/1.1)下载最新发行版本，也可以用以下命令安装NPM包，并进行构建。
 ```Bash
 > npm install bullet-screen-engine
 > cd node_modules/bullet-screen-engine
