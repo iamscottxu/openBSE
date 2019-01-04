@@ -4,11 +4,62 @@
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
 [English Version](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.en.md)
+[详细使用说明请查看wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki)
 
 高性能弹幕引擎。同屏弹幕1000+
 
 ## 简介
 一个高性能弹幕引擎，简单易用。支持CSS3、Canvas 2D、WebGL渲染方式。支持顶部、底部、逆向弹幕渲染。使用Canvas 2D渲染方式可流程渲染同屏1000条弹幕（可达1600条，与电脑配置有关）。
+
+## 安装和使用
+### 安装
+你可以直接点击[这里](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/1.0)下载最新发行版本，也可以用以下命令安装NPM包，并进行构建。
+
+```Bash
+> npm install bullet-screen-engine
+> cd node_modules/bullet-screen-engine
+> npm install
+> npm run build
+```
+
+在构建之前，请确保已经全局安装Gulp，全局安装Gulp的命令如下。
+
+```Bash
+> npm install --global gulp
+```
+
+### 使用
+安装完成后，在Html页面引入。
+
+压缩版：
+```Html
+<script src="BulletScreenEngine.all.min.js"></script>
+```
+
+调试版：
+```Html
+<script src="BulletScreenEngine.all.js"></script>
+```
+
+添加一个 id 为 `BulletScreensDiv` 的 div 标签用于显示弹幕，并插入以下 JavaScript 代码。
+```JavaScript
+var bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'));
+let _startTime = 5000;
+for (let i = 0; i < 10000; i++) {
+    bulletScreenEngine.addBulletScreen({
+        text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
+        color: 'white',
+        borderCorol: 'black',
+        startTime: _startTime
+    });
+    _startTime += parseInt(Math.random() * 300);
+}
+bulletScreenEngine.play();
+```
+
+用浏览器打开网页即可显示弹幕。
+
+详细使用说明请查看 [wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki) 。
 
 ## 联系作者
 如果有任何问题请写下 [issues](https://github.com/iamscottxu/BulletScreenEngine/issues) 。<br/>
