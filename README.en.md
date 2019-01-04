@@ -59,4 +59,4 @@ If you have any issue please write [issues](https://github.com/iamscottxu/Bullet
 E-mail：[scottxu@scottxublog.com](mailto:scottxu@scottxublog.com)
 
 ## Copyright
-This project is an open source project and it is use MIT License. If you want to read this license, please click [here](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE).
+This project is an open source project and it is licensed under the MIT License. If you want to read this license, please click [here](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE).
