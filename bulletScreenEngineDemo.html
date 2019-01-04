@@ -7,7 +7,7 @@
     <script src="dist/bulletScreenEngine.all.min.js"></script>
     <script>
         window.onload = function () {
-            bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'), { timeOutDiscard: true }, 'canvas');
+            bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'), {}, 'canvas');
             var versionInfo = bulletScreenEngine.getVersion();
             document.getElementById("version").innerText = versionInfo.version;
             document.getElementById("buildDate").innerText = versionInfo.buildDate;
@@ -53,7 +53,7 @@
             var bulletScreenText = document.getElementById("BulletScreenText").value;
             document.getElementById("BulletScreenText").value = '';
             bulletScreenEngine.addBulletScreen({
-                text: BulletScreenText,
+                text: bulletScreenText,
                 speed: 0.18,
                 size: 25,
                 color: 'white',
