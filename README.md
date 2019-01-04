@@ -38,8 +38,8 @@
 添加一个 id 为 `BulletScreensDiv` 的固定大小的 div 标签用于显示弹幕，并插入以下 JavaScript 代码。
 ```JavaScript
 var bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'));
-let _startTime = 5000;
-for (let i = 0; i < 10000; i++) {
+var _startTime = 5000;
+for (var i = 0; i < 10000; i++) {
     bulletScreenEngine.addBulletScreen({
         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
         color: 'white',

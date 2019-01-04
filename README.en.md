@@ -38,8 +38,8 @@ Debug Version:
 For display bullet-screen, you need add a fixed-size div tag in the html page and the id is `BulletScreensDiv`. Then add following JavaScript codes.
 ```JavaScript
 var bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'));
-let _startTime = 5000;
-for (let i = 0; i < 10000; i++) {
+var _startTime = 5000;
+for (var i = 0; i < 10000; i++) {
     bulletScreenEngine.addBulletScreen({
         text: "This is a long long long long long long long long long test(^_^)",
         color: 'white',
