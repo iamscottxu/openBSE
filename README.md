@@ -29,11 +29,11 @@
 
 压缩版：
 ```Html
-<script src="BulletScreenEngine.all.min.js"></script>
+<script src="bulletScreenEngine.all.min.js"></script>
 ```
 调试版：
 ```Html
-<script src="BulletScreenEngine.all.js"></script>
+<script src="bulletScreenEngine.all.js"></script>
 ```
 添加一个 id 为 `BulletScreensDiv` 的固定大小的 div 标签用于显示弹幕，并插入以下 JavaScript 代码。
 ```JavaScript

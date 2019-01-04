@@ -29,11 +29,11 @@ After the installation, include the script in the html page.
 
 Minimum Version:
 ```Html
-<script src="BulletScreenEngine.all.min.js"></script>
+<script src="bulletScreenEngine.all.min.js"></script>
 ```
 Debug Version:
 ```Html
-<script src="BulletScreenEngine.all.js"></script>
+<script src="bulletScreenEngine.all.js"></script>
 ```
 For display bullet-screen, you need add a fixed-size div tag in the html page and the id is `BulletScreensDiv`. Then add following JavaScript codes.
 ```JavaScript
