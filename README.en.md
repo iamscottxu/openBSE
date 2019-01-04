@@ -1,5 +1,5 @@
 # BulletScreenEngine
-[![Version 1.1](https://img.shields.io/badge/version-1.1-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/1.1)
+[![Version 1.1](https://img.shields.io/badge/version-1.1-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.1)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
@@ -13,7 +13,7 @@ This is a high-performance JavaScript bullet-screen (danmaku) engine and it is v
 
 ## Installation and use
 ### Installation
-You can click [here](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/1.1) to download latest release version. You also can install NPM package using following commands and build it.
+You can click [here](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.1) to download latest release version. You also can install NPM package using following commands and build it.
 ```Bash
 > npm install bullet-screen-engine
 > cd node_modules/bullet-screen-engine
@@ -35,7 +35,7 @@ Debug Version:
 ```Html
 <script src="bulletScreenEngine.all.js"></script>
 ```
-For display bullet-screen, you need add a fixed-size div tag in the html page and the id is `BulletScreensDiv`. Then add following JavaScript codes.
+For display bullet-screen, you need add a fixed-size div tag in the html page and the id is `BulletScreensDiv`. Then add the following JavaScript code.
 ```JavaScript
 var bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'));
 var _startTime = 5000;
