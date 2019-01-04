@@ -1,6 +1,5 @@
 import {LinkedList} from './linkedList'
-const VERSION = '1.0'; //版本号
-const BUILE_DATE = '2019/1/3'; //构建日期
+import {VERSION, BUILE_DATE} from './version'
 //弹幕引擎对象（参数：加载到的元素，选项, 渲染模式：默认为canvas, 可选css3， webgl）
 const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
     //变量初始化
@@ -76,7 +75,7 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
             if (pauseTime) startTime += option.clock() - pauseTime;
             lastRefreshTime = null;
             playing = true;
-            stop = false;
+            //stop = false;
             requestAnimationFrame(refresh);
         }
     }
@@ -142,8 +141,8 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
     this.getDebugInfo = function () {
         return {
             time: playing ? option.clock() : pauseTime,
-            BulletScreensOnScreenCount: BulletScreensOnScreen.getLength(), //实时弹幕总数
-            BulletScreensCount: BulletScreens.getLength(), //剩余弹幕总数
+            bulletScreensOnScreenCount: BulletScreensOnScreen.getLength(), //实时弹幕总数
+            bulletScreensCount: BulletScreens.getLength(), //剩余弹幕总数
             delay: delay, //延迟（单位：毫秒）
             delayBulletScreensCount: delayBulletScreensCount, //延迟弹幕总数
             fps: playing ? parseInt(refreshRate * 1000) : 0 //帧频
