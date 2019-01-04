@@ -14,20 +14,16 @@
 ## 安装和使用
 ### 安装
 你可以直接点击[这里](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/1.0)下载最新发行版本，也可以用以下命令安装NPM包，并进行构建。
-
 ```Bash
 > npm install bullet-screen-engine
 > cd node_modules/bullet-screen-engine
 > npm install
 > npm run build
 ```
-
 在构建之前，请确保已经全局安装Gulp，全局安装Gulp的命令如下。
-
 ```Bash
 > npm install --global gulp
 ```
-
 ### 使用
 安装完成后，在Html页面引入。
 
@@ -35,13 +31,11 @@
 ```Html
 <script src="BulletScreenEngine.all.min.js"></script>
 ```
-
 调试版：
 ```Html
 <script src="BulletScreenEngine.all.js"></script>
 ```
-
-添加一个 id 为 `BulletScreensDiv` 的 div 标签用于显示弹幕，并插入以下 JavaScript 代码。
+添加一个 id 为 `BulletScreensDiv` 的固定大小的 div 标签用于显示弹幕，并插入以下 JavaScript 代码。
 ```JavaScript
 var bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'));
 let _startTime = 5000;
