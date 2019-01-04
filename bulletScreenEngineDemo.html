@@ -8,6 +8,9 @@
     <script>
         window.onload = function () {
             bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'), { timeOutDiscard: true }, 'canvas');
+            var versionInfo = bulletScreenEngine.getVersion();
+            document.getElementById("version").innerText = versionInfo.version;
+            document.getElementById("buildDate").innerText = versionInfo.buildDate;
             loadData(bulletScreenEngine);
             setInterval(showDebugInfo, 500);
         }
@@ -64,6 +67,7 @@
 </head>
 
 <body>
+    <p style="font-size: 70%">引擎版本：<b id="version"></b>&nbsp;构建时间：<b id="buildDate"></b></p>
     <div style="width:720px;height:480px;">
         <div style="width:100%;height:100%;background-color: black;"></div>
         <div id="BulletScreensDiv" width="720" height="480" style="width:720px;height:480px;position:relative;left:0;top:-480px;z-index:1000;"></div>
