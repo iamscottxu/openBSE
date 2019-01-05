@@ -4,7 +4,8 @@
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
 [English Version](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.en.md)
-[详细使用说明请查看wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki)
+[wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki)
+[Demo](https://iamscottxu.github.io/BulletScreenEngine/demo/bulletScreenEngineDemo.html)
 
 高性能弹幕引擎。同屏弹幕1000+
 
