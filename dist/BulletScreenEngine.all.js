@@ -1563,7 +1563,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "1.1";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Sat, 05 Jan 2019 07:03:12 GMT";
+var BUILE_DATE = "Sat, 05 Jan 2019 07:03:39 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
