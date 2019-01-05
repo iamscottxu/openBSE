@@ -13,7 +13,7 @@
 
 ## 安装和使用
 ### 安装
-你可以直接点击[这里](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.1)下载最新发行版本，也可以用以下命令安装NPM包，并进行构建。
+你可以直接点击[这里](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.1)下载最新发行版本，也可以用以下命令安装NPM包。
 ```Bash
 > npm install bullet-screen-engine
 > cd node_modules/bullet-screen-engine

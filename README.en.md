@@ -13,12 +13,9 @@ This is a high-performance JavaScript bullet-screen (danmaku) engine and it is v
 
 ## Installation and use
 ### Installation
-You can click [here](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.1) to download latest release version. You also can install NPM package using following commands and build it.
+You can click [here](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.1) to download latest release version. You also can install NPM package using following commands.
 ```Bash
 > npm install bullet-screen-engine
-> cd node_modules/bullet-screen-engine
-> npm install
-> npm run build
 ```
 You need to installed gulp globally before building it. 
 ```Bash
