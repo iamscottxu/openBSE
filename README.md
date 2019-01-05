@@ -17,9 +17,6 @@
 你可以直接点击[这里](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.1)下载最新发行版本，也可以用以下命令安装NPM包。
 ```Bash
 > npm install bullet-screen-engine
-> cd node_modules/bullet-screen-engine
-> npm install
-> npm run build
 ```
 在构建之前，请确保已经全局安装Gulp，全局安装Gulp的命令如下。
 ```Bash
