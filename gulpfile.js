@@ -29,6 +29,7 @@ gulp.task('min', () => {
         .pipe(uglify())
         .pipe(rename('bulletScreenEngine.all.min.js'))
         .pipe(gulp.dest('dist'))
+        .pipe(gulp.dest('doc'))
 });
 
 gulp.task('default', gulp.series('build', 'min'));
