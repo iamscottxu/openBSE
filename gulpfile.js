@@ -14,20 +14,20 @@ gulp.task('build', () => {
     version += 'export {VERSION, BUILE_DATE}';
     fs.writeFileSync('./src/version.js', version, { 'flag': 'w' });
     return browserify({
-        entries: ['src/app.js', 'src/BulletScreenEngine.js']
+        entries: ['src/app.js', 'src/bulletScreenEngine.js']
     })
         .transform(babelify, {
             presets: ['@babel/preset-env']
         })
         .bundle()
-        .pipe(source('BulletScreenEngine.all.js'))
+        .pipe(source('bulletScreenEngine.all.js'))
         .pipe(gulp.dest('dist'))
 });
 
 gulp.task('min', () => {
-    return gulp.src('dist/BulletScreenEngine.all.js')
+    return gulp.src('dist/bulletScreenEngine.all.js')
         .pipe(uglify())
-        .pipe(rename('BulletScreenEngine.all.min.js'))
+        .pipe(rename('bulletScreenEngine.all.min.js'))
         .pipe(gulp.dest('dist'))
 });
 
