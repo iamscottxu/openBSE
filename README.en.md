@@ -18,10 +18,7 @@ You can click [here](https://github.com/iamscottxu/BulletScreenEngine/releases/t
 ```Bash
 > npm install bullet-screen-engine
 ```
-You need to installed gulp globally before building it. 
-```Bash
-> npm install --global gulp
-```
+
 ### Use
 After the installation, include the script in the html page.
 

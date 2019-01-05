@@ -18,10 +18,7 @@
 ```Bash
 > npm install bullet-screen-engine
 ```
-在构建之前，请确保已经全局安装Gulp，全局安装Gulp的命令如下。
-```Bash
-> npm install --global gulp
-```
+
 ### 使用
 安装完成后，在Html页面引入。
 
