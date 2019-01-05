@@ -3,8 +3,8 @@
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
-[中文版本](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.md)
-[wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki)
+[中文版本](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.md) |
+[wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki) |
 [Demo](https://iamscottxu.github.io/BulletScreenEngine/demo/bulletScreenEngineDemo.html)
 
 A high-performance JavaScript bullet-screen (danmaku) engine. 1000+ at the same time
