@@ -5,7 +5,7 @@ const source = require('vinyl-source-stream');
 const babelify = require('babelify');
 const rename = require("gulp-rename");
 const fs = require('fs');
-const VERSION = '1.1'; //版本号
+const VERSION = '1.2'; //版本号
 
 gulp.task('build', () => {
     let version = '';
