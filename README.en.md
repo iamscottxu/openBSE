@@ -38,7 +38,6 @@ for (var i = 0; i < 10000; i++) {
     bulletScreenEngine.addBulletScreen({
         text: "This is a long long long long long long long long long test(^_^)",
         color: 'white',
-        borderCorol: 'black',
         startTime: _startTime
     });
     _startTime += parseInt(Math.random() * 300);
