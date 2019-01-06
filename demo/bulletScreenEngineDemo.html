@@ -21,7 +21,7 @@
                     bulletScreenEngine.addBulletScreen({
                         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
                         speed: 0.15 + Math.random() / 90,
-                        size: 22,
+                        size: 19,
                         color: 'white',
                         borderCorol: 'black',
                         type: 0,
@@ -31,7 +31,7 @@
                     bulletScreenEngine.addBulletScreen({
                         text: "橘里橘气",
                         speed: 0.1 + Math.random() / 90,
-                        size: 23,
+                        size: 20,
                         color: '#FFCC66',
                         borderCorol: '#FF9933',
                         type: (Math.random() > 0.4) ? 0 : 2,
@@ -59,8 +59,7 @@
                 color: 'white',
                 borderCorol: 'black',
                 boxColor: 'white',
-                canDiscard: false,
-                startTime: 0
+                canDiscard: false
             });
         }
     </script>
@@ -68,17 +67,24 @@
 
 <body>
     <p style="font-size: 70%">引擎版本：<b id="version"></b>&nbsp;构建时间：<b id="buildDate"></b></p>
-    <div style="width:720px;height:480px;">
-        <div style="width:100%;height:100%;background-color: black;"></div>
-        <div id="BulletScreensDiv" width="720" height="480" style="width:720px;height:480px;position:relative;left:0;top:-480px;z-index:1000;"></div>
+    <div style="width:720px;height:405px;">
+        <div style="width:100%;height:100%;background:url(background.jpg);background-size: 100%;"></div>
+        <div id="BulletScreensDiv" style="width:720px;height:405px;position:relative;left:0;top:-405px;z-index:1000;"></div>
     </div>
     <p><input type="text" style="width:500px;" id="BulletScreenText">&nbsp;<a href="#" onclick="sendBulletScreen();">发送</a></p>
     <p>时间：<b id="time"></b> fps：<b id="fps"></b></p>
     <p>实时弹幕条数：<b id="BulletScreensOnScreenCount"></b>&nbsp;剩余弹幕条数：<b id="BulletScreensCount"></b></p>
     <p>延迟：<b id="delay"></b>ms 延迟丢弃丢弃弹幕数：<b id="delayBulletScreensCount"></b></p>
-    <a href="#" onclick="bulletScreenEngine.play();">开始</a>&nbsp;<a href="#" onclick="bulletScreenEngine.pause();">暂停</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.play();">开始</a>&nbsp;<a href="#" onclick="bulletScreenEngine.pause();">暂停</a>&nbsp;<a href="#" onclick="bulletScreenEngine.stop();">停止</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.show();">显示弹幕</a>&nbsp;<a href="#" onclick="bulletScreenEngine.hide();">隐藏弹幕</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.cleanBulletScreenList();loadData(bulletScreenEngine);">重新加载弹幕</a>&nbsp;<a href="#" onclick="bulletScreenEngine.cleanBulletScreenListOnScreen();">清空屏幕弹幕</a>&nbsp;<br>
     <a href="#" onclick="bulletScreenEngine.option.playSpeed = 1;">1倍速</a>&nbsp;<a href="#" onclick="bulletScreenEngine.option.playSpeed = 1.5;">1.5倍数</a>&nbsp;
     <a href="#" onclick="bulletScreenEngine.option.playSpeed = 2;">2倍速</a>&nbsp;<a href="#" onclick="bulletScreenEngine.option.playSpeed = 2.5;">2.5倍数</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.option.scaling = 1;">1倍缩放</a>&nbsp;<a href="#" onclick="bulletScreenEngine.option.scaling = 1.5;">1.5倍缩放</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.option.scaling = 2;">2倍缩放</a>&nbsp;<a href="#" onclick="bulletScreenEngine.option.scaling = 0.75;">0.75倍缩放</a>&nbsp;<br>
+    <a href="#" onclick="bulletScreenEngine.setOpacity(0.0);">100%透明</a>&nbsp;<a href="#" onclick="bulletScreenEngine.setOpacity(0.25);">75%透明</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.setOpacity(0.5);">50%透明</a>&nbsp;<a href="#" onclick="bulletScreenEngine.setOpacity(0.75);">25%透明</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.setOpacity(1.0);">不透明</a>&nbsp;
 </body>
 
 </html>
