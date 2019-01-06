@@ -12,6 +12,7 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
     let refreshRate = 0.06; //初始刷新频率
     let lastRefreshTime; //上一次刷新时间
     let hide = false; //隐藏弹幕
+    let opacity = 0.0; //透明度
 
     //默认参数
     option = setValue(option, {});
@@ -75,7 +76,6 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
             if (pauseTime) startTime += option.clock() - pauseTime;
             lastRefreshTime = null;
             playing = true;
-            //stop = false;
             requestAnimationFrame(refresh);
         }
     }
@@ -96,7 +96,9 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
     //清空屏幕弹幕
     this.cleanBulletScreenListOnScreen = function () {
         BulletScreensOnScreen.clean();
-        if (div) div.innerHTML = '';
+        if (renderMode === 'css3') div.innerHTML = '';
+        else if (renderMode === 'canvas') canvas.getContext('2d').clearRect(0, 0, elementWidth, elementHeight);
+        else if (renderMode === 'webgl') webgl.webglContext.clear(webglContext.COLOR_BUFFER_BIT);
     }
 
     //停止播放函数
@@ -104,32 +106,49 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
         if (playing) {
             this.pause();
         }
-        pauseTime = 0;
-        startTime = null;
         this.cleanBulletScreenList();
         this.cleanBulletScreenListOnScreen();
-        //重新加载
-        if (renderMode === 'css3') div = initDIV(element); //添加DIV
-        else if (renderMode === 'canvas' || renderMode === 'webgl') canvas = initCanvas(element); //添加canvas
+        pauseTime = 0;
+        startTime = null;
     }
 
     //隐藏弹幕
     this.hide = function () {
         hide = true;
-        if (canvas) canvas.style.visibility = 'hidden';
-        else div.style.visibility = 'hidden';
+        if (renderMode === 'css3') div.style.visibility = 'hidden';
+        else if (renderMode === 'canvas') canvas.style.visibility = 'hidden';
+        else if (renderMode === 'webgl') webgl.canvas.style.visibility = 'hidden';
     }
 
     //显示弹幕
     this.show = function () {
         hide = false;
-        if (canvas) canvas.style.visibility = 'visible';
-        else div.style.visibility = 'visible';
+        if (renderMode === 'css3') div.style.visibility = 'visible';
+        else if (renderMode === 'canvas') canvas.style.visibility = 'visible';
+        else if (renderMode === 'webgl') webgl.canvas.style.visibility = 'visible';
+    }
+
+    //设置透明度
+    this.setOpacity = function (_opacity) {
+        opacity = _opacity;
+        if (renderMode === 'css3') div.style.opacity = _opacity;
+        else if (renderMode === 'canvas') canvas.style.opacity = _opacity;
+        else if (renderMode === 'webgl') webgl.canvas.style.opacity = _opacity;
+    }
+
+    //获取透明度
+    this.getOpacity = function () {
+        return opacity;
     }
 
     //获取可见性
     this.getVisibility = function () {
         return !hide;
+    }
+
+    //获取渲染模式
+    this.getRenderMode = function () {
+        return renderMode;
     }
 
     //获取播放状态
@@ -399,22 +418,22 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
             case 0:
                 BulletScreenOnScreen.endTime = parseInt(nowTime + (elementWidth + BulletScreenOnScreen.width) / (BulletScreen.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
                 BulletScreenOnScreen.x = elementWidth; //弹幕初始X坐标
-                BulletScreenOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
+                BulletScreenOnScreen.y = option.verticalInterval * option.scaling; //弹幕初始Y坐标
                 break;
             case 1:
                 BulletScreenOnScreen.endTime = parseInt(nowTime + (elementWidth + BulletScreenOnScreen.width) / (BulletScreen.speed * option.playSpeed)); //弹幕尾部出屏幕的时间
                 BulletScreenOnScreen.x = -BulletScreenOnScreen.width; //弹幕初始X坐标
-                BulletScreenOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
+                BulletScreenOnScreen.y = option.verticalInterval * option.scaling; //弹幕初始Y坐标
                 break;
             case 2:
                 BulletScreenOnScreen.endTime = BulletScreenOnScreen.startTime + BulletScreen.residenceTime;
                 BulletScreenOnScreen.x = parseInt((elementWidth - BulletScreenOnScreen.width) / 2); //弹幕初始X坐标
-                BulletScreenOnScreen.y = option.verticalInterval; //弹幕初始Y坐标
+                BulletScreenOnScreen.y = option.verticalInterval * option.scaling; //弹幕初始Y坐标
                 break;
             case 3:
                 BulletScreenOnScreen.endTime = BulletScreenOnScreen.startTime + BulletScreen.residenceTime;
                 BulletScreenOnScreen.x = parseInt((elementWidth - BulletScreenOnScreen.width) / 2); //弹幕初始X坐标
-                BulletScreenOnScreen.y = - option.verticalInterval - BulletScreenOnScreen.height; //弹幕初始Y坐标
+                BulletScreenOnScreen.y = - option.verticalInterval * option.scaling - BulletScreenOnScreen.height; //弹幕初始Y坐标
                 break;
         }
         let oldLength = BulletScreensOnScreen.getLength();
@@ -428,7 +447,7 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
                         return { add: { addToUp: true, element: setActualY(BulletScreenOnScreen) }, stop: true };
                     //如果上一条弹幕的消失时间小于当前弹幕的出现时间
                     if (nextBulletScreenOnScreen.endTime < nowTime) BulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
-                    else BulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + option.verticalInterval;
+                    else BulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + option.verticalInterval * option.scaling;
                 } else {
                     //如果新弹幕在当前弹幕下方且未与当前弹幕重叠
                     if (BulletScreenOnScreen.y > nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height) {
@@ -436,7 +455,7 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
                     }
                     //如果上一条弹幕的消失时间小于当前弹幕的出现时间
                     if (nextBulletScreenOnScreen.endTime < nowTime) BulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
-                    else BulletScreenOnScreen.y = nextBulletScreenOnScreen.y - BulletScreenOnScreen.height - option.verticalInterval;
+                    else BulletScreenOnScreen.y = nextBulletScreenOnScreen.y - BulletScreenOnScreen.height - option.verticalInterval * option.scaling;
                 }
             }, true);
         } else {
@@ -453,7 +472,7 @@ const BulletScreenEngine = function(element, option, renderMode = 'canvas') {
                 //如果上一条弹幕的消失时间小于当前弹幕的出现时间
                 if (nextBulletScreenOnScreen.startTime + nextBulletScreenOnScreenWidthTime >= nowTime || //如果上一条弹幕的头进入了，但是尾还没进入
                     nextBulletScreenOnScreen.endTime >= BulletScreenOnScreen.endTime - BulletScreenOnScreenWidthTime) //如果当前弹幕头出去了，上一条弹幕尾还没出去
-                    BulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + option.verticalInterval;
+                    BulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + option.verticalInterval * option.scaling;
                 else BulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
             }, true);
         }
