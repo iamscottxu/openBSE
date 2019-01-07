@@ -1,5 +1,5 @@
 # BulletScreenEngine
-[![Version 1.2](https://img.shields.io/badge/version-1.2-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.2)
+[![Version 1.3](https://img.shields.io/badge/version-1.3-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.2)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
@@ -14,7 +14,7 @@ This is a high-performance JavaScript bullet-screen (danmaku) engine and it is v
 
 ## Installation and use
 ### Installation
-You can click [here](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.2) to download latest release version. You also can install NPM package using following commands.
+You can click [here](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.3) to download latest release version. You also can install NPM package using following commands.
 ```Bash
 > npm install bullet-screen-engine
 ```
