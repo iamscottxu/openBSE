@@ -385,7 +385,7 @@ const BulletScreenEngine = function (element, option, renderMode = 'canvas') {
         if (bulletScreenOnScreen.bulletScreen.boxColor != null) {
             hideCanvasContext.shadowBlur = 0;
             hideCanvasContext.lineWidth = 2;
-            hideCanvasContext.strokeStyle = bulletScreenOnScreen.BulletScreen.boxColor;
+            hideCanvasContext.strokeStyle = bulletScreenOnScreen.bulletScreen.boxColor;
             hideCanvasContext.strokeRect(0, 0, bulletScreenOnScreen.width + 8, bulletScreenOnScreen.height + 8);
         }
         return hideCanvas;
