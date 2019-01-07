@@ -1,6 +1,14 @@
-//双向链表
+/**
+ * 创建一个双向链表。
+ * @class
+ * @public
+ */
 const LinkedList = function() {
-    //双向链表结点
+    /**
+     * 双向链表节点
+     * @class
+     * @private
+     */
     let node = function (element) { 
         this.element = element;
         this.next = null;
@@ -15,10 +23,20 @@ const LinkedList = function() {
     bottomNode.previous = topNode;
 
     //公共函数
-    //获取元素个数
+
+    /**
+     * 获取元素个数
+     * @public
+     * @returns {Number} 元素个数
+     */
     this.getLength = l => length;
 
-    //插入元素（参数：元素，插入到顶部或底部）
+    /**
+     * 插入元素
+     * @public
+     * @param {Object} element 元素
+     * @param {Boolean} top true: 插入到顶部 false: 插入到底部
+     */
     this.push = function (element, top) {
         let thisNode = new node(element);
         if (top) {
@@ -33,7 +51,13 @@ const LinkedList = function() {
         length++;
     }
 
-    //读取元素（参数：读取后是否删除，读取顶部或底部元素）
+    /**
+     * 读取元素
+     * @public
+     * @param {Boolean} remove 读取后是否删除
+     * @param {Boolean} top true: 读取顶部 false: 读取底部
+     * @returns {Object} 元素
+     */
     this.pop = function (remove, top) {
         let thisNode;
         if (top) {
@@ -53,7 +77,10 @@ const LinkedList = function() {
         return thisNode.element;
     }
 
-    //清空链表
+    /**
+     * 清空链表
+     * @public
+     */
     this.clean = function(){
         topNode = new node(null);
         bottomNode = new node(null);
@@ -62,9 +89,13 @@ const LinkedList = function() {
         length = 0;
     }
 
-    //遍历链表（参数：遍历回调函数，从顶到底或从底到顶）
-    //回调函数
-    //（参数：元素，返回：{remove：删除此元素，add:插入元素(add.addToUp:插入到上方, add.element:元素), stop：停止遍历}）
+    /**
+     * 遍历链表
+     * @public
+     * @param {Function} fun 遍历回调函数
+     * 回调函数（参数：元素，返回：{remove：删除此元素，add:插入元素(add.addToUp:插入到上方, add.element:元素), stop：停止遍历}）
+     * @param {boolean} topToBottom true: 从顶到底 false: 从底到顶
+     */
     this.forEach = function (fun, topToBottom) {
         let thisNode = topToBottom ? topNode : bottomNode;
         while (topToBottom ?
