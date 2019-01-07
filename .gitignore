@@ -1,2 +1,3 @@
 node_modules
 src/version.js
+package-lock.json
