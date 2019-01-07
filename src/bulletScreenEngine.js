@@ -60,7 +60,6 @@ const BulletScreenEngine = function (element, option, renderMode = 'canvas') {
     //添加弹幕
     this.addBulletScreen = function (bulletScreen) {
         bulletScreen = setValue(bulletScreen, {});
-        bulletScreen.uuid = setValue(''); //uuid
         bulletScreen.text = setValue(bulletScreen.text, 'Empty'); //弹幕文本
         bulletScreen.boxColor = setValue(bulletScreen.boxColor, null); //方框颜色
         bulletScreen.speed = setValue(bulletScreen.speed, 0.15); //弹幕速度（单位：像素/毫秒） 仅类型0、1有效
