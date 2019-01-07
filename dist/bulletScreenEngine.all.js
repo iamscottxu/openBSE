@@ -440,7 +440,7 @@ var BulletScreenEngine = function BulletScreenEngine(element, option) {
     if (bulletScreenOnScreen.bulletScreen.boxColor != null) {
       hideCanvasContext.shadowBlur = 0;
       hideCanvasContext.lineWidth = 2;
-      hideCanvasContext.strokeStyle = bulletScreenOnScreen.BulletScreen.boxColor;
+      hideCanvasContext.strokeStyle = bulletScreenOnScreen.bulletScreen.boxColor;
       hideCanvasContext.strokeRect(0, 0, bulletScreenOnScreen.width + 8, bulletScreenOnScreen.height + 8);
     }
 
@@ -1288,7 +1288,7 @@ var BulletScreenEngine = function BulletScreenEngine(element, option) {
     if (bulletScreenOnScreen.bulletScreen.boxColor != null) {
       hideCanvasContext.shadowBlur = 0;
       hideCanvasContext.lineWidth = 2;
-      hideCanvasContext.strokeStyle = bulletScreenOnScreen.BulletScreen.boxColor;
+      hideCanvasContext.strokeStyle = bulletScreenOnScreen.bulletScreen.boxColor;
       hideCanvasContext.strokeRect(0, 0, bulletScreenOnScreen.width + 8, bulletScreenOnScreen.height + 8);
     }
 
@@ -2009,7 +2009,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "1.3";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Mon, 07 Jan 2019 14:23:47 GMT";
+var BUILE_DATE = "Mon, 07 Jan 2019 15:04:25 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
