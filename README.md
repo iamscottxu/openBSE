@@ -5,7 +5,8 @@
 
 [English Version](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.en.md) |
 [wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki) |
-[Demo](https://iamscottxu.github.io/BulletScreenEngine/demo/bulletScreenEngineDemo.html)
+[Demo](https://iamscottxu.github.io/BulletScreenEngine/demo/bulletScreenEngineDemo.html) |
+[2.0-Alpha Docs](https://iamscottxu.github.io/BulletScreenEngine/docs/gen/index.html)
 
 高性能 JavaScript 弹幕引擎。同屏弹幕1000+
 
