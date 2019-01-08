@@ -5,8 +5,14 @@ const source = require('vinyl-source-stream');
 const babelify = require('babelify');
 const rename = require("gulp-rename");
 const header = require('gulp-header');
-const fs = require('fs');
-const VERSION = '1.3'; //版本号
+const jsdoc = require('gulp-jsdoc3');
+const fs = require('fs-extra');
+const VERSION = '2.0-Alpha'; //版本号
+
+gulp.task('doc', function (cb) {
+    gulp.src(['README.md', 'LICENSE', 'src/bulletScreenEngine.js'], {read: false})
+        .pipe(jsdoc(cb));
+});
 
 gulp.task('build', () => {
     let version = '';
@@ -24,7 +30,7 @@ gulp.task('build', () => {
         })
         .bundle()
         .pipe(source('bulletScreenEngine.all.js'))
-        .pipe(header('/*!\n${license}\nHome: ${home}\n*/\n', {license: license, home: home}))
+        .pipe(header('/*!\n${license}\nHome: ${home}\n*/\n', { license: license, home: home }))
         .pipe(gulp.dest('dist'))
 });
 
@@ -35,8 +41,8 @@ gulp.task('min', () => {
                 comments: '/^!/'
             }
         }))
-        .pipe(rename({suffix: '.min'}))
+        .pipe(rename({ suffix: '.min' }))
         .pipe(gulp.dest('dist'))
 });
 
-gulp.task('default', gulp.series('build', 'min'));
+gulp.task('default', gulp.series('build', 'min', 'doc'));
