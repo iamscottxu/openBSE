@@ -4,14 +4,20 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>弹幕引擎Demo</title>
+    <link href="./fonts/SourceHanSans-Medium.css" rel="stylesheet">
     <script src="../dist/bulletScreenEngine.all.min.js"></script>
     <script>
         window.onload = function () {
-            bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'), {}, 'canvas');
+            bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'), {
+                defaultStyle: {
+                    fontFamily: '思源黑体 Medium, Source Han Sans TC Medium, Source Han Sans HC Medium, Source Han Sans K Medium, Source Han Sans Medium, sans-serif',
+                    fontWeight: '400'
+                }
+            }, 'css3');
             var versionInfo = bulletScreenEngine.getVersion();
             document.getElementById("version").innerText = versionInfo.version;
             document.getElementById("buildDate").innerText = versionInfo.buildDate;
-            bulletScreenEngine.bind('click', function(e){
+            bulletScreenEngine.bind('click', function (e) {
                 document.getElementById("clickText").innerText = e.bulletScreen.text;
             });
             loadData(bulletScreenEngine);
@@ -23,22 +29,26 @@
                 if (Math.random() > 0.6)
                     bulletScreenEngine.addBulletScreen({
                         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
-                        speed: 0.15 + Math.random() / 90,
-                        size: 19,
-                        color: 'white',
+                        startTime: _startTime,
                         type: 0,
-                        startTime: _startTime
+                        style: {
+                            speed: 0.15 + Math.random() / 90,
+                            size: 22,
+                            color: 'white',
+                        }
                     });
                 else
                     bulletScreenEngine.addBulletScreen({
                         text: "橘里橘气",
-                        speed: 0.1 + Math.random() / 90,
-                        size: 20,
-                        color: '#FFCC66',
+                        startTime: _startTime,
                         type: (Math.random() > 0.4) ? 0 : 2,
-                        startTime: _startTime
+                        style: {
+                            speed: 0.1 + Math.random() / 90,
+                            size: 23,
+                            color: '#FFCC66',
+                        }
                     });
-                _startTime += parseInt(Math.random() * 300);
+                _startTime += parseInt(Math.random() * 200);
             }
         }
         var showDebugInfo = function () {
@@ -55,10 +65,10 @@
             document.getElementById("BulletScreenText").value = '';
             bulletScreenEngine.addBulletScreen({
                 text: bulletScreenText,
-                speed: 0.18,
-                size: 20,
-                color: 'white',
-                boxColor: 'white',
+                style: {
+                    size: 23,
+                    boxColor: 'white'
+                },
                 canDiscard: false
             });
         }
@@ -68,7 +78,7 @@
 <body>
     <p style="font-size: 70%">引擎版本：<b id="version"></b>&nbsp;构建时间：<b id="buildDate"></b></p>
     <div style="width:720px;height:405px;position:relative;">
-        <div style="left:0;top:0;right:0;bottom:0;position:absolute;background:url(background.jpg);background-size: 100%;"></div>
+        <div style="left:0;top:0;right:0;bottom:0;position:absolute;background:url(./images/background.jpg);background-size: 100%;"></div>
         <div id="BulletScreensDiv" style="left:0;top:0;right:0;bottom:0;position:absolute;"></div>
     </div>
     <p><input type="text" style="width:500px;" id="BulletScreenText">&nbsp;<a href="#" onclick="sendBulletScreen();">发送</a></p>
@@ -76,9 +86,11 @@
     <p>时间：<b id="time"></b> fps：<b id="fps"></b></p>
     <p>实时弹幕条数：<b id="BulletScreensOnScreenCount"></b>&nbsp;剩余弹幕条数：<b id="BulletScreensCount"></b></p>
     <p>延迟：<b id="delay"></b>ms 延迟丢弃丢弃弹幕数：<b id="delayBulletScreensCount"></b></p>
-    <a href="#" onclick="bulletScreenEngine.play();">开始</a>&nbsp;<a href="#" onclick="bulletScreenEngine.pause();">暂停</a>&nbsp;<a href="#" onclick="bulletScreenEngine.stop();">停止</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.play();">开始</a>&nbsp;<a href="#" onclick="bulletScreenEngine.pause();">暂停</a>&nbsp;<a
+        href="#" onclick="bulletScreenEngine.stop();">停止</a>&nbsp;
     <a href="#" onclick="bulletScreenEngine.show();">显示弹幕</a>&nbsp;<a href="#" onclick="bulletScreenEngine.hide();">隐藏弹幕</a>&nbsp;
-    <a href="#" onclick="bulletScreenEngine.cleanBulletScreenList();loadData(bulletScreenEngine);">重新加载弹幕</a>&nbsp;<a href="#" onclick="bulletScreenEngine.cleanBulletScreenListOnScreen();">清空屏幕弹幕</a>&nbsp;<br>
+    <a href="#" onclick="bulletScreenEngine.cleanBulletScreenList();loadData(bulletScreenEngine);">重新加载弹幕</a>&nbsp;<a
+        href="#" onclick="bulletScreenEngine.cleanBulletScreenListOnScreen();">清空屏幕弹幕</a>&nbsp;<br>
     <a href="#" onclick="bulletScreenEngine.option.playSpeed = 1;">1倍速</a>&nbsp;<a href="#" onclick="bulletScreenEngine.option.playSpeed = 1.5;">1.5倍数</a>&nbsp;
     <a href="#" onclick="bulletScreenEngine.option.playSpeed = 2;">2倍速</a>&nbsp;<a href="#" onclick="bulletScreenEngine.option.playSpeed = 2.5;">2.5倍数</a>&nbsp;
     <a href="#" onclick="bulletScreenEngine.option.scaling = 1;">1倍缩放</a>&nbsp;<a href="#" onclick="bulletScreenEngine.option.scaling = 1.5;">1.5倍缩放</a>&nbsp;
