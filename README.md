@@ -1,5 +1,5 @@
 # BulletScreenEngine
-[![Version 1.3](https://img.shields.io/badge/version-1.2-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.3)
+[![Version 1.3](https://img.shields.io/badge/version-1.3-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.3)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
