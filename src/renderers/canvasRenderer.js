@@ -5,7 +5,8 @@ class CanvasRenderer extends CanvasBaseRenderer {
         super(element, options, elementSize, event, bulletScreensOnScreen);
 
         this.cleanScreen = function () {
-            this.getCanvas().getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+            let canvas = this.getCanvas();
+            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
         }
 
         /**
