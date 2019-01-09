@@ -2,7 +2,7 @@
  * 渲染器
  * @private @constant
  */
-const RENDERER = {
+const RENDERERS = {
     /**
      * CSS3 渲染模式
      * @private @readonly
@@ -27,8 +27,11 @@ class RenderersFactory {
          * @function
          * @param {String} renderMode - 渲染模式
          */
-        this.getRenderer = (renderMode) =>
-            new RENDERER[renderMode](element, options, elementSize, event, bulletScreensOnScreen);
+        this.getRenderer = function (renderMode) {
+            let renderer = RENDERERS[renderMode];
+            if (typeof(renderer) === 'undefined') throw new TypeError(`The render mode "${renderMode}" is undefined.`);
+            return new renderer(element, options, elementSize, event, bulletScreensOnScreen);
+        }
     }
 }
 
