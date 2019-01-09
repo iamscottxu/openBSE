@@ -2392,7 +2392,8 @@ function (_BaseRenderer) {
       div.style.overflow = 'hidden';
       div.style.padding = '0';
       div.style.margin = '0';
-      div.style.webkitUserSelect = 'none';
+      div.style.userSelect = div.style.webkitUserSelect = div.style.msUserSelect = 'none';
+      div.style.cursor = 'default';
       registerEvent(div); //注册事件响应程序
 
       return div;
@@ -2750,7 +2751,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "2.0-Alpha";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Wed, 09 Jan 2019 14:35:23 GMT";
+var BUILE_DATE = "Wed, 09 Jan 2019 14:40:15 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
