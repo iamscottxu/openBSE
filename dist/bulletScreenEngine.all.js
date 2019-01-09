@@ -2240,7 +2240,8 @@ function (_CanvasBaseRenderer) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CanvasRenderer).call(this, element, options, elementSize, event, bulletScreensOnScreen));
 
     _this.cleanScreen = function () {
-      this.getCanvas().getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+      var canvas = this.getCanvas();
+      canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     };
     /**
      * 绘制函数
@@ -2749,7 +2750,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "2.0-Alpha";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Wed, 09 Jan 2019 13:52:45 GMT";
+var BUILE_DATE = "Wed, 09 Jan 2019 14:35:23 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
