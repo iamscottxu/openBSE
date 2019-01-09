@@ -2444,7 +2444,7 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
  * 渲染器
  * @private @constant
  */
-var RENDERER = {
+var RENDERERS = {
   /**
    * CSS3 渲染模式
    * @private @readonly
@@ -2473,7 +2473,9 @@ var RenderersFactory = function RenderersFactory(element, options, elementSize, 
    * @param {String} renderMode - 渲染模式
    */
   this.getRenderer = function (renderMode) {
-    return new RENDERER[renderMode](element, options, elementSize, event, bulletScreensOnScreen);
+    var renderer = RENDERERS[renderMode];
+    if (typeof renderer === 'undefined') throw new TypeError("The render mode \"".concat(renderMode, "\" is undefined."));
+    return new renderer(element, options, elementSize, event, bulletScreensOnScreen);
   };
 };
 
@@ -2747,7 +2749,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "2.0-Alpha";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Wed, 09 Jan 2019 13:31:02 GMT";
+var BUILE_DATE = "Wed, 09 Jan 2019 13:52:45 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
