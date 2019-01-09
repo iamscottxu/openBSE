@@ -1,28 +1,7 @@
 import { LinkedList } from './linkedList'
 import { Event } from './event'
 import { VERSION, BUILE_DATE } from './version'
-
-/**
- * 渲染模式
- * @private @constant
- */
-const RENDER_MODE = {
-    /**
-     * CSS3 渲染模式
-     * @private @readonly
-     */
-    css3: 'css3',
-    /**
-     * WebGL 渲染模式
-     * @private @readonly
-     */
-    webgl: 'webgl',
-    /**
-     * Canvas 2D 渲染模式
-     * @private @readonly
-     */
-    canvas: 'canvas'
-}
+import { RenderersFactory } from './renderers/renderersFactory'
 
 /** 弹幕引擎对象类 */
 class BulletScreenEngine {
@@ -32,58 +11,48 @@ class BulletScreenEngine {
      * @param {BulletScreenEngine~Options} [options] - 全局选项：一个 {@link BulletScreenEngine~Options} 结构。
      * @param {String} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”。
      */
-    constructor(element, options, renderMode = RENDER_MODE.canvas) {
+    constructor(element, options, renderMode = 'canvas') {
         //变量初始化
         /**
          * 开始时间
          * @private @type {Integer}
          */
-        let startTime;
+        let _startTime;
         /**
          * 暂停时间
          * @private @type {Integer}
          */
-        let pauseTime = 0;
+        let _pauseTime = 0;
         /**
          * 剩余弹幕，屏幕上的弹幕
          * @private @type {Integer}
          */
-        let bulletScreens = new LinkedList(), bulletScreensOnScreen = new LinkedList();
+        let _bulletScreens = new LinkedList(), _bulletScreensOnScreen = new LinkedList();
         /**
          * 延迟弹幕总数
          * @private @type {Integer}
          */
-        let delayBulletScreensCount = 0;
+        let _delayBulletScreensCount = 0;
         /**
          * 延迟（单位：毫秒）
          * @private @type {Integer}
          */
-        let delay = 0;
+        let _delay = 0;
         /**
          * 播放标志
          * @private @type {Boolean}
          */
-        let playing;
+        let _playing;
         /**
          * 刷新频率
          * @private @type {Float}
          */
-        let refreshRate = 0.06; //初始刷新频率
+        let _refreshRate = 0.06; //初始刷新频率
         /**
          * 上一次刷新时间
          * @private @type {Integer}
          */
-        let lastRefreshTime;
-        /**
-         * 隐藏弹幕
-         * @private @type {Boolean}
-         */
-        let hide = false;
-        /**
-         * 透明度
-         * @private @type {Float}
-         */
-        let opacity = 0.0;
+        let _lastRefreshTime;
         //默认参数
         /**
          * 全局选项
@@ -104,7 +73,7 @@ class BulletScreenEngine {
         options = setValue(options, {});
         options.verticalInterval = setValue(options.verticalInterval, 8); //垂直间距
         options.playSpeed = setValue(options.playSpeed, 1); //播放速度倍数
-        options.clock = setValue(options.clock, time => new Date().getTime() - startTime); //时间基准
+        options.clock = setValue(options.clock, time => new Date().getTime() - _startTime); //时间基准
         options.scaling = setValue(options.scaling, 1); //缩放比例
         options.timeOutDiscard = setValue(options.timeOutDiscard, true); //超时丢弃
         /**
@@ -138,19 +107,19 @@ class BulletScreenEngine {
          */
         this.options = options;
         //事件初始化
-        let event = new Event();
+        let _event = new Event();
         /**
          * 弹幕单击事件。当单击弹幕时触发。
          * @event BulletScreenEngine#click
          * @property {BulletScreenEngine~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link BulletScreenEngine~BulletScreen} 结构。
          */
-        event.add('click');
+        _event.add('click');
         /**
          * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
          * @event BulletScreenEngine#contextmenu
          * @property {BulletScreenEngine~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link BulletScreenEngine~BulletScreen} 结构。
          */
-        event.add('contextmenu');
+        _event.add('contextmenu');
         /**
          * 绑定事件处理程序
          * @function
@@ -161,7 +130,7 @@ class BulletScreenEngine {
          * @listens BulletScreenEngine#contextmenu
          * @returns false: 失败 数字: 添加后的事件数
          */
-        this.bind = event.bind;
+        this.bind = _event.bind;
         /**
          * 解绑事件处理程序（fun为空解绑所有事件处理程序）
          * @function
@@ -169,21 +138,19 @@ class BulletScreenEngine {
          * @param {Function} fun 事件处理程序
          * @returns true: 成功 false: 失败 数字: 删除后的事件数
          */
-        this.unbind = event.unbind;
+        this.unbind = _event.unbind;
         //初始化
-        let canvas;
-        let div;
-        let webgl;
-        let elementWidth = element.clientWidth / options.scaling;
-        let elementHeight = element.clientHeight / options.scaling;
-        let devicePixelRatio = typeof (window.devicePixelRatio) === 'undefined' ? 1 : window.devicePixelRatio;
-        devicePixelRatio *= options.scaling;
-        if (renderMode === RENDER_MODE.css3)
-            div = initDIV(element); //添加DIV
-        else if (renderMode === RENDER_MODE.canvas)
-            canvas = initCanvas(element); //添加Canvas
-        else if (renderMode === RENDER_MODE.webgl)
-            webgl = initWebGLCanvas(element); //添加WebGL Canvas
+        let _elementSize = {
+            width: element.clientWidth / options.scaling,
+            height: element.clientHeight / options.scaling
+        }
+        let _oldDevicePixelRatio = window.devicePixelRatio;
+        let _oldScaling = options.scaling;
+        let _oldClientWidth = element.clientWidth;
+        let _oldClientHeight = element.clientHeight;
+        //渲染器工厂
+        let renderersFactory = new RenderersFactory(element, this.options, _elementSize, _event, _bulletScreensOnScreen);
+        let _renderer = renderersFactory.getRenderer(renderMode); //实例化渲染器
         setInterval(setSize, 100);
         console.info('%cBulletScreenEngine%c now loaded.\n' +
             '\n' +
@@ -216,8 +183,8 @@ class BulletScreenEngine {
             bulletScreen.startTime = setValue(bulletScreen.startTime, options.clock()); //弹幕进入时间
             bulletScreen.type = setValue(bulletScreen.type, 0); //类型：0：从右到左 1:从左到右 2:顶部固定 3:底部固定
             if (bulletScreen.type <= 3) {
-                let oldLength = bulletScreens.getLength();
-                bulletScreens.forEach(function (lastBulletScreen) {
+                let oldLength = _bulletScreens.getLength();
+                _bulletScreens.forEach(function (lastBulletScreen) {
                     if (bulletScreen.startTime > lastBulletScreen.startTime)
                         return {
                             add: {
@@ -227,8 +194,8 @@ class BulletScreenEngine {
                             stop: true
                         };
                 }, true);
-                if (oldLength === bulletScreens.getLength())
-                    bulletScreens.push(bulletScreen, false);
+                if (oldLength === _bulletScreens.getLength())
+                    _bulletScreens.push(bulletScreen, false);
             }
         };
 
@@ -237,13 +204,13 @@ class BulletScreenEngine {
          * @function
          */
         this.play = function () {
-            if (!playing) {
-                if (!startTime)
-                    startTime = new Date().getTime();
-                if (pauseTime)
-                    startTime += options.clock() - pauseTime;
-                lastRefreshTime = null;
-                playing = true;
+            if (!_playing) {
+                if (!_startTime)
+                    _startTime = new Date().getTime();
+                if (_pauseTime)
+                    _startTime += options.clock() - _pauseTime;
+                _lastRefreshTime = null;
+                _playing = true;
                 requestAnimationFrame(refresh);
             }
         };
@@ -254,9 +221,9 @@ class BulletScreenEngine {
          * @description 暂停播放弹幕。暂停播放弹幕是指弹幕播放暂停，所有未出现的弹幕将停止出现，已出现的弹幕停止运动，停止消失。
          */
         this.pause = function () {
-            if (playing) {
-                pauseTime = options.clock();
-                playing = false;
+            if (_playing) {
+                _pauseTime = options.clock();
+                _playing = false;
             }
         };
 
@@ -266,7 +233,7 @@ class BulletScreenEngine {
          * @description 清空弹幕列表，但屏幕上已经出现的弹幕不会被清除。
          */
         this.cleanBulletScreenList = function () {
-            bulletScreens.clean();
+            _bulletScreens.clean();
         };
 
         /**
@@ -275,13 +242,8 @@ class BulletScreenEngine {
          * @description 清空屏幕弹幕。清空屏幕上已经出现的弹幕，不包括弹幕列表中的弹幕。
          */
         this.cleanBulletScreenListOnScreen = function () {
-            bulletScreensOnScreen.clean();
-            if (renderMode === RENDER_MODE.css3)
-                div.innerHTML = '';
-            else if (renderMode === RENDER_MODE.canvas)
-                canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
-            else if (renderMode === RENDER_MODE.webgl)
-                webgl.webglContext.clear(webglContext.COLOR_BUFFER_BIT);
+            _bulletScreensOnScreen.clean();
+            _renderer.cleanScreen();
         };
 
         /**
@@ -290,66 +252,40 @@ class BulletScreenEngine {
          * @description 停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认[时间基准（options.clock）]{@link BulletScreenEngine~BulletScreenStyle}归零，并[清空弹幕列表]{@link BulletScreenEngine#cleanBulletScreenList}、[清空屏幕弹幕]{@link BulletScreenEngine#cleanBulletScreenListOnScreen}。
          */
         this.stop = function () {
-            if (playing) {
+            if (_playing) {
                 this.pause();
             }
             this.cleanBulletScreenList();
             this.cleanBulletScreenListOnScreen();
-            pauseTime = 0;
-            startTime = null;
+            _pauseTime = 0;
+            _startTime = null;
         };
 
         /**
          * 隐藏弹幕。
          * @function
          */
-        this.hide = function () {
-            hide = true;
-            if (renderMode === RENDER_MODE.css3)
-                div.style.visibility = 'hidden';
-            else if (renderMode === RENDER_MODE.canvas)
-                canvas.style.visibility = 'hidden';
-            else if (renderMode === RENDER_MODE.webgl)
-                webgl.canvas.style.visibility = 'hidden';
-        };
+        this.hide = _renderer.hide;
 
         /**
          * 显示弹幕。
          * @function
          */
-        this.show = function () {
-            hide = false;
-            if (renderMode === RENDER_MODE.css3)
-                div.style.visibility = 'visible';
-            else if (renderMode === RENDER_MODE.canvas)
-                canvas.style.visibility = 'visible';
-            else if (renderMode === RENDER_MODE.webgl)
-                webgl.canvas.style.visibility = 'visible';
-        };
+        this.show = _renderer.show;
 
         /**
          * 设置弹幕不透明度。
          * @function
-         * @param {Float} _opacity 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
+         * @param {Float} opacity 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
          */
-        this.setOpacity = function (_opacity) {
-            opacity = _opacity;
-            if (renderMode === RENDER_MODE.css3)
-                div.style.opacity = _opacity;
-            else if (renderMode === RENDER_MODE.canvas)
-                canvas.style.opacity = _opacity;
-            else if (renderMode === RENDER_MODE.webgl)
-                webgl.canvas.style.opacity = _opacity;
-        };
+        this.setOpacity = _renderer.setOpacity;
 
         /**
          * 获取弹幕不透明度。
          * @function
          * @returns {Float} 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
          */
-        this.getOpacity = function () {
-            return opacity;
-        };
+        this.getOpacity = _renderer.getOpacity;
 
         /**
          * 获取弹幕可见性。
@@ -357,10 +293,7 @@ class BulletScreenEngine {
          * @returns {Boolean}  指示弹幕是否可见。
          * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{{@link BulletScreenEngine#hide}} 。
          */
-        this.getVisibility = function () {
-            return !hide;
-        };
-
+        this.getVisibility = _renderer.getVisibility;
         /**
          * 获取渲染模式。
          * @function
@@ -376,7 +309,7 @@ class BulletScreenEngine {
          * @returns {Boolean} 正在播放标志：true：正在播放；false：已暂停/停止播放。
          */
         this.getPlayState = function () {
-            return playing;
+            return _playing;
         };
 
         /**
@@ -397,12 +330,12 @@ class BulletScreenEngine {
              * @property {Integer} fps 帧频：单位：帧/秒。
              */
             return {
-                time: playing ? options.clock() : pauseTime,
-                bulletScreensOnScreenCount: bulletScreensOnScreen.getLength(),
-                bulletScreensCount: bulletScreens.getLength(),
-                delay: delay,
-                delayBulletScreensCount: delayBulletScreensCount,
-                fps: playing ? Math.floor(refreshRate * 1000) : 0 //帧频
+                time: _playing ? options.clock() : _pauseTime,
+                bulletScreensOnScreenCount: _bulletScreensOnScreen.getLength(),
+                bulletScreensCount: _bulletScreens.getLength(),
+                delay: _delay,
+                delayBulletScreensCount: _delayBulletScreensCount,
+                fps: _playing ? Math.floor(_refreshRate * 1000) : 0 //帧频
             };
         };
 
@@ -451,96 +384,14 @@ class BulletScreenEngine {
          */
         function refresh() {
             let nowTime = new Date().getTime();
-            if (lastRefreshTime != null)
-                refreshRate = 1 / (nowTime - lastRefreshTime);
-            lastRefreshTime = nowTime;
+            if (_lastRefreshTime != null)
+                _refreshRate = 1 / (nowTime - _lastRefreshTime);
+            _lastRefreshTime = nowTime;
             addBulletScreensToScreen();
             moveBulletScreenOnScreen();
-            if (renderMode === RENDER_MODE.css3)
-                drawOnTheDIV();
-            else if (renderMode === RENDER_MODE.canvas)
-                drawOnTheCanvas();
-            else if (renderMode === RENDER_MODE.webgl)
-                drawOnTheWebGLCanvas();
-            if (playing)
+            _renderer.draw(); //绘制弹幕
+            if (_playing)
                 requestAnimationFrame(refresh);
-        }
-
-        /**
-         * 绘制函数CSS3
-         * @function
-         * @private
-         */
-        function drawOnTheDIV() {
-            bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                bulletScreenOnScreen.element.style.transform =
-                    bulletScreenOnScreen.element.style.webkitTransform =
-                    bulletScreenOnScreen.element.style.msTransform =
-                    `translate(${(bulletScreenOnScreen.x - 4)}px,${(bulletScreenOnScreen.actualY - 4)}px)`;
-            }, true);
-        }
-
-        /**
-         * 绘制函数Canvas
-         * @function
-         * @private
-         */
-        function drawOnTheCanvas() {
-            //离屏渲染
-            let hideCanvas = document.createElement('canvas');
-            hideCanvas.width = canvas.width;
-            hideCanvas.height = canvas.height;
-            let hideCanvasContext = hideCanvas.getContext('2d');
-            bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                hideCanvasContext.drawImage(bulletScreenOnScreen.hideCanvas, (bulletScreenOnScreen.x - 4) * devicePixelRatio, (bulletScreenOnScreen.actualY - 4) * devicePixelRatio, (bulletScreenOnScreen.width + 8) * devicePixelRatio, (bulletScreenOnScreen.height + 8) * devicePixelRatio);
-            }, true);
-            let canvasContext = canvas.getContext('2d');
-            canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-            canvasContext.drawImage(hideCanvas, 0, 0);
-        }
-
-        /**
-         * 绘制函数WebGL Canvas
-         * @function
-         * @private
-         */
-        function drawOnTheWebGLCanvas() {
-            let webglContext = webgl.webglContext;
-            // 清空画布
-            webglContext.clear(webglContext.COLOR_BUFFER_BIT);
-            bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                // 四个顶点坐标
-                let x1 = (bulletScreenOnScreen.x - 4) * devicePixelRatio;
-                let x2 = x1 + (bulletScreenOnScreen.width + 8) * devicePixelRatio;
-                let y1 = (bulletScreenOnScreen.actualY - 4) * devicePixelRatio;
-                let y2 = y1 + (bulletScreenOnScreen.height + 8) * devicePixelRatio;
-                //绑定纹理
-                webglContext.bindTexture(webglContext.TEXTURE_2D, bulletScreenOnScreen.texture2D);
-                //绑定范围
-                let positionBuffer = webglContext.createBuffer();
-                // 将绑定点绑定到缓冲数据（positionBuffer）
-                webglContext.bindBuffer(webglContext.ARRAY_BUFFER, positionBuffer);
-                webglContext.enableVertexAttribArray(webgl.positionAttributeLocation);
-                // 告诉属性怎么从positionBuffer中读取数据 (ARRAY_BUFFER)
-                webglContext.vertexAttribPointer(webgl.positionAttributeLocation, 2, //size 每次迭代运行提取两个单位数据
-                    webglContext.FLOAT, //type 每个单位的数据类型是32位浮点型
-                    false, //normalize 不需要归一化数据
-                    0, //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
-                    // 每次迭代运行运动多少内存到下一个数据开始点
-                    0 //offset 从缓冲起始位置开始读取
-                );
-                webglContext.bufferData(webglContext.ARRAY_BUFFER, new Float32Array([x1, y1,
-                    x2, y1,
-                    x1, y2,
-                    x1, y2,
-                    x2, y1,
-                    x2, y2]), webglContext.STATIC_DRAW);
-                //绘制
-                webglContext.drawArrays(webglContext.TRIANGLES, //primitiveType
-                    0, //offset
-                    6 //count
-                );
-            }, true);
         }
 
         /**
@@ -549,34 +400,31 @@ class BulletScreenEngine {
          * @private
          */
         function moveBulletScreenOnScreen() {
-            bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
+            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
                 let nowTime = options.clock();
                 switch (bulletScreenOnScreen.bulletScreen.type) {
                     case 0:
                         if (bulletScreenOnScreen.x > -bulletScreenOnScreen.width) {
-                            bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * options.playSpeed / refreshRate;
+                            bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * options.playSpeed / _refreshRate;
                         }
                         else {
-                            if (renderMode === RENDER_MODE.css3)
-                                div.removeChild(bulletScreenOnScreen.element);
+                            _renderer.delete(bulletScreenOnScreen);
                             return { remove: true };
                         }
                         break;
                     case 1:
-                        if (bulletScreenOnScreen.x < elementWidth) {
-                            bulletScreenOnScreen.x += bulletScreenOnScreen.bulletScreen.style.speed * options.playSpeed / refreshRate;
+                        if (bulletScreenOnScreen.x < _elementSize.width) {
+                            bulletScreenOnScreen.x += bulletScreenOnScreen.bulletScreen.style.speed * options.playSpeed / _refreshRate;
                         }
                         else {
-                            if (renderMode === RENDER_MODE.css3)
-                                div.removeChild(bulletScreenOnScreen.element);
+                            _renderer.delete(bulletScreenOnScreen);
                             return { remove: true };
                         }
                         break;
                     case 2:
                     case 3:
                         if (bulletScreenOnScreen.endTime < nowTime) {
-                            if (renderMode === RENDER_MODE.css3)
-                                div.removeChild(bulletScreenOnScreen.element);
+                            _renderer.delete(bulletScreenOnScreen);
                             return { remove: true };
                         }
                         break;
@@ -590,118 +438,25 @@ class BulletScreenEngine {
          * @private
          */
         function addBulletScreensToScreen() {
-            if (bulletScreensOnScreen.getLength() === 0)
-                delay = 0;
-            let times = Math.floor(refreshRate * 2000);
+            if (_bulletScreensOnScreen.getLength() === 0)
+                _delay = 0;
+            let times = Math.floor(_refreshRate * 2000);
             do {
-                let bulletScreen = bulletScreens.pop(false, false);
+                let bulletScreen = _bulletScreens.pop(false, false);
                 if (bulletScreen === null)
                     return;
                 let nowTime = options.clock();
                 if (bulletScreen.startTime > nowTime)
                     return;
-                if (!options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / refreshRate) * 60) {
+                if (!options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
                     setDefaultStyle(bulletScreen); //填充默认样式
                     getBulletScreenOnScreen(nowTime, bulletScreen); //生成屏幕弹幕对象并添加到屏幕弹幕集合
                 }
                 else
-                    delayBulletScreensCount++;
-                bulletScreens.pop(true, false);
+                    _delayBulletScreensCount++;
+                _bulletScreens.pop(true, false);
                 times--;
-            } while (bulletScreensOnScreen.getLength() === 0 || times > 0);
-        }
-
-        /**
-         * CSS3:创建弹幕元素
-         * @function
-         * @private
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
-         * @returns {Object} 元素
-         */
-        function creatBulletScreenDiv(bulletScreenOnScreen) {
-            let bulletScreen = bulletScreenOnScreen.bulletScreen;
-            let element = document.createElement('div');
-            element.style.position = 'absolute';
-            element.style.whiteSpace = 'nowrap';
-            element.style.fontWeight = bulletScreen.style.fontWeight;
-            element.style.fontSize = `${bulletScreenOnScreen.size}px`;
-            element.style.fontFamily = bulletScreen.style.fontFamily;
-            element.style.lineHeight = `${bulletScreenOnScreen.size}px`;
-            element.style.textShadow = `0 0 ${bulletScreen.style.shadowBlur}px black`;
-            element.style.color = bulletScreen.style.color;
-            if (bulletScreen.style.borderColor != null) {
-                element.style.textStroke = element.style.webkitTextStroke = '0.5px';
-                element.style.textStrokeColor = element.style.webkitTextStrokeColor = bulletScreen.borderColor;
-            }
-            if (bulletScreen.style.boxColor != null) {
-                element.style.padding = '3px';
-                element.style.border = '1px solid';
-                element.style.borderColor = bulletScreen.style.boxColor;
-            }
-            else {
-                element.style.padding = '4px';
-            }
-            element.innerText = bulletScreen.text;
-            element.bulletScreen = bulletScreen;
-            div.appendChild(element);
-            return element;
-        }
-
-        /**
-         * Canvas:创建弹幕画布
-         * @function
-         * @private
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
-         * @returns {Object} 元素
-         */
-        function creatBulletScreenHideCanvas(bulletScreenOnScreen) {
-            let bulletScreen = bulletScreenOnScreen.bulletScreen;
-            let hideCanvas = document.createElement('canvas');
-            hideCanvas.width = (bulletScreenOnScreen.width + 8) * devicePixelRatio;
-            hideCanvas.height = (bulletScreenOnScreen.height + 8) * devicePixelRatio;
-            let hideCanvasContext = hideCanvas.getContext('2d');
-            hideCanvasContext.textBaseline = 'top';
-            hideCanvasContext.shadowColor = 'black';
-            hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${bulletScreenOnScreen.size * devicePixelRatio}px ${bulletScreen.style.fontFamily}`;
-            if (bulletScreen.style.color != null) {
-                hideCanvasContext.shadowBlur = (bulletScreen.style.shadowBlur + 0.5) * devicePixelRatio;
-                hideCanvasContext.fillStyle = bulletScreen.style.color;
-                hideCanvasContext.fillText(bulletScreen.text, 4 * devicePixelRatio, 4 * devicePixelRatio);
-            }
-            if (bulletScreen.style.borderColor != null) {
-                hideCanvasContext.shadowBlur = 0;
-                hideCanvasContext.lineWidth = 0.5 * devicePixelRatio;
-                hideCanvasContext.strokeStyle = bulletScreen.style.borderColor;
-                hideCanvasContext.strokeText(bulletScreen.text, 4 * devicePixelRatio, 4 * devicePixelRatio);
-            }
-            if (bulletScreen.style.boxColor != null) {
-                hideCanvasContext.shadowBlur = 0;
-                hideCanvasContext.lineWidth = devicePixelRatio;
-                hideCanvasContext.strokeStyle = bulletScreen.style.boxColor;
-                hideCanvasContext.strokeRect(devicePixelRatio, devicePixelRatio, hideCanvas.width - devicePixelRatio, hideCanvas.height - devicePixelRatio);
-            }
-            return hideCanvas;
-        }
-
-        /**
-         * WebGL：创建弹幕纹理
-         * @function
-         * @private
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
-         * @returns {Object} 纹理
-         */
-        function creatBulletScreenHideTexture2D(bulletScreenOnScreen) {
-            let _canvas = creatBulletScreenHideCanvas(bulletScreenOnScreen);
-            let webglContext = webgl.webglContext;
-            let texture = webglContext.createTexture();
-            webglContext.bindTexture(webglContext.TEXTURE_2D, texture);
-            // 设置参数
-            webglContext.texParameteri(webglContext.TEXTURE_2D, webglContext.TEXTURE_MIN_FILTER, webglContext.NEAREST);
-            webglContext.texParameteri(webglContext.TEXTURE_2D, webglContext.TEXTURE_MAG_FILTER, webglContext.NEAREST);
-            webglContext.texParameteri(webglContext.TEXTURE_2D, webglContext.TEXTURE_WRAP_S, webglContext.CLAMP_TO_EDGE);
-            webglContext.texParameteri(webglContext.TEXTURE_2D, webglContext.TEXTURE_WRAP_T, webglContext.CLAMP_TO_EDGE);
-            webglContext.texImage2D(webglContext.TEXTURE_2D, 0, webglContext.RGBA, webglContext.RGBA, webglContext.UNSIGNED_BYTE, _canvas);
-            return texture;
+            } while (_bulletScreensOnScreen.getLength() === 0 || times > 0);
         }
 
         /**
@@ -731,52 +486,38 @@ class BulletScreenEngine {
          * @property {BulletScreenEngine~BulletScreen} bulletScreen 弹幕
          */
         function getBulletScreenOnScreen(nowTime, bulletScreen) {
-            delay = nowTime - bulletScreen.startTime;
+            _delay = nowTime - bulletScreen.startTime;
             let bulletScreenOnScreen = {};
             bulletScreenOnScreen.bulletScreen = bulletScreen;
             bulletScreenOnScreen.startTime = nowTime; //弹幕头部进屏幕时间
             bulletScreenOnScreen.size = bulletScreenOnScreen.bulletScreen.style.size;
             bulletScreenOnScreen.height = bulletScreenOnScreen.size; //弹幕的高度：像素
-            if (renderMode === RENDER_MODE.css3) {
-                bulletScreenOnScreen.element = creatBulletScreenDiv(bulletScreenOnScreen); //创建Div
-                bulletScreenOnScreen.width = bulletScreenOnScreen.element.clientWidth - 8; //弹幕的宽度：像素
-            }
-            else if (renderMode === RENDER_MODE.canvas || renderMode === RENDER_MODE.webgl) {
-                //计算宽度
-                let hideCanvas = document.createElement('canvas');
-                let hideCanvasContext = hideCanvas.getContext('2d');
-                hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${bulletScreenOnScreen.size}px ${bulletScreen.style.fontFamily}`;
-                bulletScreenOnScreen.width = hideCanvasContext.measureText(bulletScreen.text).width; //弹幕的宽度：像素
-                if (renderMode === RENDER_MODE.canvas)
-                    bulletScreenOnScreen.hideCanvas = creatBulletScreenHideCanvas(bulletScreenOnScreen); //创建Canvas
-                else
-                    bulletScreenOnScreen.texture2D = creatBulletScreenHideTexture2D(bulletScreenOnScreen); //创建Texture2D
-            }
+            _renderer.creatAndgetWidth(bulletScreenOnScreen); //创建弹幕元素并计算宽度
             switch (bulletScreen.type) {
                 case 0:
-                    bulletScreenOnScreen.endTime = parseInt(nowTime + (elementWidth + bulletScreenOnScreen.width) / (bulletScreen.style.speed * options.playSpeed)); //弹幕尾部出屏幕的时间
-                    bulletScreenOnScreen.x = elementWidth; //弹幕初始X坐标
+                    bulletScreenOnScreen.endTime = parseInt(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * options.playSpeed)); //弹幕尾部出屏幕的时间
+                    bulletScreenOnScreen.x = _elementSize.width; //弹幕初始X坐标
                     bulletScreenOnScreen.y = options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case 1:
-                    bulletScreenOnScreen.endTime = parseInt(nowTime + (elementWidth + bulletScreenOnScreen.width) / (bulletScreen.style.speed * options.playSpeed)); //弹幕尾部出屏幕的时间
+                    bulletScreenOnScreen.endTime = parseInt(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * options.playSpeed)); //弹幕尾部出屏幕的时间
                     bulletScreenOnScreen.x = -bulletScreenOnScreen.width; //弹幕初始X坐标
                     bulletScreenOnScreen.y = options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case 2:
                     bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * options.playSpeed;
-                    bulletScreenOnScreen.x = parseInt((elementWidth - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
+                    bulletScreenOnScreen.x = parseInt((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
                     bulletScreenOnScreen.y = options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case 3:
                     bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * options.playSpeed;
-                    bulletScreenOnScreen.x = parseInt((elementWidth - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
+                    bulletScreenOnScreen.x = parseInt((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
                     bulletScreenOnScreen.y = -options.verticalInterval - bulletScreenOnScreen.height; //弹幕初始Y坐标
                     break;
             }
-            let oldLength = bulletScreensOnScreen.getLength();
+            let oldLength = _bulletScreensOnScreen.getLength();
             if (bulletScreen.type > 1) {
-                bulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
+                _bulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
                     //弹幕不在流中，是固定弹幕
                     if (nextBulletScreenOnScreen.bulletScreen.type != bulletScreen.type)
                         return; //不是同一种类型的弹幕
@@ -806,7 +547,7 @@ class BulletScreenEngine {
             else {
                 //当前弹幕经过一个点需要的总时长
                 let bulletScreenOnScreenWidthTime = bulletScreenOnScreen.width / (bulletScreen.style.speed * options.playSpeed);
-                bulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
+                _bulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
                     //弹幕在流中，是移动弹幕
                     if (nextBulletScreenOnScreen.bulletScreen.type > 1)
                         return; //弹幕不在流中，为固定弹幕
@@ -823,8 +564,8 @@ class BulletScreenEngine {
                         bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
                 }, true);
             }
-            if (bulletScreensOnScreen.getLength() === oldLength)
-                bulletScreensOnScreen.push(setActualY(bulletScreenOnScreen), false);
+            if (_bulletScreensOnScreen.getLength() === oldLength)
+                _bulletScreensOnScreen.push(setActualY(bulletScreenOnScreen), false);
         }
 
         /**
@@ -837,258 +578,12 @@ class BulletScreenEngine {
         function setActualY(bulletScreenOnScreen) {
             let bulletScreen = bulletScreenOnScreen.bulletScreen;
             if (bulletScreen.type < 3) {
-                bulletScreenOnScreen.actualY = bulletScreenOnScreen.y % (elementHeight - bulletScreenOnScreen.height);
+                bulletScreenOnScreen.actualY = bulletScreenOnScreen.y % (_elementSize.height - bulletScreenOnScreen.height);
             }
             else if (bulletScreen.type === 3) {
-                bulletScreenOnScreen.actualY = elementHeight + bulletScreenOnScreen.y % elementHeight;
+                bulletScreenOnScreen.actualY = _elementSize.height + bulletScreenOnScreen.y % _elementSize.height;
             }
             return bulletScreenOnScreen;
-        }
-
-        /**
-         * 添加Canvas
-         * @function
-         * @private
-         * @property {Object} element 元素
-         * @returns {Object} 画布对象
-         */
-        function initCanvas(element) {
-            let canvas = document.createElement('canvas'); //canvas对象
-            canvas.style.width = `${elementWidth}px`;
-            canvas.style.height = `${elementHeight}px`;
-            canvas.style.transform =
-                canvas.style.webkitTransform =
-                canvas.style.msTransform = `scale(${options.scaling},${options.scaling})`;
-            canvas.style.transformOrigin =
-                canvas.style.webkitTransformOrigin =
-                canvas.style.msTransformOrigin = `left top`;
-            canvas.style.position = 'relative';
-            canvas.width = elementWidth * devicePixelRatio;
-            canvas.height = elementHeight * devicePixelRatio;
-            registerEvent(canvas, false); //注册事件响应程序
-            element.innerHTML = '';
-            element.appendChild(canvas);
-            return canvas;
-        }
-
-        /**
-         * 添加WebGL Canvas
-         * @function
-         * @private
-         * @property {Object} element 元素
-         * @returns {Object} webgl信息对象
-         */
-        function initWebGLCanvas(element) {
-            // 创建着色器方法，输入参数：渲染上下文，着色器类型，数据源
-            let createShader = function (gl, type, source) {
-                let shader = gl.createShader(type); // 创建着色器对象
-                gl.shaderSource(shader, source); // 提供数据源
-                gl.compileShader(shader); // 编译 -> 生成着色器
-                let success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
-                if (success) {
-                    return shader;
-                }
-                gl.deleteShader(shader);
-            };
-            // 创建着色程序，输入参数：渲染上下文，顶点着色器，片段着色器
-            let createProgram = function (gl, vertexShader, fragmentShader) {
-                let program = gl.createProgram();
-                gl.attachShader(program, vertexShader);
-                gl.attachShader(program, fragmentShader);
-                gl.linkProgram(program);
-                let success = gl.getProgramParameter(program, gl.LINK_STATUS);
-                if (success) {
-                    return program;
-                }
-                gl.deleteProgram(program);
-            };
-            //顶点着色器代码
-            let vertexShaderSource = 'attribute vec2 a_position;';
-            vertexShaderSource += 'attribute vec2 a_texcoord;';
-            vertexShaderSource += 'uniform vec2 u_resolution;';
-            vertexShaderSource += 'varying vec2 v_texcoord;';
-            vertexShaderSource += 'void main() {';
-            // 从像素坐标转换到 0.0 到 1.0
-            vertexShaderSource += 'vec2 zeroToOne = a_position / u_resolution;';
-            // 再把 0->1 转换 0->2
-            vertexShaderSource += 'vec2 zeroToTwo = zeroToOne * 2.0;';
-            // 把 0->2 转换到 -1->+1 (裁剪空间)
-            vertexShaderSource += 'vec2 clipSpace = zeroToTwo - 1.0;';
-            vertexShaderSource += 'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);';
-            // 传递纹理坐标到片断着色器
-            vertexShaderSource += 'v_texcoord = a_texcoord;';
-            vertexShaderSource += '}';
-            //片段着色器代码
-            let fragmentShaderSource = 'precision mediump float;';
-            // 从顶点着色器中传入的值
-            fragmentShaderSource += 'varying vec2 v_texcoord;';
-            // 纹理
-            fragmentShaderSource += 'uniform sampler2D u_texture;';
-            fragmentShaderSource += 'void main() {';
-            fragmentShaderSource += 'gl_FragColor = texture2D(u_texture, v_texcoord);';
-            fragmentShaderSource += '}';
-            let canvas = initCanvas(element);
-            let webglContext = canvas.getContext('webgl');
-            webglContext.enable(webglContext.BLEND); //开启混合功能
-            webglContext.clearColor(0, 0, 0, 0); //设置清除颜色
-            webglContext.blendFunc(webglContext.SRC_ALPHA, webglContext.ONE_MINUS_SRC_ALPHA);
-            let vertexShader = createShader(webglContext, webglContext.VERTEX_SHADER, vertexShaderSource); //创建顶点着色器
-            let fragmentShader = createShader(webglContext, webglContext.FRAGMENT_SHADER, fragmentShaderSource); //创建片段着色器
-            let program = createProgram(webglContext, vertexShader, fragmentShader); //创建着色程序
-            webglContext.useProgram(program);
-            let positionAttributeLocation = webglContext.getAttribLocation(program, 'a_position');
-            let texcoordAttributeLocation = webglContext.getAttribLocation(program, 'a_texcoord');
-            let resolutionUniformLocation = webglContext.getUniformLocation(program, 'u_resolution');
-            webglContext.viewport(0, 0, canvas.width, canvas.height);
-            webglContext.uniform2f(resolutionUniformLocation, canvas.width, canvas.height); // 设置全局变量 分辨率
-            //绑定范围
-            let texcoordBuffer = webglContext.createBuffer();
-            // 将绑定点绑定到缓冲数据（texcoordBuffer）
-            webglContext.bindBuffer(webglContext.ARRAY_BUFFER, texcoordBuffer);
-            webglContext.enableVertexAttribArray(texcoordAttributeLocation);
-            // 以浮点型格式传递纹理坐标
-            webglContext.vertexAttribPointer(texcoordAttributeLocation, 2, //size 每次迭代运行提取两个单位数据
-                webglContext.FLOAT, //type 每个单位的数据类型是32位浮点型
-                false, //normalize 不需要归一化数据 
-                0, //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
-                // 每次迭代运行运动多少内存到下一个数据开始点
-                0 //offset 从缓冲起始位置开始读取
-            );
-            webglContext.bufferData(webglContext.ARRAY_BUFFER, new Float32Array([0, 0,
-                1, 0,
-                0, 1,
-                0, 1,
-                1, 0,
-                1, 1]), webglContext.STATIC_DRAW);
-            return {
-                canvas: canvas,
-                positionAttributeLocation: positionAttributeLocation,
-                resolutionUniformLocation: resolutionUniformLocation,
-                webglContext: webglContext
-            };
-        }
-
-        /**
-         * 添加DIV
-         * @function
-         * @private
-         * @property {Object} element 元素
-         * @returns {Object} DIV对象
-         */
-        function initDIV(element) {
-            let div = document.createElement('div'); //DIV
-            div.style.width = `${elementWidth}px`;
-            div.style.height = `${elementHeight}px`;
-            div.style.transform =
-                div.style.webkitTransform =
-                div.style.msTransform = `scale(${options.scaling},${options.scaling})`;
-            div.style.transformOrigin =
-                div.style.webkitTransformOrigin =
-                div.style.msTransformOrigin = `left top`;
-            div.style.overflow = 'hidden';
-            div.style.position = 'relative';
-            div.style.padding = '0';
-            div.style.margin = '0';
-            div.style.webkitUserSelect = 'none';
-            registerEvent(div, true); //注册事件响应程序
-            element.innerHTML = '';
-            element.appendChild(div);
-            return div;
-        }
-
-        /**
-         * 注册事件响应程序
-         * @function
-         * @private
-         * @property {Object} element 元素
-         * @property {Boolean} 是否css3渲染模式
-         */
-        function registerEvent(element, css3) {
-            function getBulletScreenOnScreenByLocation(location) {
-                let bulletScreen = null;
-                bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-                    let x1 = bulletScreenOnScreen.x - 4;
-                    let x2 = x1 + bulletScreenOnScreen.width + 8;
-                    let y1 = bulletScreenOnScreen.actualY - 4;
-                    let y2 = y1 + bulletScreenOnScreen.height + 8;
-                    if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-                        bulletScreen = bulletScreenOnScreen.bulletScreen;
-                        return { stop: true };
-                    }
-                }, false);
-                return bulletScreen;
-            }
-            function getLocation(e) {
-                function getOffsetTop(element) {
-                    let offsetTop = 0;
-                    do {
-                        offsetTop += element.offsetTop;
-                    } while ((element = element.offsetParent) != null);
-                    return offsetTop;
-                }
-                function getOffsetLeft(element) {
-                    let offsetLeft = 0;
-                    do {
-                        offsetLeft += element.offsetLeft;
-                    } while ((element = element.offsetParent) != null);
-                    return offsetLeft;
-                }
-                if (typeof (e.offsetX) === 'undefined' || e.offsetX === null) {
-                    if (typeof (e.layerX) === 'undefined' || e.layerX === null) {
-                        if (typeof (e.pageX) === 'undefined' || e.pageX === null) {
-                            let doc = document.documentElement, body = document.body;
-                            e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
-                            e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
-                        }
-                        e.layerX = e.pageX - getOffsetLeft(e.target);
-                        e.layerY = e.pageY - getOffsetTop(e.target);
-                    }
-                    e.offsetX = e.layerX - e.target.clientLeft;
-                    e.offsetY = e.layerY - e.target.clientTop;
-                }
-                return {
-                    x: e.offsetX,
-                    y: e.offsetY
-                };
-            }
-            if (css3) {
-                //上下文菜单
-                element.oncontextmenu = function (e) {
-                    if (e.target != this)
-                        event.trigger('contextmenu', {
-                            bulletScreen: e.target.bulletScreen
-                        });
-                    return false;
-                };
-                //单击
-                element.onclick = function (e) {
-                    if (e.target != this)
-                        event.trigger('click', {
-                            bulletScreen: e.target.bulletScreen
-                        });
-                    return false;
-                };
-            }
-            else {
-                //上下文菜单
-                element.oncontextmenu = function (e) {
-                    let bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                    if (bulletScreen)
-                        event.trigger('contextmenu', {
-                            bulletScreen: bulletScreen
-                        });
-                    return false;
-                };
-                //单击
-                element.onclick = function (e) {
-                    let bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                    if (bulletScreen)
-                        event.trigger('click', {
-                            bulletScreen: bulletScreen
-                        });
-                    return false;
-                };
-            }
         }
 
         /**
@@ -1097,41 +592,17 @@ class BulletScreenEngine {
          * @private
          */
         function setSize() {
-            let _devicePixelRatio = typeof (window.devicePixelRatio) === 'undefined' ? 1 : window.devicePixelRatio;
-            _devicePixelRatio *= options.scaling;
-            if (elementWidth != element.clientWidth / options.scaling ||
-                elementHeight != element.clientHeight / options.scaling ||
-                devicePixelRatio != _devicePixelRatio) {
-                elementWidth = element.clientWidth / options.scaling;
-                elementHeight = element.clientHeight / options.scaling;
-                devicePixelRatio = _devicePixelRatio;
-                if (renderMode === RENDER_MODE.css3) {
-                    div.style.width = `${elementWidth}px`;
-                    div.style.height = `${elementHeight}px`;
-                    div.style.transform =
-                        div.style.webkitTransform =
-                        div.style.msTransform = `scale(${options.scaling},${options.scaling})`;
-                }
-                else if (renderMode === RENDER_MODE.canvas) {
-                    canvas.style.width = `${elementWidth}px`;
-                    canvas.style.height = `${elementHeight}px`;
-                    canvas.style.transform =
-                        canvas.style.webkitTransform =
-                        canvas.style.msTransform = `scale(${options.scaling},${options.scaling})`;
-                    canvas.width = elementWidth * devicePixelRatio;
-                    canvas.height = elementHeight * devicePixelRatio;
-                }
-                else if (renderMode === RENDER_MODE.webgl) {
-                    webgl.canvas.style.width = `${elementWidth}px`;
-                    webgl.canvas.style.height = `${elementHeight}px`;
-                    webgl.canvas.style.transform =
-                        webgl.canvas.style.webkitTransform =
-                        webgl.canvas.style.msTransform = `scale(${options.scaling},${options.scaling})`;
-                    webgl.canvas.width = elementWidth * devicePixelRatio;
-                    webgl.canvas.height = elementHeight * devicePixelRatio;
-                    webgl.webglContext.viewport(0, 0, elementWidth, elementHeight);
-                    webgl.webglContext.uniform2f(webgl.resolutionUniformLocation, webgl.canvas.width, webgl.canvas.height); // 设置全局变量 分辨率
-                }
+            if (_oldDevicePixelRatio != window.devicePixelRatio ||
+                _oldScaling != options.scaling ||
+                _oldClientWidth != element.clientWidth ||
+                _oldClientHeight != element.clientHeight) {
+                _elementSize.width = element.clientWidth / options.scaling;
+                _elementSize.height = element.clientHeight / options.scaling;
+                _oldDevicePixelRatio = window.devicePixelRatio;
+                _oldScaling = options.scaling;
+                _oldClientWidth = element.clientWidth;
+                _oldClientHeight = element.clientHeight;
+                _renderer.setSize();
             }
         }
     }
