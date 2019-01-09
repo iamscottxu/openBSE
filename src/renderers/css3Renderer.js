@@ -79,7 +79,10 @@ class CSS3Renderer extends BaseRenderer {
             div.style.overflow = 'hidden';
             div.style.padding = '0';
             div.style.margin = '0';
-            div.style.webkitUserSelect = 'none';
+            div.style.userSelect = 
+            div.style.webkitUserSelect = 
+            div.style.msUserSelect = 'none';
+            div.style.cursor = 'default';
             registerEvent(div); //注册事件响应程序
             return div;
         }
