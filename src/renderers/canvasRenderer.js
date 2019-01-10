@@ -2,6 +2,7 @@ import { CanvasBaseRenderer } from './canvasBaseRenderer'
 
 class CanvasRenderer extends CanvasBaseRenderer {
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+        supportCheck();
         super(element, options, elementSize, event, bulletScreensOnScreen);
 
         this.cleanScreen = function () {
@@ -27,6 +28,18 @@ class CanvasRenderer extends CanvasBaseRenderer {
             let canvasContext = canvas.getContext('2d');
             canvasContext.clearRect(0, 0, canvas.width, canvas.height);
             canvasContext.drawImage(hideCanvas, 0, 0);
+        }
+
+        /**
+         * 支持检测
+         * @function
+         */
+        function supportCheck(){
+            let canvas = document.createElement('canvas'); //canvas对象
+            if (typeof(canvas.getContext) != 'function') throw new Error('This browser does not support Canvas.');
+            let context = canvas.getContext('2d');
+            if (context === null) throw new Error('This browser does not support Canvas 2D.');
+            if (typeof(context.fillText).fillText != 'function') throw new Error('This browser does not support Canvas 2D fillText function.');
         }
     }
 }

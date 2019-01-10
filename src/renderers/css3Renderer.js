@@ -2,6 +2,7 @@ import { BaseRenderer } from './baseRenderer'
 
 class CSS3Renderer extends BaseRenderer {
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+        supportCheck();
         let _div = init();
         super(_div, options, elementSize);
 
@@ -86,6 +87,19 @@ class CSS3Renderer extends BaseRenderer {
             div.style.cursor = 'default';
             registerEvent(div); //注册事件响应程序
             return div;
+        }
+
+        /**
+         * 支持检测
+         * @function
+         */
+        function supportCheck(){
+            let style = document.createElement('div').style;
+            if (
+                typeof(style.transform) === 'undefined' &&
+                typeof(style.msTransform) === 'undefined' &&
+                typeof(style.webkitTransform) === 'undefined'
+            ) throw new Error('This browser does not support CSS3 transform.');
         }
 
         /**

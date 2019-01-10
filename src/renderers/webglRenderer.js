@@ -2,6 +2,7 @@ import { CanvasBaseRenderer } from './canvasBaseRenderer'
 
 class WebGLRenderer extends CanvasBaseRenderer {
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+        supportCheck();
         super(element, options, elementSize, event, bulletScreensOnScreen);
         let _webglContext;
         let _positionAttributeLocation;
@@ -171,6 +172,21 @@ class WebGLRenderer extends CanvasBaseRenderer {
                 0, 1,
                 1, 0,
                 1, 1]), _webglContext.STATIC_DRAW);
+        }
+
+        /**
+         * 支持检测
+         * @function
+         */
+        function supportCheck(){
+            let canvas = document.createElement('canvas'); //canvas对象
+            if (typeof(canvas.getContext) != 'function') throw new Error('This browser does not support Canvas.');
+            let context = canvas.getContext('2d');
+            if (context === null) throw new Error('This browser does not support Canvas 2D.');
+            if (typeof(context.fillText).fillText != 'function') throw new Error('This browser does not support Canvas 2D fillText function.');
+            canvas = document.createElement('canvas'); //canvas对象
+            context = canvas.getContext('webgl');
+            if (context === null) throw new Error('This browser does not support WebGL.');
         }
     }
 }

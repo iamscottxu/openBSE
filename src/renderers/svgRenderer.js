@@ -2,6 +2,7 @@ import { BaseRenderer } from './baseRenderer'
 
 class SVGRenderer extends BaseRenderer {
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+        supportCheck();
         let _div = init();
         let _svg;
         let _defsSvg;
@@ -151,6 +152,15 @@ class SVGRenderer extends BaseRenderer {
             div.appendChild(eventDiv);
             registerEvent(eventDiv); //注册事件响应程序
             return div;
+        }
+
+        /**
+         * 支持检测
+         * @function
+         */
+        function supportCheck(){
+            if (typeof(document.createElementNS) != 'function') throw new Error('This browser does not support createElementNS function.');
+            if (typeof(createElementSVG('svg').createSVGRect) != 'function') throw new Error('This browser does not support SVG.');
         }
 
         /**
