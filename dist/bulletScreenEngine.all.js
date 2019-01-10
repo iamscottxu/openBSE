@@ -3073,7 +3073,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "2.0-Alpha";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Thu, 10 Jan 2019 10:01:58 GMT";
+var BUILE_DATE = "Thu, 10 Jan 2019 10:19:28 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
