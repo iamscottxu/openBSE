@@ -2606,7 +2606,7 @@ function (_BaseRenderer) {
 
         filterSvg.bulletScreenCount++;
         textSvg.setAttribute('filter', "url(#".concat(filterId, ")"));
-        textSvg.filterId = filterId;
+        bulletScreenOnScreen.filterId = filterId;
       }
 
       _svg.appendChild(textSvg);
@@ -2637,15 +2637,13 @@ function (_BaseRenderer) {
 
 
     _this.delete = function (bulletScreenOnScreen) {
+      if (typeof bulletScreenOnScreen.filterId != 'undefined') {
+        var filterSvg = document.getElementById(bulletScreenOnScreen.filterId);
+        if (filterSvg != null && --filterSvg.bulletScreenCount === 0) _defsSvg.removeChild(filterSvg);
+      }
+
       for (var index in bulletScreenOnScreen.svg) {
-        var item = bulletScreenOnScreen.svg[index];
-
-        if (typeof item.filterId === 'undefined') {
-          var filterSvg = document.getElementById(item.filterId);
-          if (filterSvg != null && --filterSvg.bulletScreenCount === 0) _defsSvg.removeChild(filterSvg);
-        }
-
-        _svg.removeChild(item);
+        _svg.removeChild(bulletScreenOnScreen.svg[index]);
       }
     };
 
@@ -3075,7 +3073,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "2.0-Alpha";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Thu, 10 Jan 2019 09:47:07 GMT";
+var BUILE_DATE = "Thu, 10 Jan 2019 10:01:58 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
