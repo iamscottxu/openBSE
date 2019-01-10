@@ -2237,6 +2237,7 @@ function (_CanvasBaseRenderer) {
 
     _classCallCheck(this, CanvasRenderer);
 
+    supportCheck();
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CanvasRenderer).call(this, element, options, elementSize, event, bulletScreensOnScreen));
 
     _this.cleanScreen = function () {
@@ -2264,6 +2265,20 @@ function (_CanvasBaseRenderer) {
       canvasContext.clearRect(0, 0, canvas.width, canvas.height);
       canvasContext.drawImage(hideCanvas, 0, 0);
     };
+    /**
+     * 支持检测
+     * @function
+     */
+
+
+    function supportCheck() {
+      var canvas = document.createElement('canvas'); //canvas对象
+
+      if (typeof canvas.getContext != 'function') throw new Error('This browser does not support Canvas.');
+      var context = canvas.getContext('2d');
+      if (context === null) throw new Error('This browser does not support Canvas 2D.');
+      if (typeof context.fillText != 'function') throw new Error('This browser does not support Canvas 2D fillText function.');
+    }
 
     return _this;
   }
@@ -2306,6 +2321,8 @@ function (_BaseRenderer) {
     var _this;
 
     _classCallCheck(this, CSS3Renderer);
+
+    supportCheck();
 
     var _div = init();
 
@@ -2397,6 +2414,16 @@ function (_BaseRenderer) {
       registerEvent(div); //注册事件响应程序
 
       return div;
+    }
+    /**
+     * 支持检测
+     * @function
+     */
+
+
+    function supportCheck() {
+      var style = document.createElement('div').style;
+      if (typeof style.transform === 'undefined' && typeof style.msTransform === 'undefined' && typeof style.webkitTransform === 'undefined') throw new Error('This browser does not support CSS3 transform.');
     }
     /**
      * 注册事件响应程序
@@ -2522,6 +2549,8 @@ function (_BaseRenderer) {
     var _this;
 
     _classCallCheck(this, SVGRenderer);
+
+    supportCheck();
 
     var _div = init();
 
@@ -2696,6 +2725,16 @@ function (_BaseRenderer) {
       return div;
     }
     /**
+     * 支持检测
+     * @function
+     */
+
+
+    function supportCheck() {
+      if (typeof document.createElementNS != 'function') throw new Error('This browser does not support createElementNS function.');
+      if (typeof createElementSVG('svg').createSVGRect != 'function') throw new Error('This browser does not support SVG.');
+    }
+    /**
      * 注册事件响应程序
      * @function
      * @private
@@ -2839,6 +2878,7 @@ function (_CanvasBaseRenderer) {
 
     _classCallCheck(this, WebGLRenderer);
 
+    supportCheck();
     _this = _possibleConstructorReturn(this, _getPrototypeOf(WebGLRenderer).call(this, element, options, elementSize, event, bulletScreensOnScreen));
 
     var _webglContext;
@@ -3055,6 +3095,24 @@ function (_CanvasBaseRenderer) {
 
       _webglContext.bufferData(_webglContext.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), _webglContext.STATIC_DRAW);
     }
+    /**
+     * 支持检测
+     * @function
+     */
+
+
+    function supportCheck() {
+      var canvas = document.createElement('canvas'); //canvas对象
+
+      if (typeof canvas.getContext != 'function') throw new Error('This browser does not support Canvas.');
+      var context = canvas.getContext('2d');
+      if (context === null) throw new Error('This browser does not support Canvas 2D.');
+      if (typeof context.fillText != 'function') throw new Error('This browser does not support Canvas 2D fillText function.');
+      canvas = document.createElement('canvas'); //canvas对象
+
+      context = canvas.getContext('webgl');
+      if (context === null) throw new Error('This browser does not support WebGL.');
+    }
 
     return _this;
   }
@@ -3073,7 +3131,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "2.0-Alpha";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Thu, 10 Jan 2019 10:19:28 GMT";
+var BUILE_DATE = "Thu, 10 Jan 2019 12:24:03 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
