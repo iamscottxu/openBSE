@@ -9,6 +9,11 @@ const RENDERERS = {
      */
     css3: require('./css3Renderer').CSS3Renderer,
     /**
+     * SVG 渲染模式
+     * @private @readonly
+     */
+    svg: require('./svgRenderer').SVGRenderer,
+    /**
      * WebGL 渲染模式
      * @private @readonly
      */
