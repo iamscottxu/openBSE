@@ -47,7 +47,7 @@ var BulletScreenEngine =
  * 创建一个弹幕引擎对象。
  * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
  * @param {BulletScreenEngine~Options} [options] - 全局选项：一个 {@link BulletScreenEngine~Options} 结构。
- * @param {String} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”。
+ * @param {String} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。
  */
 function BulletScreenEngine(element, options) {
   var renderMode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'canvas';
@@ -388,7 +388,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 获取渲染模式。
    * @function
-   * @returns {String} 弹幕渲染模式： 取值为“canvas”、“css3”或“webgl”。
+   * @returns {String} 弹幕渲染模式： 取值为“canvas”、“css3”、“webgl”或“svg”。
    */
 
   this.getRenderMode = function () {
@@ -759,7 +759,7 @@ function BulletScreenEngine(element, options) {
 
 exports.BulletScreenEngine = BulletScreenEngine;
 
-},{"./event":4,"./linkedList":5,"./renderers/renderersFactory":10,"./version":12}],2:[function(require,module,exports){
+},{"./event":4,"./linkedList":5,"./renderers/renderersFactory":10,"./version":13}],2:[function(require,module,exports){
 "use strict";
 
 var _BulletScreenEngine = require("./BulletScreenEngine");
@@ -790,7 +790,7 @@ var BulletScreenEngine =
  * 创建一个弹幕引擎对象。
  * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
  * @param {BulletScreenEngine~Options} [options] - 全局选项：一个 {@link BulletScreenEngine~Options} 结构。
- * @param {String} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”。
+ * @param {String} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。
  */
 function BulletScreenEngine(element, options) {
   var renderMode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'canvas';
@@ -1131,7 +1131,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 获取渲染模式。
    * @function
-   * @returns {String} 弹幕渲染模式： 取值为“canvas”、“css3”或“webgl”。
+   * @returns {String} 弹幕渲染模式： 取值为“canvas”、“css3”、“webgl”或“svg”。
    */
 
   this.getRenderMode = function () {
@@ -1502,7 +1502,7 @@ function BulletScreenEngine(element, options) {
 
 exports.BulletScreenEngine = BulletScreenEngine;
 
-},{"./event":4,"./linkedList":5,"./renderers/renderersFactory":10,"./version":12}],4:[function(require,module,exports){
+},{"./event":4,"./linkedList":5,"./renderers/renderersFactory":10,"./version":13}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2341,8 +2341,8 @@ function (_BaseRenderer) {
       bulletScreenDiv.style.fontSize = "".concat(bulletScreenOnScreen.size, "px");
       bulletScreenDiv.style.fontFamily = bulletScreen.style.fontFamily;
       bulletScreenDiv.style.lineHeight = "".concat(bulletScreenOnScreen.size, "px");
-      bulletScreenDiv.style.textShadow = "0 0 ".concat(bulletScreen.style.shadowBlur, "px black");
       bulletScreenDiv.style.color = bulletScreen.style.color;
+      if (bulletScreen.style.shadowBlur != null) bulletScreenDiv.style.textShadow = "0 0 ".concat(bulletScreen.style.shadowBlur, "px black");
 
       if (bulletScreen.style.borderColor != null) {
         bulletScreenDiv.style.textStroke = bulletScreenDiv.style.webkitTextStroke = '0.5px';
@@ -2357,7 +2357,7 @@ function (_BaseRenderer) {
         bulletScreenDiv.style.padding = '4px';
       }
 
-      bulletScreenDiv.innerText = bulletScreen.text;
+      bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
       bulletScreenDiv.bulletScreen = bulletScreen;
 
       _div.appendChild(bulletScreenDiv);
@@ -2454,6 +2454,12 @@ var RENDERERS = {
   css3: require('./css3Renderer').CSS3Renderer,
 
   /**
+   * SVG 渲染模式
+   * @private @readonly
+   */
+  svg: require('./svgRenderer').SVGRenderer,
+
+  /**
    * WebGL 渲染模式
    * @private @readonly
    */
@@ -2483,7 +2489,325 @@ var RenderersFactory = function RenderersFactory(element, options, elementSize, 
 
 exports.RenderersFactory = RenderersFactory;
 
-},{"./canvasRenderer":8,"./css3Renderer":9,"./webglRenderer":11}],11:[function(require,module,exports){
+},{"./canvasRenderer":8,"./css3Renderer":9,"./svgRenderer":11,"./webglRenderer":12}],11:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.SVGRenderer = void 0;
+
+var _baseRenderer = require("./baseRenderer");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } return _assertThisInitialized(self); }
+
+function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+var SVGRenderer =
+/*#__PURE__*/
+function (_BaseRenderer) {
+  _inherits(SVGRenderer, _BaseRenderer);
+
+  function SVGRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
+    var _this;
+
+    _classCallCheck(this, SVGRenderer);
+
+    var _div = init();
+
+    var _svg;
+
+    var _defsSvg;
+
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SVGRenderer).call(this, _div, options, elementSize));
+
+    _this.cleanScreen = function () {
+      _svg.innerHTML = '';
+      _defsSvg = createElementSVG('defs'); //defs
+
+      _svg.appendChild(_defsSvg);
+    };
+    /**
+     * 绘制函数
+     * @function
+     */
+
+
+    _this.draw = function () {
+      bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+        for (var index in bulletScreenOnScreen.svg) {
+          bulletScreenOnScreen.svg[index].setAttribute('transform', "translate(".concat(bulletScreenOnScreen.x - 4, ",").concat(bulletScreenOnScreen.actualY - 4, ")"));
+        }
+      }, true);
+    };
+    /**
+     * 创建弹幕元素
+     * @function
+     * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+     */
+
+
+    _this.creatAndgetWidth = function (bulletScreenOnScreen) {
+      var bulletScreen = bulletScreenOnScreen.bulletScreen;
+      bulletScreenOnScreen.svg = {};
+      var textSvg = createElementSVG('text');
+      textSvg.setAttribute('x', 0);
+      textSvg.setAttribute('y', bulletScreenOnScreen.size * 0.8);
+      textSvg.setAttribute('font-family', bulletScreen.style.fontFamily);
+      textSvg.setAttribute('font-size', bulletScreenOnScreen.size);
+      textSvg.setAttribute('font-weight', bulletScreen.style.fontWeight);
+      textSvg.setAttribute('fill', bulletScreen.style.color);
+      textSvg.appendChild(document.createTextNode(bulletScreen.text));
+
+      if (bulletScreen.style.borderColor != null) {
+        textSvg.setAttribute('stroke', bulletScreen.borderColor);
+        textSvg.setAttribute('stroke-width', 0.5);
+      }
+
+      if (bulletScreen.style.shadowBlur != null) {
+        var filterId = "bulletScreenEngine_svgFilter_shadow_".concat(bulletScreen.style.shadowBlur);
+        var filterSvg = document.getElementById(filterId);
+
+        if (filterSvg === null) {
+          filterSvg = createElementSVG('filter');
+          filterSvg.id = filterId;
+          filterSvg.setAttribute('x', '-100%');
+          filterSvg.setAttribute('y', '-100%');
+          filterSvg.setAttribute('width', '300%');
+          filterSvg.setAttribute('height', '300%');
+          var feOffsetSvg = createElementSVG('feOffset');
+          feOffsetSvg.setAttribute('result', 'offOut');
+          feOffsetSvg.setAttribute('in', 'SourceAlpha');
+          filterSvg.appendChild(feOffsetSvg);
+          var feGaussianBlurSvg = createElementSVG('feGaussianBlur');
+          feGaussianBlurSvg.setAttribute('result', 'blurOut');
+          feGaussianBlurSvg.setAttribute('in', 'offOut');
+          feGaussianBlurSvg.setAttribute('stdDeviation', bulletScreen.style.shadowBlur);
+          filterSvg.appendChild(feGaussianBlurSvg);
+          var feBlendSvg = createElementSVG('feBlend');
+          feBlendSvg.setAttribute('in', 'SourceGraphic');
+          feBlendSvg.setAttribute('in2', 'blurOut');
+          feBlendSvg.setAttribute('mode', 'normal');
+          filterSvg.appendChild(feBlendSvg);
+          filterSvg.bulletScreenCount = 0;
+
+          _defsSvg.appendChild(filterSvg);
+        }
+
+        filterSvg.bulletScreenCount++;
+        textSvg.setAttribute('filter', "url(#".concat(filterId, ")"));
+        textSvg.filterId = filterId;
+      }
+
+      _svg.appendChild(textSvg);
+
+      bulletScreenOnScreen.svg.text = textSvg;
+      bulletScreenOnScreen.width = textSvg.getComputedTextLength(); //弹幕的宽度：像素
+
+      if (bulletScreen.style.boxColor != null) {
+        var rectSvg = createElementSVG('rect');
+        rectSvg.setAttribute('x', -3);
+        rectSvg.setAttribute('y', -3);
+        rectSvg.setAttribute('fill', 'none');
+        rectSvg.setAttribute('height', bulletScreenOnScreen.height + 7);
+        rectSvg.setAttribute('width', bulletScreenOnScreen.width + 7);
+        rectSvg.setAttribute('stroke', bulletScreen.style.boxColor);
+        rectSvg.setAttribute('stroke-width', 1);
+
+        _svg.appendChild(rectSvg);
+
+        bulletScreenOnScreen.svg.rect = rectSvg;
+      }
+    };
+    /**
+    * 删除弹幕元素
+    * @function
+    * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+    */
+
+
+    _this.delete = function (bulletScreenOnScreen) {
+      for (var index in bulletScreenOnScreen.svg) {
+        var item = bulletScreenOnScreen.svg[index];
+
+        if (typeof item.filterId === 'undefined') {
+          var filterSvg = document.getElementById(item.filterId);
+          if (filterSvg != null && --filterSvg.bulletScreenCount === 0) _defsSvg.removeChild(filterSvg);
+        }
+
+        _svg.removeChild(item);
+      }
+    };
+
+    var _setSize = _this.setSize;
+    /**
+     * 设置尺寸
+     * @function
+     */
+
+    _this.setSize = function () {
+      _setSize();
+
+      _svg.setAttribute('height', elementSize.height);
+
+      _svg.setAttribute('width', elementSize.width);
+    };
+    /**
+     * 添加Div
+     * @function
+     * @private
+     * @returns {Element} Div
+     */
+
+
+    function init() {
+      var div = document.createElement('div'); //DIV
+
+      element.innerHTML = '';
+      element.appendChild(div);
+      div.style.padding = '0';
+      div.style.margin = '0';
+      _svg = createElementSVG('svg'); //SVG
+
+      _defsSvg = createElementSVG('defs'); //defs
+
+      _svg.appendChild(_defsSvg);
+
+      _svg.setAttribute('height', elementSize.height);
+
+      _svg.setAttribute('width', elementSize.width);
+
+      div.appendChild(_svg);
+      var eventDiv = document.createElement('div'); //DIV
+
+      eventDiv.style.position = 'absolute';
+      eventDiv.style.top = eventDiv.style.right = eventDiv.style.bottom = eventDiv.style.left = '0';
+      div.appendChild(eventDiv);
+      registerEvent(eventDiv); //注册事件响应程序
+
+      return div;
+    }
+    /**
+     * 注册事件响应程序
+     * @function
+     * @private
+     * @property {Element} element - 元素
+     */
+
+
+    function registerEvent(element) {
+      function getBulletScreenOnScreenByLocation(location) {
+        var bulletScreen = null;
+        bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+          var x1 = bulletScreenOnScreen.x - 4;
+          var x2 = x1 + bulletScreenOnScreen.width + 8;
+          var y1 = bulletScreenOnScreen.actualY - 4;
+          var y2 = y1 + bulletScreenOnScreen.height + 8;
+
+          if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
+            bulletScreen = bulletScreenOnScreen.bulletScreen;
+            return {
+              stop: true
+            };
+          }
+        }, false);
+        return bulletScreen;
+      }
+
+      function getLocation(e) {
+        function getOffsetTop(element) {
+          var offsetTop = 0;
+
+          do {
+            offsetTop += element.offsetTop;
+          } while ((element = element.offsetParent) != null);
+
+          return offsetTop;
+        }
+
+        function getOffsetLeft(element) {
+          var offsetLeft = 0;
+
+          do {
+            offsetLeft += element.offsetLeft;
+          } while ((element = element.offsetParent) != null);
+
+          return offsetLeft;
+        }
+
+        if (typeof e.offsetX === 'undefined' || e.offsetX === null) {
+          if (typeof e.layerX === 'undefined' || e.layerX === null) {
+            if (typeof e.pageX === 'undefined' || e.pageX === null) {
+              var doc = document.documentElement,
+                  body = document.body;
+              e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+              e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
+            }
+
+            e.layerX = e.pageX - getOffsetLeft(e.target);
+            e.layerY = e.pageY - getOffsetTop(e.target);
+          }
+
+          e.offsetX = e.layerX - e.target.clientLeft;
+          e.offsetY = e.layerY - e.target.clientTop;
+        }
+
+        return {
+          x: e.offsetX,
+          y: e.offsetY
+        };
+      } //上下文菜单
+
+
+      element.oncontextmenu = function (e) {
+        var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        if (bulletScreen) event.trigger('contextmenu', {
+          bulletScreen: bulletScreen
+        });
+        return false;
+      }; //单击
+
+
+      element.onclick = function (e) {
+        var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        if (bulletScreen) event.trigger('click', {
+          bulletScreen: bulletScreen
+        });
+        return false;
+      };
+    }
+    /**
+     * 创建 SVG 元素
+     * @function
+     * @private
+     * @param {String} qualifiedName - Element 名称
+     * @param {*} options - 选项
+     */
+
+
+    function createElementSVG(qualifiedName, options) {
+      return document.createElementNS('http://www.w3.org/2000/svg', qualifiedName, options);
+    }
+
+    return _this;
+  }
+
+  return SVGRenderer;
+}(_baseRenderer.BaseRenderer);
+
+exports.SVGRenderer = SVGRenderer;
+
+},{"./baseRenderer":6}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2742,7 +3066,7 @@ function (_CanvasBaseRenderer) {
 
 exports.WebGLRenderer = WebGLRenderer;
 
-},{"./canvasBaseRenderer":7}],12:[function(require,module,exports){
+},{"./canvasBaseRenderer":7}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2751,7 +3075,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = "2.0-Alpha";
 exports.VERSION = VERSION;
-var BUILE_DATE = "Wed, 09 Jan 2019 14:41:11 GMT";
+var BUILE_DATE = "Thu, 10 Jan 2019 09:47:07 GMT";
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[2,3]);
