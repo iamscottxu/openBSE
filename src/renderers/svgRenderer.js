@@ -76,7 +76,7 @@ class SVGRenderer extends BaseRenderer {
                 }
                 filterSvg.bulletScreenCount++;
                 textSvg.setAttribute('filter', `url(#${filterId})`);
-                textSvg.filterId = filterId;
+                bulletScreenOnScreen.filterId = filterId;
             }
 
             _svg.appendChild(textSvg);
@@ -103,14 +103,13 @@ class SVGRenderer extends BaseRenderer {
         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
         */
         this.delete = function (bulletScreenOnScreen) {
+            if (typeof (bulletScreenOnScreen.filterId) != 'undefined') {
+                let filterSvg = document.getElementById(bulletScreenOnScreen.filterId);
+                if (filterSvg != null && --filterSvg.bulletScreenCount === 0)
+                    _defsSvg.removeChild(filterSvg);
+            }
             for (let index in bulletScreenOnScreen.svg) {
-                let item = bulletScreenOnScreen.svg[index];
-                if (typeof (item.filterId) === 'undefined') {
-                    let filterSvg = document.getElementById(item.filterId);
-                    if (filterSvg != null && --filterSvg.bulletScreenCount === 0)
-                        _defsSvg.removeChild(filterSvg);
-                }
-                _svg.removeChild(item);
+                _svg.removeChild(bulletScreenOnScreen.svg[index]);
             }
         }
 
