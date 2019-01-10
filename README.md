@@ -11,7 +11,7 @@
 高性能 JavaScript 弹幕引擎。同屏弹幕1000+
 
 ## 简介
-一个高性能 JavaScript 弹幕引擎，简单易用。支持CSS3、Canvas 2D、WebGL渲染方式。支持顶部、底部、逆向弹幕渲染。使用Canvas 2D渲染方式可同屏渲染至少1000条弹幕（可达1600条，与电脑配置有关）。
+一个高性能 JavaScript 弹幕引擎，简单易用。支持 CSS3 、 Canvas 2D 、 WebGL 和 SVG 渲染方式。支持顶部、底部、逆向弹幕渲染。使用 Canvas 2D 渲染方式可同屏渲染至少1000条弹幕（可达1600条，与电脑配置有关）。
 
 ## 安装和使用
 ### 安装
@@ -21,7 +21,7 @@
 ```
 
 ### 使用
-安装完成后，在Html页面引入。
+安装完成后，在 Html 页面引入。
 
 压缩版：
 ```Html
@@ -55,4 +55,4 @@ bulletScreenEngine.play();
 E-mail：[scottxu@scottxublog.com](mailto:scottxu@scottxublog.com)
 
 ## 版权声明
-这个项目是一个开源项目，遵循MIT开源协议。要查看协议，请点击[这里](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)。
+这个项目是一个开源项目，遵循 MIT 开源协议。要查看协议，请点击[这里](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)。
