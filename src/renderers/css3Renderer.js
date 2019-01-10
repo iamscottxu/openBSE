@@ -36,8 +36,9 @@ class CSS3Renderer extends BaseRenderer {
             bulletScreenDiv.style.fontSize = `${bulletScreenOnScreen.size}px`;
             bulletScreenDiv.style.fontFamily = bulletScreen.style.fontFamily;
             bulletScreenDiv.style.lineHeight = `${bulletScreenOnScreen.size}px`;
-            bulletScreenDiv.style.textShadow = `0 0 ${bulletScreen.style.shadowBlur}px black`;
             bulletScreenDiv.style.color = bulletScreen.style.color;
+            if (bulletScreen.style.shadowBlur != null)
+                bulletScreenDiv.style.textShadow = `0 0 ${bulletScreen.style.shadowBlur}px black`;
             if (bulletScreen.style.borderColor != null) {
                 bulletScreenDiv.style.textStroke = bulletScreenDiv.style.webkitTextStroke = '0.5px';
                 bulletScreenDiv.style.textStrokeColor = bulletScreenDiv.style.webkitTextStrokeColor = bulletScreen.borderColor;
@@ -50,7 +51,7 @@ class CSS3Renderer extends BaseRenderer {
             else {
                 bulletScreenDiv.style.padding = '4px';
             }
-            bulletScreenDiv.innerText = bulletScreen.text;
+            bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
             bulletScreenDiv.bulletScreen = bulletScreen;
             _div.appendChild(bulletScreenDiv);
             bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8; //弹幕的宽度：像素

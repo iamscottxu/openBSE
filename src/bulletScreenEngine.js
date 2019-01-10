@@ -9,7 +9,7 @@ class BulletScreenEngine {
      * 创建一个弹幕引擎对象。
      * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
      * @param {BulletScreenEngine~Options} [options] - 全局选项：一个 {@link BulletScreenEngine~Options} 结构。
-     * @param {String} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”。
+     * @param {String} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。
      */
     constructor(element, options, renderMode = 'canvas') {
         //变量初始化
@@ -297,7 +297,7 @@ class BulletScreenEngine {
         /**
          * 获取渲染模式。
          * @function
-         * @returns {String} 弹幕渲染模式： 取值为“canvas”、“css3”或“webgl”。
+         * @returns {String} 弹幕渲染模式： 取值为“canvas”、“css3”、“webgl”或“svg”。
          */
         this.getRenderMode = function () {
             return renderMode;
