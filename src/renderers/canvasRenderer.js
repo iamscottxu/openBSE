@@ -39,7 +39,7 @@ class CanvasRenderer extends CanvasBaseRenderer {
             if (typeof(canvas.getContext) != 'function') throw new Error('This browser does not support Canvas.');
             let context = canvas.getContext('2d');
             if (context === null) throw new Error('This browser does not support Canvas 2D.');
-            if (typeof(context.fillText).fillText != 'function') throw new Error('This browser does not support Canvas 2D fillText function.');
+            if (typeof(context.fillText) != 'function') throw new Error('This browser does not support Canvas 2D fillText function.');
         }
     }
 }
