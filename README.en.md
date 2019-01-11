@@ -1,11 +1,11 @@
 # openBSE
-[![Version 1.3](https://img.shields.io/badge/version-1.3-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.2)
+[![Version 1.3](https://img.shields.io/badge/version-1.3-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v1.2)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
-[![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
+[![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)
 
-[中文版本](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.md) |
-[wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki) |
-[Demo](https://iamscottxu.github.io/BulletScreenEngine/demo/openBSEDemo.html)
+[中文版本](https://github.com/iamscottxu/openBSE/blob/master/README.md) |
+[wiki](https://github.com/iamscottxu/openBSE/wiki) |
+[Demo](https://iamscottxu.github.io/openBSE/demo/openBSEDemo.html)
 
 A high-performance JavaScript bullet-screen (danmaku) engine. 1000+ at the same time
 
@@ -14,7 +14,7 @@ This is a high-performance JavaScript bullet-screen (danmaku) engine and it is v
 
 ## Installation and use
 ### Installation
-You can click [here](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.3) to download latest release version. You also can install NPM package using following commands.
+You can click [here](https://github.com/iamscottxu/openBSE/releases/tag/v1.3) to download latest release version. You also can install NPM package using following commands.
 ```Bash
 > npm install bullet-screen-engine
 ```
@@ -46,11 +46,11 @@ bulletScreenEngine.play();
 ```
 Open the web page with a browser to display the bullet-screen. 
 
-See [wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki) for detailed instructions.
+See [wiki](https://github.com/iamscottxu/openBSE/wiki) for detailed instructions.
 
 ## Contact
-If you have any issue please write [issues](https://github.com/iamscottxu/BulletScreenEngine/issues).<br/>
+If you have any issue please write [issues](https://github.com/iamscottxu/openBSE/issues).<br/>
 E-mail：[scottxu@scottxublog.com](mailto:scottxu@scottxublog.com)
 
 ## Copyright
-This project is an open source project and it is licensed under the MIT License. If you want to read this license, please click [here](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE).
+This project is an open source project and it is licensed under the MIT License. If you want to read this license, please click [here](https://github.com/iamscottxu/openBSE/blob/master/LICENSE).

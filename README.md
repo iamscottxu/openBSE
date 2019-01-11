@@ -1,12 +1,12 @@
 # openBSE
-[![Version 1.3](https://img.shields.io/badge/version-1.3-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.3)
+[![Version 1.3](https://img.shields.io/badge/version-1.3-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v1.3)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
-[![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
+[![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)
 
-[English Version](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.en.md) |
-[wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki) |
-[Demo](https://iamscottxu.github.io/BulletScreenEngine/demo/openBSEDemo.html) |
-[2.0-Alpha Docs](https://iamscottxu.github.io/BulletScreenEngine/docs/2.0-Alpha/index.html)
+[English Version](https://github.com/iamscottxu/openBSE/blob/master/README.en.md) |
+[wiki](https://github.com/iamscottxu/openBSE/wiki) |
+[Demo](https://iamscottxu.github.io/openBSE/demo/openBSEDemo.html) |
+[2.0-Alpha Docs](https://iamscottxu.github.io/openBSE/docs/2.0-Alpha/index.html)
 
 高性能 JavaScript 弹幕引擎。同屏弹幕1000+
 
@@ -15,7 +15,7 @@
 
 ## 安装和使用
 ### 安装
-你可以直接点击[这里](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.3)下载最新发行版本，也可以用以下命令安装NPM包。
+你可以直接点击[这里](https://github.com/iamscottxu/openBSE/releases/tag/v1.3)下载最新发行版本，也可以用以下命令安装NPM包。
 ```Bash
 > npm install bullet-screen-engine
 ```
@@ -48,11 +48,11 @@ bulletScreenEngine.play();
 
 用浏览器打开网页即可显示弹幕。
 
-详细使用说明请查看 [wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki) 。
+详细使用说明请查看 [wiki](https://github.com/iamscottxu/openBSE/wiki) 。
 
 ## 联系作者
-如果有任何问题请写下 [issues](https://github.com/iamscottxu/BulletScreenEngine/issues) 。<br/>
+如果有任何问题请写下 [issues](https://github.com/iamscottxu/openBSE/issues) 。<br/>
 E-mail：[scottxu@scottxublog.com](mailto:scottxu@scottxublog.com)
 
 ## 版权声明
-这个项目是一个开源项目，遵循 MIT 开源协议。要查看协议，请点击[这里](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)。
+这个项目是一个开源项目，遵循 MIT 开源协议。要查看协议，请点击[这里](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)。
