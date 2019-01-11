@@ -22,8 +22,10 @@ class SVGRenderer extends BaseRenderer {
         this.draw = function () {
             bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
                 for (let index in bulletScreenOnScreen.svg) {
-                    if (this.checkWhetherHide(bulletScreenOnScreen)) return;
-                    bulletScreenOnScreen.svg[index].setAttribute('transform', `translate(${(bulletScreenOnScreen.x - 4)},${(bulletScreenOnScreen.actualY - 4)})`);
+                    let item = bulletScreenOnScreen.svg[index];
+                    if (this.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');
+                    else item.setAttribute('opacity', '1');
+                    item.setAttribute('transform', `translate(${(bulletScreenOnScreen.x - 4)},${(bulletScreenOnScreen.actualY - 4)})`);
                 }
             }, true);
         }
@@ -165,6 +167,7 @@ class SVGRenderer extends BaseRenderer {
             if (typeof (createElementSVG('svg').createSVGRect) != 'function') throw new BrowserNotSupportError('SVG');
         }
 
+        let _checkWhetherHide = this.checkWhetherHide;
         /**
          * 注册事件响应程序
          * @function
@@ -175,6 +178,7 @@ class SVGRenderer extends BaseRenderer {
             function getBulletScreenOnScreenByLocation(location) {
                 let bulletScreen = null;
                 bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+                    if (_checkWhetherHide(bulletScreenOnScreen)) return null;
                     let x1 = bulletScreenOnScreen.x - 4;
                     let x2 = x1 + bulletScreenOnScreen.width + 8;
                     let y1 = bulletScreenOnScreen.actualY - 4;

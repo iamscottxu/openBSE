@@ -17,7 +17,11 @@ class CSS3Renderer extends BaseRenderer {
          */
         this.draw = function () {
             bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                if (this.checkWhetherHide(bulletScreenOnScreen)) return;
+                if (this.checkWhetherHide(bulletScreenOnScreen)) {
+                    bulletScreenOnScreen.div.style.visibility = 'hidden';
+                    return;
+                }
+                bulletScreenOnScreen.div.style.visibility = 'visible';
                 bulletScreenOnScreen.div.style.transform =
                     bulletScreenOnScreen.div.style.webkitTransform =
                     bulletScreenOnScreen.div.style.msTransform =

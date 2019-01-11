@@ -103,6 +103,7 @@ class CanvasBaseRenderer extends BaseRenderer {
             return canvas;
         }
 
+        let _checkWhetherHide = this.checkWhetherHide;
         /**
          * 注册事件响应程序
          * @function
@@ -113,6 +114,7 @@ class CanvasBaseRenderer extends BaseRenderer {
             function getBulletScreenOnScreenByLocation(location) {
                 let bulletScreen = null;
                 bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+                    if (_checkWhetherHide(bulletScreenOnScreen)) return null;
                     let x1 = bulletScreenOnScreen.x - 4;
                     let x2 = x1 + bulletScreenOnScreen.width + 8;
                     let y1 = bulletScreenOnScreen.actualY - 4;
