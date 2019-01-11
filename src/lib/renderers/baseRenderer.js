@@ -99,9 +99,21 @@ class BaseRenderer {
         this.setSize = function () {
             element.style.width = `${elementSize.width}px`;
             element.style.height = `${elementSize.height}px`;
-            element.style.transform =
-                element.style.webkitTransform =
-                element.style.msTransform = `scale(${options.scaling},${options.scaling})`;
+            if (options.scaling != 1) {
+                element.style.transform =
+                    element.style.webkitTransform =
+                    element.style.msTransform = `scale(${options.scaling},${options.scaling})`;
+                element.style.transformOrigin =
+                    element.style.webkitTransformOrigin =
+                    element.style.msTransformOrigin = `left top`;
+            } else {
+                element.style.transform =
+                    element.style.webkitTransform =
+                    element.style.msTransform =
+                    element.style.transformOrigin =
+                    element.style.webkitTransformOrigin =
+                    element.style.msTransformOrigin = '';
+            }
         }
 
         /**
@@ -110,14 +122,7 @@ class BaseRenderer {
          * @private
          */
         function init() {
-            element.style.width = `${elementSize.width}px`;
-            element.style.height = `${elementSize.height}px`;
-            element.style.transform =
-                element.style.webkitTransform =
-                element.style.msTransform = `scale(${options.scaling},${options.scaling})`;
-            element.style.transformOrigin =
-                element.style.webkitTransformOrigin =
-                element.style.msTransformOrigin = `left top`;
+            this.setSize();
             element.style.position = 'relative';
         }
     }
