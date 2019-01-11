@@ -1285,7 +1285,9 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
    */
 
 
-  this.setSize = function () {
+  this.setSize = setSize;
+
+  function setSize() {
     element.style.width = "".concat(elementSize.width, "px");
     element.style.height = "".concat(elementSize.height, "px");
 
@@ -1295,7 +1297,7 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
     } else {
       element.style.transform = element.style.webkitTransform = element.style.msTransform = element.style.transformOrigin = element.style.webkitTransformOrigin = element.style.msTransformOrigin = '';
     }
-  };
+  }
   /**
    * 初始化
    * @function
@@ -1304,7 +1306,7 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
 
 
   function init() {
-    this.setSize();
+    setSize();
     element.style.position = 'relative';
   }
 };
@@ -2577,7 +2579,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = '2.0-Alpha';
 exports.VERSION = VERSION;
-var BUILE_DATE = 'Fri, 11 Jan 2019 08:01:07 GMT';
+var BUILE_DATE = 'Fri, 11 Jan 2019 08:04:34 GMT';
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[1,14]);
