@@ -68,6 +68,7 @@ class BulletScreenEngine {
         options.clock = setValue(options.clock, time => new Date().getTime() - _startTime, 'function'); //时间基准
         options.scaling = setValue(options.scaling, 1, 'number'); //缩放比例
         options.timeOutDiscard = setValue(options.timeOutDiscard, true, 'boolean'); //超时丢弃
+        options.hiddenTypes = setValue(options.hiddenTypes, 0, 'number'); //要隐藏的弹幕类型
 
         options.defaultStyle = setValue(options.defaultStyle, {});
         options.defaultStyle.shadowBlur = setValue(options.defaultStyle.shadowBlur, 2); //全局：阴影的模糊级别，0为不显示阴影
@@ -128,6 +129,7 @@ class BulletScreenEngine {
         let _oldScaling = options.scaling;
         let _oldClientWidth = element.clientWidth;
         let _oldClientHeight = element.clientHeight;
+        let _oldHiddenTypes = options.hiddenTypes;
         //渲染器工厂
         let renderersFactory = new RenderersFactory(element, this.options, _elementSize, _event, _bulletScreensOnScreen);
         let _renderer = renderersFactory.getRenderer(renderMode); //实例化渲染器
@@ -153,9 +155,9 @@ class BulletScreenEngine {
             bulletScreen.type = setValue(bulletScreen.type, BulletScreenType.rightToLeft, 'number'); //类型
 
             if (
-                bulletScreen.type != BulletScreenType.leftToRight &
-                bulletScreen.type != BulletScreenType.rightToLeft &
-                bulletScreen.type != BulletScreenType.top &
+                bulletScreen.type != BulletScreenType.leftToRight &&
+                bulletScreen.type != BulletScreenType.rightToLeft &&
+                bulletScreen.type != BulletScreenType.top &&
                 bulletScreen.type != BulletScreenType.bottom
             ) throw new TypeError(PARAMETERS_TYPE_ERROR);
 
@@ -308,8 +310,8 @@ class BulletScreenEngine {
         /**
          * 设置值
          * @private
-         * @property {string} value - 值
-         * @property {string} defaultBalue - 默认值
+         * @param {string} value - 值
+         * @param {string} defaultBalue - 默认值
          * @param {string} type 类型
          * @returns {object} - 值
          */
@@ -448,7 +450,7 @@ class BulletScreenEngine {
         /**
          * 填充默认样式
          * @private
-         * @property {openBSE~BulletScreen} bulletScreen 弹幕
+         * @param {openBSE~BulletScreen} bulletScreen 弹幕
          */
         function setDefaultStyle(bulletScreen) {
             bulletScreen.style = setValue(bulletScreen.style, {});
@@ -466,8 +468,8 @@ class BulletScreenEngine {
         /**
          * 生成屏幕弹幕对象函数
          * @private
-         * @property {number} nowTime 当前时间
-         * @property {openBSE~BulletScreen} bulletScreen 弹幕
+         * @param {number} nowTime 当前时间
+         * @param {openBSE~BulletScreen} bulletScreen 弹幕
          */
         function getBulletScreenOnScreen(nowTime, bulletScreen) {
             _delay = nowTime - bulletScreen.startTime;
@@ -555,7 +557,7 @@ class BulletScreenEngine {
         /**
          * 设置真实的Y坐标
          * @private
-         * @property {object} bulletScreenOnScreen 屏幕弹幕事件
+         * @param {object} bulletScreenOnScreen 屏幕弹幕事件
          * @returns {object} 屏幕弹幕事件
          */
         function setActualY(bulletScreenOnScreen) {
@@ -581,14 +583,17 @@ class BulletScreenEngine {
             if (_oldDevicePixelRatio != window.devicePixelRatio ||
                 _oldScaling != options.scaling ||
                 _oldClientWidth != element.clientWidth ||
-                _oldClientHeight != element.clientHeight) {
+                _oldClientHeight != element.clientHeight ||
+                _oldHiddenTypes != options.hiddenTypes) {
                 _elementSize.width = element.clientWidth / options.scaling;
                 _elementSize.height = element.clientHeight / options.scaling;
                 _oldDevicePixelRatio = window.devicePixelRatio;
                 _oldScaling = options.scaling;
                 _oldClientWidth = element.clientWidth;
                 _oldClientHeight = element.clientHeight;
+                _oldHiddenTypes = options.hiddenTypes;
                 _renderer.setSize();
+                if(!_playing) _renderer.draw(); //非播放状态则重绘
             }
         }
     }

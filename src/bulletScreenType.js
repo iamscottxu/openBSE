@@ -12,7 +12,7 @@ const BulletScreenType = {
     /** 顶部弹幕 */
     top: 4,
     /** 底部弹幕 */
-    bottom: 7
+    bottom: 8
 }
 
 export { BulletScreenType }

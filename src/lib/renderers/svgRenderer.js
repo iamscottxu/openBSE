@@ -22,6 +22,7 @@ class SVGRenderer extends BaseRenderer {
         this.draw = function () {
             bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
                 for (let index in bulletScreenOnScreen.svg) {
+                    if (this.checkWhetherHide(bulletScreenOnScreen)) return;
                     bulletScreenOnScreen.svg[index].setAttribute('transform', `translate(${(bulletScreenOnScreen.x - 4)},${(bulletScreenOnScreen.actualY - 4)})`);
                 }
             }, true);
@@ -159,9 +160,9 @@ class SVGRenderer extends BaseRenderer {
          * 支持检测
          * @function
          */
-        function supportCheck(){
-            if (typeof(document.createElementNS) != 'function') throw new BrowserNotSupportError('createElementNS Function');
-            if (typeof(createElementSVG('svg').createSVGRect) != 'function') throw new BrowserNotSupportError('SVG');
+        function supportCheck() {
+            if (typeof (document.createElementNS) != 'function') throw new BrowserNotSupportError('createElementNS Function');
+            if (typeof (createElementSVG('svg').createSVGRect) != 'function') throw new BrowserNotSupportError('SVG');
         }
 
         /**

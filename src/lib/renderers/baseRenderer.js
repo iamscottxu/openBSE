@@ -24,7 +24,6 @@ class BaseRenderer {
 
         /**
          * 隐藏弹幕。
-         * @function
          */
         this.hide = function () {
             _hide = true;
@@ -33,7 +32,6 @@ class BaseRenderer {
 
         /**
          * 显示弹幕。
-         * @function
          */
         this.show = function () {
             _hide = false;
@@ -42,7 +40,6 @@ class BaseRenderer {
 
         /**
          * 设置弹幕不透明度。
-         * @function
          * @param {Float} opacity 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
          */
         this.setOpacity = function (opacity) {
@@ -53,14 +50,12 @@ class BaseRenderer {
 
         /**
          * 获取弹幕不透明度。
-         * @function
          * @returns {Float} 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
          */
         this.getOpacity = () => _opacity;
 
         /**
          * 获取弹幕可见性。
-         * @function
          * @returns {Boolean}  指示弹幕是否可见。
          * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{{@link BulletScreenEngine#hide}} 。
          */
@@ -68,7 +63,6 @@ class BaseRenderer {
 
         /**
          * 绘制函数
-         * @function
          */
         this.draw = function () {
             throw new Error();
@@ -76,7 +70,6 @@ class BaseRenderer {
 
         /**
          * 创建弹幕元素
-         * @function
          * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
          */
         this.creatAndgetWidth = function (bulletScreenOnScreen) {
@@ -85,7 +78,6 @@ class BaseRenderer {
 
         /**
          * 删除弹幕元素
-         * @function
          * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
          */
         this.delete = function (bulletScreenOnScreen) {
@@ -94,9 +86,14 @@ class BaseRenderer {
 
         /**
          * 设置尺寸
-         * @function
          */
         this.setSize = setSize;
+
+        /**
+         * 检查弹幕是否被隐藏
+         * @param {object} - 屏幕弹幕对象
+         */
+        this.checkWhetherHide = (bulletScreenOnScreen) => (bulletScreenOnScreen.bulletScreen.type & options.hiddenTypes) === bulletScreenOnScreen.bulletScreen.type;
 
         function setSize() {
             element.style.width = `${elementSize.width}px`;
@@ -120,7 +117,6 @@ class BaseRenderer {
 
         /**
          * 初始化
-         * @function
          * @private
          */
         function init() {

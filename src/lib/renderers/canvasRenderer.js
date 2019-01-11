@@ -24,6 +24,7 @@ class CanvasRenderer extends CanvasBaseRenderer {
             hideCanvas.height = canvas.height;
             let hideCanvasContext = hideCanvas.getContext('2d');
             bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
+                if (this.checkWhetherHide(bulletScreenOnScreen)) return;
                 hideCanvasContext.drawImage(bulletScreenOnScreen.hideCanvas, (bulletScreenOnScreen.x - 4) * devicePixelRatio, (bulletScreenOnScreen.actualY - 4) * devicePixelRatio, (bulletScreenOnScreen.width + 8) * devicePixelRatio, (bulletScreenOnScreen.height + 8) * devicePixelRatio);
             }, true);
             let canvasContext = canvas.getContext('2d');
@@ -35,12 +36,12 @@ class CanvasRenderer extends CanvasBaseRenderer {
          * 支持检测
          * @function
          */
-        function supportCheck(){
+        function supportCheck() {
             let canvas = document.createElement('canvas'); //canvas对象
-            if (typeof(canvas.getContext) != 'function') throw new BrowserNotSupportError('Canvas');
+            if (typeof (canvas.getContext) != 'function') throw new BrowserNotSupportError('Canvas');
             let context = canvas.getContext('2d');
             if (context === null) throw new BrowserNotSupportError('Canvas 2D');
-            if (typeof(context.fillText) != 'function') throw new BrowserNotSupportError('Canvas 2D fillText Function');
+            if (typeof (context.fillText) != 'function') throw new BrowserNotSupportError('Canvas 2D fillText Function');
         }
     }
 }

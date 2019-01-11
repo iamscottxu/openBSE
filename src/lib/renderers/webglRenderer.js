@@ -24,6 +24,7 @@ class WebGLRenderer extends CanvasBaseRenderer {
             // 清空画布
             _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
             bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
+                if (this.checkWhetherHide(bulletScreenOnScreen)) return;
                 // 四个顶点坐标
                 let x1 = (bulletScreenOnScreen.x - 4) * devicePixelRatio;
                 let x2 = x1 + (bulletScreenOnScreen.width + 8) * devicePixelRatio;
@@ -179,12 +180,12 @@ class WebGLRenderer extends CanvasBaseRenderer {
          * 支持检测
          * @function
          */
-        function supportCheck(){
+        function supportCheck() {
             let canvas = document.createElement('canvas'); //canvas对象
-            if (typeof(canvas.getContext) != 'function') throw new BrowserNotSupportError('Canvas');
+            if (typeof (canvas.getContext) != 'function') throw new BrowserNotSupportError('Canvas');
             let context = canvas.getContext('2d');
             if (context === null) throw new BrowserNotSupportError('Canvas 2D');
-            if (typeof(context.fillText) != 'function') throw new BrowserNotSupportError('Canvas 2D fillText Function');
+            if (typeof (context.fillText) != 'function') throw new BrowserNotSupportError('Canvas 2D fillText Function');
             canvas = document.createElement('canvas'); //canvas对象
             context = canvas.getContext('webgl');
             if (context === null) throw new BrowserNotSupportError('WebGL');

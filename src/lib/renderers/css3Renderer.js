@@ -17,6 +17,7 @@ class CSS3Renderer extends BaseRenderer {
          */
         this.draw = function () {
             bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
+                if (this.checkWhetherHide(bulletScreenOnScreen)) return;
                 bulletScreenOnScreen.div.style.transform =
                     bulletScreenOnScreen.div.style.webkitTransform =
                     bulletScreenOnScreen.div.style.msTransform =
@@ -60,11 +61,11 @@ class CSS3Renderer extends BaseRenderer {
             bulletScreenOnScreen.div = bulletScreenDiv;
         }
 
-         /**
-         * 删除弹幕元素
-         * @function
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
-         */
+        /**
+        * 删除弹幕元素
+        * @function
+        * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+        */
         this.delete = function (bulletScreenOnScreen) {
             _div.removeChild(bulletScreenOnScreen.div);
         }
@@ -82,9 +83,9 @@ class CSS3Renderer extends BaseRenderer {
             div.style.overflow = 'hidden';
             div.style.padding = '0';
             div.style.margin = '0';
-            div.style.userSelect = 
-            div.style.webkitUserSelect = 
-            div.style.msUserSelect = 'none';
+            div.style.userSelect =
+                div.style.webkitUserSelect =
+                div.style.msUserSelect = 'none';
             div.style.cursor = 'default';
             registerEvent(div); //注册事件响应程序
             return div;
@@ -94,12 +95,12 @@ class CSS3Renderer extends BaseRenderer {
          * 支持检测
          * @function
          */
-        function supportCheck(){
+        function supportCheck() {
             let style = document.createElement('div').style;
             if (
-                typeof(style.transform) === 'undefined' &&
-                typeof(style.msTransform) === 'undefined' &&
-                typeof(style.webkitTransform) === 'undefined'
+                typeof (style.transform) === 'undefined' &&
+                typeof (style.msTransform) === 'undefined' &&
+                typeof (style.webkitTransform) === 'undefined'
             ) throw new BrowserNotSupportError('CSS3 transform');
         }
 
