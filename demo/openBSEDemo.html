@@ -72,6 +72,13 @@
                 canDiscard: false
             });
         }
+        function sethiddenTypes() {
+            var formData = new FormData(document.getElementById("hiddenTypes"));
+            var hiddenTypesList = formData.getAll('hiddenTypes');
+            var hiddenTypes = 0;
+            for (var index in hiddenTypesList) hiddenTypes += parseInt(hiddenTypesList[index]);
+            bulletScreenEngine.options.hiddenTypes = hiddenTypes;
+        }
     </script>
 </head>
 
@@ -82,6 +89,15 @@
         <div id="BulletScreensDiv" style="left:0;top:0;right:0;bottom:0;position:absolute;"></div>
     </div>
     <p><input type="text" style="width:500px;" id="BulletScreenText">&nbsp;<a href="#" onclick="sendBulletScreen();">发送</a></p>
+    <p>
+        隐藏弹幕：
+        <form id="hiddenTypes" onclick="sethiddenTypes();">
+            <input type="checkbox" value="1" name="hiddenTypes">普通&nbsp;
+            <input type="checkbox" value="2" name="hiddenTypes">逆向&nbsp;
+            <input type="checkbox" value="4" name="hiddenTypes">顶部&nbsp;
+            <input type="checkbox" value="8" name="hiddenTypes">底部&nbsp;
+        </form>
+    </p>
     <p>上次单击的弹幕内容：<b id="clickText">无</b></p>
     <p>时间：<b id="time"></b> fps：<b id="fps"></b></p>
     <p>实时弹幕条数：<b id="BulletScreensOnScreenCount"></b>&nbsp;剩余弹幕条数：<b id="BulletScreensCount"></b></p>
@@ -97,7 +113,7 @@
     <a href="#" onclick="bulletScreenEngine.options.scaling = 2;">2倍缩放</a>&nbsp;<a href="#" onclick="bulletScreenEngine.options.scaling = 0.75;">0.75倍缩放</a>&nbsp;<br>
     <a href="#" onclick="bulletScreenEngine.setOpacity(0.0);">100%透明</a>&nbsp;<a href="#" onclick="bulletScreenEngine.setOpacity(0.25);">75%透明</a>&nbsp;
     <a href="#" onclick="bulletScreenEngine.setOpacity(0.5);">50%透明</a>&nbsp;<a href="#" onclick="bulletScreenEngine.setOpacity(0.75);">25%透明</a>&nbsp;
-    <a href="#" onclick="bulletScreenEngine.setOpacity(1.0);">不透明</a>&nbsp;
+    <a href="#" onclick="bulletScreenEngine.setOpacity(1.0);">不透明</a>
 </body>
 
 </html>
