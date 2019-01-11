@@ -1,12 +1,12 @@
-# BulletScreenEngine
+# openBSE
 [![Version 1.3](https://img.shields.io/badge/version-1.3-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/releases/tag/v1.3)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/BulletScreenEngine/blob/master/LICENSE)
 
 [English Version](https://github.com/iamscottxu/BulletScreenEngine/blob/master/README.en.md) |
 [wiki](https://github.com/iamscottxu/BulletScreenEngine/wiki) |
-[Demo](https://iamscottxu.github.io/BulletScreenEngine/demo/bulletScreenEngineDemo.html) |
-[2.0-Alpha Docs](https://iamscottxu.github.io/BulletScreenEngine/docs/gen/index.html)
+[Demo](https://iamscottxu.github.io/BulletScreenEngine/demo/openBSEDemo.html) |
+[2.0-Alpha Docs](https://iamscottxu.github.io/BulletScreenEngine/docs/2.0-Alpha/index.html)
 
 高性能 JavaScript 弹幕引擎。同屏弹幕1000+
 
