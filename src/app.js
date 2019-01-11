@@ -1,2 +1,1 @@
-import {BulletScreenEngine} from './BulletScreenEngine'
-window.BulletScreenEngine = BulletScreenEngine;
+window.openBSE = require('./openBSE').openBSE;
