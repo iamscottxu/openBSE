@@ -138,7 +138,7 @@ class BulletScreenEngine {
             'Build Date: %s\n' +
             '\n' +
             '%copenBSE is a high-performance JavaScript bullet-screen (danmaku) engine.\n' +
-            'Home: https://iamscottxu.github.io/BulletScreenEngine/', 'font-weight:bold; color:#0099FF;', '', 'font-style:italic;', VERSION, BUILE_DATE, '');
+            'Home: https://iamscottxu.github.io/openBSE/', 'font-weight:bold; color:#0099FF;', '', 'font-style:italic;', VERSION, BUILE_DATE, '');
         //公共函数
         /**
          * 添加弹幕到弹幕列表。
