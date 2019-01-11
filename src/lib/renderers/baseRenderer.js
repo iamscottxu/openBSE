@@ -96,7 +96,9 @@ class BaseRenderer {
          * 设置尺寸
          * @function
          */
-        this.setSize = function () {
+        this.setSize = setSize;
+
+        function setSize() {
             element.style.width = `${elementSize.width}px`;
             element.style.height = `${elementSize.height}px`;
             if (options.scaling != 1) {
@@ -122,7 +124,7 @@ class BaseRenderer {
          * @private
          */
         function init() {
-            this.setSize();
+            setSize();
             element.style.position = 'relative';
         }
     }
