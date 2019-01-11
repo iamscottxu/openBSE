@@ -249,6 +249,7 @@ function BulletScreenEngine(element, options) {
   _event.add('contextmenu');
   /**
    * 绑定事件处理程序
+   * @function
    * @description 绑定事件处理程序。当事件处理程序返回值为 false 时停止冒泡。
    * @param {string} name 事件名称
    * @param {function} fun 事件处理程序
@@ -261,6 +262,7 @@ function BulletScreenEngine(element, options) {
   this.bind = _event.bind;
   /**
    * 解绑事件处理程序（fun为空解绑所有事件处理程序）
+   * @function
    * @param {string} name 事件名称
    * @param {function} fun 事件处理程序
    * @returns true: 成功 false: 失败 数字: 删除后的事件数
@@ -383,29 +385,34 @@ function BulletScreenEngine(element, options) {
   };
   /**
    * 隐藏弹幕。
+   * @function
    */
 
 
   this.hide = _renderer.hide;
   /**
    * 显示弹幕。
+   * @function
    */
 
   this.show = _renderer.show;
   /**
    * 设置弹幕不透明度。
+   * @function
    * @param {number} opacity - 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
    */
 
   this.setOpacity = _renderer.setOpacity;
   /**
    * 获取弹幕不透明度。
+   * @function
    * @returns {number} - 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
    */
 
   this.getOpacity = _renderer.getOpacity;
   /**
    * 获取弹幕可见性。
+   * @function
    * @returns {boolean} - 指示弹幕是否可见。
    * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{{@link BulletScreenEngine#hide}} 。
    */
@@ -2606,7 +2613,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = '2.0-Alpha';
 exports.VERSION = VERSION;
-var BUILE_DATE = 'Fri, 11 Jan 2019 10:38:27 GMT';
+var BUILE_DATE = 'Fri, 11 Jan 2019 10:58:47 GMT';
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[1,14]);
