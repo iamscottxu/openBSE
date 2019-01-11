@@ -199,6 +199,8 @@ function BulletScreenEngine(element, options) {
 
   options.timeOutDiscard = setValue(options.timeOutDiscard, true, 'boolean'); //超时丢弃
 
+  options.hiddenTypes = setValue(options.hiddenTypes, 0, 'number'); //要隐藏的弹幕类型
+
   options.defaultStyle = setValue(options.defaultStyle, {});
   options.defaultStyle.shadowBlur = setValue(options.defaultStyle.shadowBlur, 2); //全局：阴影的模糊级别，0为不显示阴影
 
@@ -273,7 +275,8 @@ function BulletScreenEngine(element, options) {
   var _oldDevicePixelRatio = window.devicePixelRatio;
   var _oldScaling = options.scaling;
   var _oldClientWidth = element.clientWidth;
-  var _oldClientHeight = element.clientHeight; //渲染器工厂
+  var _oldClientHeight = element.clientHeight;
+  var _oldHiddenTypes = options.hiddenTypes; //渲染器工厂
 
   var renderersFactory = new _renderersFactory.RenderersFactory(element, this.options, _elementSize, _event, _bulletScreensOnScreen);
 
@@ -299,7 +302,7 @@ function BulletScreenEngine(element, options) {
 
     bulletScreen.type = setValue(bulletScreen.type, _bulletScreenType.BulletScreenType.rightToLeft, 'number'); //类型
 
-    if (bulletScreen.type != _bulletScreenType.BulletScreenType.leftToRight & bulletScreen.type != _bulletScreenType.BulletScreenType.rightToLeft & bulletScreen.type != _bulletScreenType.BulletScreenType.top & bulletScreen.type != _bulletScreenType.BulletScreenType.bottom) throw new TypeError(PARAMETERS_TYPE_ERROR);
+    if (bulletScreen.type != _bulletScreenType.BulletScreenType.leftToRight && bulletScreen.type != _bulletScreenType.BulletScreenType.rightToLeft && bulletScreen.type != _bulletScreenType.BulletScreenType.top && bulletScreen.type != _bulletScreenType.BulletScreenType.bottom) throw new TypeError(PARAMETERS_TYPE_ERROR);
     bulletScreenStyleCheckType(bulletScreen.style); //检查弹幕样式类型
 
     var oldLength = _bulletScreens.getLength();
@@ -458,8 +461,8 @@ function BulletScreenEngine(element, options) {
   /**
    * 设置值
    * @private
-   * @property {string} value - 值
-   * @property {string} defaultBalue - 默认值
+   * @param {string} value - 值
+   * @param {string} defaultBalue - 默认值
    * @param {string} type 类型
    * @returns {object} - 值
    */
@@ -643,7 +646,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 填充默认样式
    * @private
-   * @property {openBSE~BulletScreen} bulletScreen 弹幕
+   * @param {openBSE~BulletScreen} bulletScreen 弹幕
    */
 
 
@@ -670,8 +673,8 @@ function BulletScreenEngine(element, options) {
   /**
    * 生成屏幕弹幕对象函数
    * @private
-   * @property {number} nowTime 当前时间
-   * @property {openBSE~BulletScreen} bulletScreen 弹幕
+   * @param {number} nowTime 当前时间
+   * @param {openBSE~BulletScreen} bulletScreen 弹幕
    */
 
 
@@ -787,7 +790,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 设置真实的Y坐标
    * @private
-   * @property {object} bulletScreenOnScreen 屏幕弹幕事件
+   * @param {object} bulletScreenOnScreen 屏幕弹幕事件
    * @returns {object} 屏幕弹幕事件
    */
 
@@ -810,15 +813,18 @@ function BulletScreenEngine(element, options) {
 
 
   function setSize() {
-    if (_oldDevicePixelRatio != window.devicePixelRatio || _oldScaling != options.scaling || _oldClientWidth != element.clientWidth || _oldClientHeight != element.clientHeight) {
+    if (_oldDevicePixelRatio != window.devicePixelRatio || _oldScaling != options.scaling || _oldClientWidth != element.clientWidth || _oldClientHeight != element.clientHeight || _oldHiddenTypes != options.hiddenTypes) {
       _elementSize.width = element.clientWidth / options.scaling;
       _elementSize.height = element.clientHeight / options.scaling;
       _oldDevicePixelRatio = window.devicePixelRatio;
       _oldScaling = options.scaling;
       _oldClientWidth = element.clientWidth;
       _oldClientHeight = element.clientHeight;
+      _oldHiddenTypes = options.hiddenTypes;
 
       _renderer.setSize();
+
+      if (!_playing) _renderer.draw(); //非播放状态则重绘
     }
   }
 };
@@ -850,7 +856,7 @@ var BulletScreenType = {
   top: 4,
 
   /** 底部弹幕 */
-  bottom: 7
+  bottom: 8
 };
 exports.BulletScreenType = BulletScreenType;
 
@@ -1199,7 +1205,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 隐藏弹幕。
-   * @function
    */
 
 
@@ -1209,7 +1214,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 显示弹幕。
-   * @function
    */
 
 
@@ -1219,7 +1223,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 设置弹幕不透明度。
-   * @function
    * @param {Float} opacity 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
    */
 
@@ -1231,7 +1234,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 获取弹幕不透明度。
-   * @function
    * @returns {Float} 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
    */
 
@@ -1241,7 +1243,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 获取弹幕可见性。
-   * @function
    * @returns {Boolean}  指示弹幕是否可见。
    * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{{@link BulletScreenEngine#hide}} 。
    */
@@ -1252,7 +1253,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 绘制函数
-   * @function
    */
 
 
@@ -1261,7 +1261,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 创建弹幕元素
-   * @function
    * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
    */
 
@@ -1271,7 +1270,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 删除弹幕元素
-   * @function
    * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
    */
 
@@ -1281,11 +1279,18 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 设置尺寸
-   * @function
    */
 
 
   this.setSize = setSize;
+  /**
+   * 检查弹幕是否被隐藏
+   * @param {object} - 屏幕弹幕对象
+   */
+
+  this.checkWhetherHide = function (bulletScreenOnScreen) {
+    return (bulletScreenOnScreen.bulletScreen.type & options.hiddenTypes) === bulletScreenOnScreen.bulletScreen.type;
+  };
 
   function setSize() {
     element.style.width = "".concat(elementSize.width, "px");
@@ -1300,7 +1305,6 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   }
   /**
    * 初始化
-   * @function
    * @private
    */
 
@@ -1610,6 +1614,8 @@ function (_CanvasBaseRenderer) {
 
 
     _this.draw = function () {
+      var _this2 = this;
+
       var canvas = this.getCanvas();
       var devicePixelRatio = this.getDevicePixelRatio(); //离屏渲染
 
@@ -1618,6 +1624,7 @@ function (_CanvasBaseRenderer) {
       hideCanvas.height = canvas.height;
       var hideCanvasContext = hideCanvas.getContext('2d');
       bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+        if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
         hideCanvasContext.drawImage(bulletScreenOnScreen.hideCanvas, (bulletScreenOnScreen.x - 4) * devicePixelRatio, (bulletScreenOnScreen.actualY - 4) * devicePixelRatio, (bulletScreenOnScreen.width + 8) * devicePixelRatio, (bulletScreenOnScreen.height + 8) * devicePixelRatio);
       }, true);
       var canvasContext = canvas.getContext('2d');
@@ -1699,7 +1706,10 @@ function (_BaseRenderer) {
 
 
     _this.draw = function () {
+      var _this2 = this;
+
       bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+        if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
         bulletScreenOnScreen.div.style.transform = bulletScreenOnScreen.div.style.webkitTransform = bulletScreenOnScreen.div.style.msTransform = "translate(".concat(bulletScreenOnScreen.x - 4, "px,").concat(bulletScreenOnScreen.actualY - 4, "px)");
       }, true);
     };
@@ -1936,8 +1946,11 @@ function (_BaseRenderer) {
 
 
     _this.draw = function () {
+      var _this2 = this;
+
       bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
         for (var index in bulletScreenOnScreen.svg) {
+          if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
           bulletScreenOnScreen.svg[index].setAttribute('transform', "translate(".concat(bulletScreenOnScreen.x - 4, ",").concat(bulletScreenOnScreen.actualY - 4, ")"));
         }
       }, true);
@@ -2266,12 +2279,15 @@ function (_CanvasBaseRenderer) {
 
 
     _this.draw = function () {
+      var _this2 = this;
+
       var devicePixelRatio = this.getDevicePixelRatio(); // 清空画布
 
       _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
 
       bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-        // 四个顶点坐标
+        if (_this2.checkWhetherHide(bulletScreenOnScreen)) return; // 四个顶点坐标
+
         var x1 = (bulletScreenOnScreen.x - 4) * devicePixelRatio;
         var x2 = x1 + (bulletScreenOnScreen.width + 8) * devicePixelRatio;
         var y1 = (bulletScreenOnScreen.actualY - 4) * devicePixelRatio;
@@ -2513,6 +2529,7 @@ var openBSE = {
  * @property {openBSE~clockCallback} [clock=time => new Date().getTime() - startTime] - 时间基准：此时间基准可指向一个方法用于获取播放器当前进度，这个方法返回值即为播放进度（单位：毫秒）。
  * @property {number} [scaling=1] 弹幕缩放比例（倍数）
  * @property {openBSE~BulletScreenStyle} [defaultStyle] 默认弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。
+ * @property {openBSE.BulletScreenType} [hiddenTypes] 隐藏的弹幕类型：一个 {@link openBSE.BulletScreenType} 枚举，将要隐藏的弹幕类型相加。
  */
 
 /**
@@ -2579,7 +2596,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = '2.0-Alpha';
 exports.VERSION = VERSION;
-var BUILE_DATE = 'Fri, 11 Jan 2019 08:06:15 GMT';
+var BUILE_DATE = 'Fri, 11 Jan 2019 10:12:20 GMT';
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[1,14]);
