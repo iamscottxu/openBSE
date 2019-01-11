@@ -1288,7 +1288,13 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   this.setSize = function () {
     element.style.width = "".concat(elementSize.width, "px");
     element.style.height = "".concat(elementSize.height, "px");
-    element.style.transform = element.style.webkitTransform = element.style.msTransform = "scale(".concat(options.scaling, ",").concat(options.scaling, ")");
+
+    if (options.scaling != 1) {
+      element.style.transform = element.style.webkitTransform = element.style.msTransform = "scale(".concat(options.scaling, ",").concat(options.scaling, ")");
+      element.style.transformOrigin = element.style.webkitTransformOrigin = element.style.msTransformOrigin = "left top";
+    } else {
+      element.style.transform = element.style.webkitTransform = element.style.msTransform = element.style.transformOrigin = element.style.webkitTransformOrigin = element.style.msTransformOrigin = '';
+    }
   };
   /**
    * 初始化
@@ -1298,10 +1304,7 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
 
 
   function init() {
-    element.style.width = "".concat(elementSize.width, "px");
-    element.style.height = "".concat(elementSize.height, "px");
-    element.style.transform = element.style.webkitTransform = element.style.msTransform = "scale(".concat(options.scaling, ",").concat(options.scaling, ")");
-    element.style.transformOrigin = element.style.webkitTransformOrigin = element.style.msTransformOrigin = "left top";
+    this.setSize();
     element.style.position = 'relative';
   }
 };
@@ -2574,7 +2577,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = '2.0-Alpha';
 exports.VERSION = VERSION;
-var BUILE_DATE = 'Fri, 11 Jan 2019 07:49:08 GMT';
+var BUILE_DATE = 'Fri, 11 Jan 2019 08:01:07 GMT';
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[1,14]);
