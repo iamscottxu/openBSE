@@ -105,6 +105,7 @@ class BulletScreenEngine {
         _event.add('contextmenu');
         /**
          * 绑定事件处理程序
+         * @function
          * @description 绑定事件处理程序。当事件处理程序返回值为 false 时停止冒泡。
          * @param {string} name 事件名称
          * @param {function} fun 事件处理程序
@@ -115,6 +116,7 @@ class BulletScreenEngine {
         this.bind = _event.bind;
         /**
          * 解绑事件处理程序（fun为空解绑所有事件处理程序）
+         * @function
          * @param {string} name 事件名称
          * @param {function} fun 事件处理程序
          * @returns true: 成功 false: 失败 数字: 删除后的事件数
@@ -238,28 +240,33 @@ class BulletScreenEngine {
 
         /**
          * 隐藏弹幕。
+         * @function
          */
         this.hide = _renderer.hide;
 
         /**
          * 显示弹幕。
+         * @function
          */
         this.show = _renderer.show;
 
         /**
          * 设置弹幕不透明度。
+         * @function
          * @param {number} opacity - 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
          */
         this.setOpacity = _renderer.setOpacity;
 
         /**
          * 获取弹幕不透明度。
+         * @function
          * @returns {number} - 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
          */
         this.getOpacity = _renderer.getOpacity;
 
         /**
          * 获取弹幕可见性。
+         * @function
          * @returns {boolean} - 指示弹幕是否可见。
          * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{{@link BulletScreenEngine#hide}} 。
          */
@@ -268,17 +275,13 @@ class BulletScreenEngine {
          * 获取渲染模式。
          * @returns {string} - 弹幕渲染模式： 取值为“canvas”、“css3”、“webgl”或“svg”。
          */
-        this.getRenderMode = function () {
-            return renderMode;
-        };
+        this.getRenderMode = () => renderMode;
 
         /**
          * 获取播放状态。
          * @returns {boolean} - 正在播放标志：true：正在播放；false：已暂停/停止播放。
          */
-        this.getPlayState = function () {
-            return _playing;
-        };
+        this.getPlayState = () => _playing;
 
         /**
         * 获取调试信息。
