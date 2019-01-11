@@ -1466,6 +1466,8 @@ function (_BaseRenderer) {
 
       return canvas;
     }
+
+    var _checkWhetherHide = _this.checkWhetherHide;
     /**
      * 注册事件响应程序
      * @function
@@ -1473,11 +1475,11 @@ function (_BaseRenderer) {
      * @property {Element} element 元素
      */
 
-
     function registerEvent(element) {
       function getBulletScreenOnScreenByLocation(location) {
         var bulletScreen = null;
         bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+          if (_checkWhetherHide(bulletScreenOnScreen)) return null;
           var x1 = bulletScreenOnScreen.x - 4;
           var x2 = x1 + bulletScreenOnScreen.width + 8;
           var y1 = bulletScreenOnScreen.actualY - 4;
@@ -1709,7 +1711,12 @@ function (_BaseRenderer) {
       var _this2 = this;
 
       bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-        if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
+        if (_this2.checkWhetherHide(bulletScreenOnScreen)) {
+          bulletScreenOnScreen.div.style.visibility = 'hidden';
+          return;
+        }
+
+        bulletScreenOnScreen.div.style.visibility = 'visible';
         bulletScreenOnScreen.div.style.transform = bulletScreenOnScreen.div.style.webkitTransform = bulletScreenOnScreen.div.style.msTransform = "translate(".concat(bulletScreenOnScreen.x - 4, "px,").concat(bulletScreenOnScreen.actualY - 4, "px)");
       }, true);
     };
@@ -1950,8 +1957,9 @@ function (_BaseRenderer) {
 
       bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
         for (var index in bulletScreenOnScreen.svg) {
-          if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
-          bulletScreenOnScreen.svg[index].setAttribute('transform', "translate(".concat(bulletScreenOnScreen.x - 4, ",").concat(bulletScreenOnScreen.actualY - 4, ")"));
+          var item = bulletScreenOnScreen.svg[index];
+          if (_this2.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');else item.setAttribute('opacity', '1');
+          item.setAttribute('transform', "translate(".concat(bulletScreenOnScreen.x - 4, ",").concat(bulletScreenOnScreen.actualY - 4, ")"));
         }
       }, true);
     };
@@ -2110,6 +2118,8 @@ function (_BaseRenderer) {
       if (typeof document.createElementNS != 'function') throw new _browserNotSupportError.BrowserNotSupportError('createElementNS Function');
       if (typeof createElementSVG('svg').createSVGRect != 'function') throw new _browserNotSupportError.BrowserNotSupportError('SVG');
     }
+
+    var _checkWhetherHide = _this.checkWhetherHide;
     /**
      * 注册事件响应程序
      * @function
@@ -2117,11 +2127,11 @@ function (_BaseRenderer) {
      * @property {Element} element - 元素
      */
 
-
     function registerEvent(element) {
       function getBulletScreenOnScreenByLocation(location) {
         var bulletScreen = null;
         bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+          if (_checkWhetherHide(bulletScreenOnScreen)) return null;
           var x1 = bulletScreenOnScreen.x - 4;
           var x2 = x1 + bulletScreenOnScreen.width + 8;
           var y1 = bulletScreenOnScreen.actualY - 4;
@@ -2596,7 +2606,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = '2.0-Alpha';
 exports.VERSION = VERSION;
-var BUILE_DATE = 'Fri, 11 Jan 2019 10:12:20 GMT';
+var BUILE_DATE = 'Fri, 11 Jan 2019 10:38:27 GMT';
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[1,14]);
