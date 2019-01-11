@@ -19,6 +19,7 @@ export { openBSE }
  * @property {openBSE~clockCallback} [clock=time => new Date().getTime() - startTime] - 时间基准：此时间基准可指向一个方法用于获取播放器当前进度，这个方法返回值即为播放进度（单位：毫秒）。
  * @property {number} [scaling=1] 弹幕缩放比例（倍数）
  * @property {openBSE~BulletScreenStyle} [defaultStyle] 默认弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。
+ * @property {openBSE.BulletScreenType} [hiddenTypes] 隐藏的弹幕类型：一个 {@link openBSE.BulletScreenType} 枚举，将要隐藏的弹幕类型相加。
  */
 
 /**
