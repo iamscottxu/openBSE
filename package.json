@@ -1,7 +1,7 @@
 {
-  "name": "bullet-screen-engine",
-  "version": "1.3.3",
-  "description": "高性能 JavaScript 弹幕引擎。同屏弹幕1000+ A high-performance JavaScript bullet screen (danmaku) engine. ",
+  "name": "openbse",
+  "version": "2.0.0",
+  "description": "openBSE 是一个高性能 JavaScript 弹幕引擎。同屏弹幕1000+ A high-performance JavaScript bullet screen (danmaku) engine. ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
