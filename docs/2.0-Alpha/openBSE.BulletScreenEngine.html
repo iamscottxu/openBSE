@@ -393,246 +393,6 @@
         <dl>
             
 <hr>
-<dt class="name" id="bind">
-    <h4 id="bind"><span class="type-signature"></span>bind<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        绑定事件处理程序。当事件处理程序返回值为 false 时停止冒泡。
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="getOpacity">
-    <h4 id="getOpacity"><span class="type-signature"></span>getOpacity<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        获取弹幕不透明度。
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="getVisibility">
-    <h4 id="getVisibility"><span class="type-signature"></span>getVisibility<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        获取弹幕可见性。如要显示弹幕请调用 bulletScreenEngine.show(); ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{BulletScreenEngine#hide} 。
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="hide">
-    <h4 id="hide"><span class="type-signature"></span>hide<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        隐藏弹幕。
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
 <dt class="name" id="options">
     <h4 id="options"><span class="type-signature">&lt;readonly> </span>options<span class="type-signature"> :<a href="openBSE.html#~Options">openBSE~Options</a></span></h4>
 
@@ -656,186 +416,6 @@
 
             </li>
         </ul>
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="setOpacity">
-    <h4 id="setOpacity"><span class="type-signature"></span>setOpacity<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        设置弹幕不透明度。
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="show">
-    <h4 id="show"><span class="type-signature"></span>show<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        显示弹幕。
-    </div>
-    
-
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt class="name" id="unbind">
-    <h4 id="unbind"><span class="type-signature"></span>unbind<span class="type-signature"></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        解绑事件处理程序（fun为空解绑所有事件处理程序）
-    </div>
-    
-
     
 
     
@@ -1011,6 +591,176 @@
     
 
     
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="bind"><span class="type-signature"></span>bind(name, fun)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        绑定事件处理程序。当事件处理程序返回值为 false 时停止冒泡。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">事件名称</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fun</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">事件处理程序</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+    <h5>Listens to Events:</h5>
+    <ul>
+        <li><a href="openBSE.BulletScreenEngine.html#event:click">openBSE.BulletScreenEngine#event:click</a></li>
+    
+        <li><a href="openBSE.BulletScreenEngine.html#event:contextmenu">openBSE.BulletScreenEngine#event:contextmenu</a></li>
+    </ul>
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    false: 失败 数字: 添加后的事件数
+</div>
+
+
+
+
+        
 
     
 </dd>
@@ -1261,6 +1011,108 @@
     <dd>
         
 <span class="param-type"><a href="openBSE.html#~DebugInfo">openBSE~DebugInfo</a></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getOpacity"><span class="type-signature"></span>getOpacity()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        获取弹幕不透明度。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    - 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
 
 
 
@@ -1583,6 +1435,186 @@
             
 <hr>
 <dt>
+    <h4 class="name" id="getVisibility"><span class="type-signature"></span>getVisibility()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        获取弹幕可见性。如要显示弹幕请调用 bulletScreenEngine.show(); ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{BulletScreenEngine#hide} 。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    - 指示弹幕是否可见。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="hide"><span class="type-signature"></span>hide()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        隐藏弹幕。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
     <h4 class="name" id="pause"><span class="type-signature"></span>pause()</h4>
     
     
@@ -1739,6 +1771,212 @@
             
 <hr>
 <dt>
+    <h4 class="name" id="setOpacity"><span class="type-signature"></span>setOpacity(opacity)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        设置弹幕不透明度。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>opacity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="show"><span class="type-signature"></span>show()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        显示弹幕。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
     <h4 class="name" id="stop"><span class="type-signature"></span>stop()</h4>
     
     
@@ -1809,6 +2047,169 @@
     
 
     
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="unbind"><span class="type-signature"></span>unbind(name, fun)</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        解绑事件处理程序（fun为空解绑所有事件处理程序）
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>name</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">事件名称</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fun</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">事件处理程序</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    true: 成功 false: 失败 数字: 删除后的事件数
+</div>
+
+
+
+
+        
 
     
 </dd>
@@ -2139,7 +2540,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
-		on 2019-01-11T18:38:31+08:00
+		on 2019-01-11T18:58:51+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
