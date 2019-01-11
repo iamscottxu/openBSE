@@ -21,7 +21,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Home: https://iamscottxu.github.io/BulletScreenEngine/
+Home: https://iamscottxu.github.io/openBSE/
 */
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 "use strict";
@@ -281,7 +281,7 @@ function BulletScreenEngine(element, options) {
 
 
   setInterval(setSize, 100);
-  console.info('%copenBSE%c now loaded.\n' + '\n' + '%cVersion: %s\n' + 'Build Date: %s\n' + '\n' + '%copenBSE is a high-performance JavaScript bullet-screen (danmaku) engine.\n' + 'Home: https://iamscottxu.github.io/BulletScreenEngine/', 'font-weight:bold; color:#0099FF;', '', 'font-style:italic;', _version.VERSION, _version.BUILE_DATE, ''); //公共函数
+  console.info('%copenBSE%c now loaded.\n' + '\n' + '%cVersion: %s\n' + 'Build Date: %s\n' + '\n' + '%copenBSE is a high-performance JavaScript bullet-screen (danmaku) engine.\n' + 'Home: https://iamscottxu.github.io/openBSE/', 'font-weight:bold; color:#0099FF;', '', 'font-style:italic;', _version.VERSION, _version.BUILE_DATE, ''); //公共函数
 
   /**
    * 添加弹幕到弹幕列表。
@@ -2574,7 +2574,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.BUILE_DATE = exports.VERSION = void 0;
 var VERSION = '2.0-Alpha';
 exports.VERSION = VERSION;
-var BUILE_DATE = 'Fri, 11 Jan 2019 07:27:26 GMT';
+var BUILE_DATE = 'Fri, 11 Jan 2019 07:49:08 GMT';
 exports.BUILE_DATE = BUILE_DATE;
 
 },{}]},{},[1,14]);
