@@ -5,10 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>弹幕引擎Demo</title>
     <link href="./fonts/SourceHanSans-Medium.css" rel="stylesheet">
-    <script src="../dist/bulletScreenEngine.all.js"></script>
+    <script src="../dist/openBSE.all.js"></script>
     <script>
         window.onload = function () {
-            bulletScreenEngine = new BulletScreenEngine(document.getElementById('BulletScreensDiv'), {
+            bulletScreenEngine = new openBSE.BulletScreenEngine(document.getElementById('BulletScreensDiv'), {
                 defaultStyle: {
                     fontFamily: '思源黑体 Medium, Source Han Sans TC Medium, Source Han Sans HC Medium, Source Han Sans K Medium, Source Han Sans Medium, sans-serif',
                     fontWeight: '400'
@@ -30,7 +30,7 @@
                     bulletScreenEngine.addBulletScreen({
                         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
                         startTime: _startTime,
-                        type: 0,
+                        type: openBSE.BulletScreenType.rightToLeft,
                         style: {
                             speed: 0.15 + Math.random() / 90,
                             size: 22,
@@ -41,7 +41,7 @@
                     bulletScreenEngine.addBulletScreen({
                         text: "橘里橘气",
                         startTime: _startTime,
-                        type: (Math.random() > 0.4) ? 0 : 2,
+                        type: (Math.random() > 0.4) ? openBSE.BulletScreenType.rightToLeft : openBSE.BulletScreenType.top,
                         style: {
                             speed: 0.1 + Math.random() / 90,
                             size: 23,
