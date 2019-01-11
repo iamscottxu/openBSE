@@ -1,4 +1,5 @@
 import { BaseRenderer } from './baseRenderer'
+import { BrowserNotSupportError } from '../../browserNotSupportError'
 
 class SVGRenderer extends BaseRenderer {
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
@@ -159,8 +160,8 @@ class SVGRenderer extends BaseRenderer {
          * @function
          */
         function supportCheck(){
-            if (typeof(document.createElementNS) != 'function') throw new Error('This browser does not support createElementNS function.');
-            if (typeof(createElementSVG('svg').createSVGRect) != 'function') throw new Error('This browser does not support SVG.');
+            if (typeof(document.createElementNS) != 'function') throw new BrowserNotSupportError('createElementNS Function');
+            if (typeof(createElementSVG('svg').createSVGRect) != 'function') throw new BrowserNotSupportError('SVG');
         }
 
         /**

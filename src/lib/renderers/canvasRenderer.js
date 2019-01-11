@@ -1,4 +1,5 @@
 import { CanvasBaseRenderer } from './canvasBaseRenderer'
+import { BrowserNotSupportError } from '../../browserNotSupportError'
 
 class CanvasRenderer extends CanvasBaseRenderer {
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
@@ -36,10 +37,10 @@ class CanvasRenderer extends CanvasBaseRenderer {
          */
         function supportCheck(){
             let canvas = document.createElement('canvas'); //canvas对象
-            if (typeof(canvas.getContext) != 'function') throw new Error('This browser does not support Canvas.');
+            if (typeof(canvas.getContext) != 'function') throw new BrowserNotSupportError('Canvas');
             let context = canvas.getContext('2d');
-            if (context === null) throw new Error('This browser does not support Canvas 2D.');
-            if (typeof(context.fillText) != 'function') throw new Error('This browser does not support Canvas 2D fillText function.');
+            if (context === null) throw new BrowserNotSupportError('Canvas 2D');
+            if (typeof(context.fillText) != 'function') throw new BrowserNotSupportError('Canvas 2D fillText Function');
         }
     }
 }

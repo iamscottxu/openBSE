@@ -1,4 +1,5 @@
 import { CanvasBaseRenderer } from './canvasBaseRenderer'
+import { BrowserNotSupportError } from '../../browserNotSupportError'
 
 class WebGLRenderer extends CanvasBaseRenderer {
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
@@ -180,13 +181,13 @@ class WebGLRenderer extends CanvasBaseRenderer {
          */
         function supportCheck(){
             let canvas = document.createElement('canvas'); //canvas对象
-            if (typeof(canvas.getContext) != 'function') throw new Error('This browser does not support Canvas.');
+            if (typeof(canvas.getContext) != 'function') throw new BrowserNotSupportError('Canvas');
             let context = canvas.getContext('2d');
-            if (context === null) throw new Error('This browser does not support Canvas 2D.');
-            if (typeof(context.fillText) != 'function') throw new Error('This browser does not support Canvas 2D fillText function.');
+            if (context === null) throw new BrowserNotSupportError('Canvas 2D');
+            if (typeof(context.fillText) != 'function') throw new BrowserNotSupportError('Canvas 2D fillText Function');
             canvas = document.createElement('canvas'); //canvas对象
             context = canvas.getContext('webgl');
-            if (context === null) throw new Error('This browser does not support WebGL.');
+            if (context === null) throw new BrowserNotSupportError('WebGL');
         }
     }
 }

@@ -1,4 +1,5 @@
 import { BaseRenderer } from './baseRenderer'
+import { BrowserNotSupportError } from '../../browserNotSupportError'
 
 class CSS3Renderer extends BaseRenderer {
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
@@ -99,7 +100,7 @@ class CSS3Renderer extends BaseRenderer {
                 typeof(style.transform) === 'undefined' &&
                 typeof(style.msTransform) === 'undefined' &&
                 typeof(style.webkitTransform) === 'undefined'
-            ) throw new Error('This browser does not support CSS3 transform.');
+            ) throw new BrowserNotSupportError('CSS3 transform');
         }
 
         /**
