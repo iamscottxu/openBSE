@@ -6,6 +6,7 @@
 [中文版本](https://github.com/iamscottxu/openBSE/blob/master/README.md) |
 [wiki](https://github.com/iamscottxu/openBSE/wiki) |
 [Demo](https://iamscottxu.github.io/openBSE/demo/openBSEDemo.html)
+[2.0-Alpha Docs](https://iamscottxu.github.io/openBSE/docs/2.0-Beta/index.html)
 
 A high-performance JavaScript bullet-screen (danmaku) engine. 1000+ at the same time
 
@@ -14,7 +15,7 @@ This is a high-performance JavaScript bullet-screen (danmaku) engine and it is v
 
 ## Installation and use
 ### Installation
-You can click [here](https://github.com/iamscottxu/openBSE/releases/tag/v1.3) to download latest release version. You also can install NPM package using following commands.
+You can click [here](https://github.com/iamscottxu/openBSE/releases/tag/v2.0) to download latest release version. You also can install NPM package using following commands.
 ```Bash
 > npm install bullet-screen-engine
 ```
