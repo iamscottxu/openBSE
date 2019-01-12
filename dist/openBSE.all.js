@@ -2824,7 +2824,7 @@ var BrowserNotSupportError = function (_Error) {
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
 },{"core-js/modules/es6.array.index-of":85,"core-js/modules/es6.array.iterator":86,"core-js/modules/es6.date.to-string":87,"core-js/modules/es6.function.bind":88,"core-js/modules/es6.map":90,"core-js/modules/es6.object.create":91,"core-js/modules/es6.object.define-property":92,"core-js/modules/es6.object.set-prototype-of":93,"core-js/modules/es6.reflect.construct":94,"core-js/modules/es6.regexp.to-string":96,"core-js/modules/es6.string.iterator":97,"core-js/modules/es6.symbol":98,"core-js/modules/es7.symbol.async-iterator":100,"core-js/modules/web.dom.iterable":101}],104:[function(require,module,exports){
-module.exports={"version":"2.0-Beta","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Sat, 12 Jan 2019 14:44:07 GMT"}
+module.exports={"version":"2.0-Beta","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Sat, 12 Jan 2019 15:28:38 GMT"}
 
 },{}],105:[function(require,module,exports){
 "use strict";
@@ -5575,15 +5575,16 @@ var _browserNotSupportError = require("./browserNotSupportError");
 
 var _bulletScreenType = require("./bulletScreenType");
 
-var _build = require("./build.json");
-
+var BUILD = require('./build.json');
 /**
  * 获取版本信息。
  * @alias openBSE.getVersion
  * @returns {openBSE~VersionInfo} 版本信息：一个 {@link openBSE~VersionInfo} 结构。
  */
+
+
 function getVersion() {
-  return _helper.Helper.clone(_build.BUILD);
+  return _helper.Helper.clone(BUILD);
 }
 /**
  * 全局选项
