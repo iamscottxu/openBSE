@@ -24,11 +24,18 @@ SOFTWARE.
 Home: https://iamscottxu.github.io/openBSE/
 */
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
+module.exports={
+    "version": "2.0-Beta",
+    "home": "https://iamscottxu.github.io/openBSE/",
+    "name": "openBSE",
+    "description": "openBSE is a high-performance JavaScript bullet-screen (danmaku) engine."
+}
+},{}],2:[function(require,module,exports){
 "use strict";
 
 window.openBSE = require('./openBSE').openBSE;
 
-},{"./openBSE":14}],2:[function(require,module,exports){
+},{"./openBSE":17}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64,14 +71,12 @@ function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.g
  * @alias openBSE.BrowserNotSupportError
  * @extends Error
  */
-var BrowserNotSupportError =
-/*#__PURE__*/
-function (_Error) {
+var BrowserNotSupportError = function (_Error) {
   _inherits(BrowserNotSupportError, _Error);
 
   /**
    * 创建一个异常对象
-   * @param {String} message 
+   * @param {string} message - 消息
    */
   function BrowserNotSupportError(message) {
     var _this;
@@ -88,7 +93,9 @@ function (_Error) {
 
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+module.exports={"buildDate":"Sat, 12 Jan 2019 05:28:57 GMT"}
+},{}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -100,17 +107,17 @@ var _linkedList = require("./lib/linkedList");
 
 var _event2 = require("./lib/event");
 
-var _version = require("./version");
-
 var _renderersFactory = require("./lib/renderers/renderersFactory");
 
-var _bulletScreenType = require("./bulletScreenType");
+var _bulletScreenType2 = require("./bulletScreenType");
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+var _helper = require("./lib/helper");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var PARAMETERS_TYPE_ERROR = 'Parameters type error.';
+var BUILD = require('../build.json');
+
+BUILD.buildDate = require('./buildDate.json').buildDate;
 /** 
  * 弹幕引擎对象类 
  * @alias openBSE.BulletScreenEngine
@@ -122,15 +129,13 @@ var BulletScreenEngine =
 /**
  * 创建一个弹幕引擎对象。
  * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
- * @param {openBSE~Options} [options] - 全局选项：一个 {@link openBSE~Options} 结构。
+ * @param {openBSE~Options} [_options] - 全局选项：一个 {@link openBSE~Options} 结构。
  * @param {string} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。
  */
 function BulletScreenEngine(element, options) {
   var renderMode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'canvas';
 
   _classCallCheck(this, BulletScreenEngine);
-
-  //变量初始化
 
   /**
    * 开始时间
@@ -145,12 +150,18 @@ function BulletScreenEngine(element, options) {
 
   var _pauseTime = 0;
   /**
-   * 剩余弹幕，屏幕上的弹幕
-   * @private @type {number}
+   * 剩余弹幕
+   * @private @type {LinkedList}
    */
 
-  var _bulletScreens = new _linkedList.LinkedList(),
-      _bulletScreensOnScreen = new _linkedList.LinkedList();
+  var _bulletScreens = new _linkedList.LinkedList();
+  /**
+   * 屏幕上的弹幕
+   * @private @type {LinkedList}
+   */
+
+
+  var _bulletScreensOnScreen = new _linkedList.LinkedList();
   /**
    * 延迟弹幕总数
    * @private @type {number}
@@ -176,65 +187,141 @@ function BulletScreenEngine(element, options) {
    */
 
 
-  var _refreshRate = 0.06; //初始刷新频率
-
+  var _refreshRate = 0.06;
   /**
    * 上一次刷新时间
    * @private @type {number}
    */
 
-  var _lastRefreshTime; //默认参数
-
-
-  options = setValue(options, {});
-  options.verticalInterval = setValue(options.verticalInterval, 8, 'number'); //垂直间距
-
-  options.playSpeed = setValue(options.playSpeed, 1, 'number'); //播放速度倍数
-
-  options.clock = setValue(options.clock, function (time) {
-    return new Date().getTime() - _startTime;
-  }, 'function'); //时间基准
-
-  options.scaling = setValue(options.scaling, 1, 'number'); //缩放比例
-
-  options.timeOutDiscard = setValue(options.timeOutDiscard, true, 'boolean'); //超时丢弃
-
-  options.hiddenTypes = setValue(options.hiddenTypes, 0, 'number'); //要隐藏的弹幕类型
-
-  options.defaultStyle = setValue(options.defaultStyle, {});
-  options.defaultStyle.shadowBlur = setValue(options.defaultStyle.shadowBlur, 2); //全局：阴影的模糊级别，0为不显示阴影
-
-  options.defaultStyle.fontWeight = setValue(options.defaultStyle.fontWeight, '600'); //全局：字体粗细
-
-  options.defaultStyle.fontFamily = setValue(options.defaultStyle.fontFamily, 'sans-serif'); //全局：字体系列
-
-  options.defaultStyle.size = setValue(options.defaultStyle.size, 19); //全局：字体大小（单位：像素）
-
-  options.defaultStyle.boxColor = setValue(options.defaultStyle.boxColor, null); //全局：外框颜色
-
-  options.defaultStyle.color = setValue(options.defaultStyle.color, 'white'); //全局：字体颜色
-
-  options.defaultStyle.borderColor = setValue(options.defaultStyle.borderColor, null); //全局：描边颜色
-
-  options.defaultStyle.speed = setValue(options.defaultStyle.speed, 0.15); //全局：弹幕速度（单位：像素/毫秒） 仅类型0、1有效
-
-  options.defaultStyle.residenceTime = setValue(options.defaultStyle.residenceTime, 5000); //全局：弹幕停留时间 仅类型2、3有效
-
-  bulletScreenStyleCheckType(options.defaultStyle); //检查弹幕样式类型
-
+  var _lastRefreshTime;
   /**
-   * 全局选项：一个 {@link openBSE~Options} 结构。
-   * @readonly
-   * @type {openBSE~Options}
+   * 全局选项
+   * @private @type {openBSE~Options}
    */
 
-  this.options = options; //事件初始化
+
+  var _options;
+  /**
+   * 默认全局变量
+   * @private @readonly
+   */
+
+
+  var _defaultOptions = {
+    /** 垂直间距 */
+    verticalInterval: 8,
+
+    /** 播放速度(倍数) */
+    playSpeed: 1,
+
+    /** 时间基准 */
+    clock: function clock(time) {
+      return new Date().getTime() - _startTime;
+    },
+
+    /** 缩放比例 */
+    scaling: 1,
+
+    /** 超时丢弃 */
+    timeOutDiscard: true,
+
+    /** 要隐藏的弹幕类型 */
+    hiddenTypes: 0,
+
+    /** 弹幕不透明度 */
+    opacity: 1,
+
+    /** 默认弹幕样式 */
+    defaultStyle: {
+      /** 阴影的模糊级别，0为不显示阴影 */
+      shadowBlur: 2,
+
+      /** 字体粗细 */
+      fontWeight: '600',
+
+      /** 字体系列 */
+      fontFamily: 'sans-serif',
+
+      /** 字体大小（单位：像素） */
+      size: 19,
+
+      /** 外框颜色 */
+      boxColor: null,
+
+      /** 字体颜色 */
+      color: 'white',
+
+      /** 描边颜色 */
+      borderColor: null,
+
+      /** 弹幕速度（单位：像素/毫秒） 仅流弹幕类型有效 */
+      speed: 0.15,
+
+      /** 弹幕停留时间 仅固定弹幕类型有效 */
+      residenceTime: 5000
+    }
+    /**
+     * 全局选项类型
+     * @private @readonly
+     */
+
+  };
+  var _optionsType = {
+    verticalInterval: 'number',
+    playSpeed: 'number',
+    clock: 'function',
+    scaling: 'number',
+    timeOutDiscard: 'boolean',
+    hiddenTypes: 'number',
+    opacity: 'number',
+    defaultStyle: {
+      shadowBlur: 'number',
+      fontWeight: ['string', 'number'],
+      fontFamily: 'string',
+      size: 'number',
+      boxColor: ['string', 'null'],
+      color: 'string',
+      borderColor: ['string', 'null'],
+      speed: 'number',
+      residenceTime: 'number'
+    }
+    /**
+     * 默认弹幕数据
+     * @private @readonly
+     */
+
+  };
+  var _defaultBulletScreen = {
+    /** 弹幕文本 */
+    text: null,
+
+    /** 是否允许丢弃 */
+    canDiscard: true,
+
+    /** 弹幕进入时间 */
+    startTime: null,
+
+    /** 弹幕类型 */
+    type: _bulletScreenType2.BulletScreenType.rightToLeft
+    /**
+     * 弹幕数据类型
+     * @private @readonly
+     */
+
+  };
+  var _bulletScreenType = {
+    text: 'string',
+    canDiscard: 'boolean',
+    startTime: 'number',
+    type: 'number'
+  };
+  _options = _helper.Helper.setValues(options, _defaultOptions, _optionsType);
 
   var _event = new _event2.Event();
   /**
    * 弹幕单击事件。当单击弹幕时触发。
    * @event openBSE.BulletScreenEngine#click
-   * @property {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。
+   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
    */
 
 
@@ -242,7 +329,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
    * @event openBSE.BulletScreenEngine#contextmenu
-   * @property {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。
+   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
    */
 
 
@@ -251,11 +338,11 @@ function BulletScreenEngine(element, options) {
    * 绑定事件处理程序
    * @function
    * @description 绑定事件处理程序。当事件处理程序返回值为 false 时停止冒泡。
-   * @param {string} name 事件名称
-   * @param {function} fun 事件处理程序
+   * @param {string} name - 事件名称
+   * @param {function} fun - 事件处理程序
    * @listens openBSE.BulletScreenEngine#click
    * @listens openBSE.BulletScreenEngine#contextmenu
-   * @returns false: 失败 数字: 添加后的事件数
+   * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
 
@@ -263,49 +350,70 @@ function BulletScreenEngine(element, options) {
   /**
    * 解绑事件处理程序（fun为空解绑所有事件处理程序）
    * @function
-   * @param {string} name 事件名称
-   * @param {function} fun 事件处理程序
-   * @returns true: 成功 false: 失败 数字: 删除后的事件数
+   * @param {string} name - 事件名称
+   * @param {function} fun - 事件处理程序
+   * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
-  this.unbind = _event.unbind; //初始化
-
+  this.unbind = _event.unbind;
   var _elementSize = {
-    width: element.clientWidth / options.scaling,
-    height: element.clientHeight / options.scaling
+    width: element.clientWidth / _options.scaling,
+    height: element.clientHeight / _options.scaling
   };
   var _oldDevicePixelRatio = window.devicePixelRatio;
-  var _oldScaling = options.scaling;
+  var _oldScaling = _options.scaling;
   var _oldClientWidth = element.clientWidth;
   var _oldClientHeight = element.clientHeight;
-  var _oldHiddenTypes = options.hiddenTypes; //渲染器工厂
+  var _oldHiddenTypes = _options.hiddenTypes;
+  var _oldOpacity = _options.opacity;
+  var renderersFactory = new _renderersFactory.RenderersFactory(element, _options, _elementSize, _event, _bulletScreensOnScreen);
 
-  var renderersFactory = new _renderersFactory.RenderersFactory(element, this.options, _elementSize, _event, _bulletScreensOnScreen);
-
-  var _renderer = renderersFactory.getRenderer(renderMode); //实例化渲染器
-
+  var _renderer = renderersFactory.getRenderer(renderMode);
 
   setInterval(setSize, 100);
-  console.info('%copenBSE%c now loaded.\n' + '\n' + '%cVersion: %s\n' + 'Build Date: %s\n' + '\n' + '%copenBSE is a high-performance JavaScript bullet-screen (danmaku) engine.\n' + 'Home: https://iamscottxu.github.io/openBSE/', 'font-weight:bold; color:#0099FF;', '', 'font-style:italic;', _version.VERSION, _version.BUILE_DATE, ''); //公共函数
-
   /**
-   * 添加弹幕到弹幕列表。
-   * @description 添加弹幕到弹幕列表。由于弹幕在屏幕上出现过后，弹幕引擎将从列表中彻底删除此弹幕。所以，在改变播放进度时，可能需要先[清空弹幕列表]{@link BulletScreenEngine#cleanBulletScreenList}，然后重新加载此播放进度以后的弹幕。
-   * @param {openBSE~BulletScreen} bulletScreen - 单条弹幕数据：一个 {@link openBSE~BulletScreen} 结构。
+   * 设置全局选项
+   * @param {openBSE~Options} options - 全局选项：一个 {@link openBSE~Options} 结构。
+   * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
+  this.setOptions = function (options) {
+    _options = _helper.Helper.setValues(options, _options, _optionsType, false);
+
+    if (_oldHiddenTypes != _options.hiddenTypes) {
+      _oldHiddenTypes = _options.hiddenTypes;
+      if (!_playing) _renderer.draw();
+    }
+
+    if (_oldOpacity != _options.opacity) {
+      _oldOpacity = _options.opacity;
+
+      _renderer.setOpacity();
+    }
+  };
+  /**
+   * 获取全局选项
+   * @returns {openBSE~Options} 全局选项：一个 {@link openBSE~Options} 结构。
+   */
+
+
+  this.getOptions = function () {
+    return _options;
+  };
+  /**
+   * 添加弹幕到弹幕列表。
+   * @description 添加弹幕到弹幕列表。由于弹幕在屏幕上出现过后，弹幕引擎将从列表中彻底删除此弹幕。所以，在改变播放进度时，可能需要先[清空弹幕列表]{@link openBSE.BulletScreenEngine#cleanBulletScreenList}，然后重新加载此播放进度以后的弹幕。
+   * @param {openBSE~BulletScreen} bulletScreen - 单条弹幕数据：一个 {@link openBSE~BulletScreen} 结构。
+   * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
+   */
+
+
   this.addBulletScreen = function (bulletScreen) {
-    bulletScreen = setValue(bulletScreen, {}, 'object');
-    bulletScreen.text = setValue(bulletScreen.text, null, 'string'); //弹幕文本
+    _defaultBulletScreen.startTime = _options.clock();
+    bulletScreen = _helper.Helper.setValues(bulletScreen, _defaultBulletScreen, _bulletScreenType);
+    if (bulletScreen.type != _bulletScreenType2.BulletScreenType.leftToRight && bulletScreen.type != _bulletScreenType2.BulletScreenType.rightToLeft && bulletScreen.type != _bulletScreenType2.BulletScreenType.top && bulletScreen.type != _bulletScreenType2.BulletScreenType.bottom) throw new TypeError(_helper.Helper.PARAMETERS_TYPE_ERROR);
 
-    bulletScreen.canDiscard = setValue(bulletScreen.canDiscard, true, 'boolean'); //是否允许丢弃
-
-    bulletScreen.startTime = setValue(bulletScreen.startTime, options.clock(), 'number'); //弹幕进入时间
-
-    bulletScreen.type = setValue(bulletScreen.type, _bulletScreenType.BulletScreenType.rightToLeft, 'number'); //类型
-
-    if (bulletScreen.type != _bulletScreenType.BulletScreenType.leftToRight && bulletScreen.type != _bulletScreenType.BulletScreenType.rightToLeft && bulletScreen.type != _bulletScreenType.BulletScreenType.top && bulletScreen.type != _bulletScreenType.BulletScreenType.bottom) throw new TypeError(PARAMETERS_TYPE_ERROR);
-    bulletScreenStyleCheckType(bulletScreen.style); //检查弹幕样式类型
+    _helper.Helper.checkTypes(bulletScreen.style, _optionsType.defaultStyle);
 
     var oldLength = _bulletScreens.getLength();
 
@@ -329,7 +437,7 @@ function BulletScreenEngine(element, options) {
   this.play = function () {
     if (!_playing) {
       if (!_startTime) _startTime = new Date().getTime();
-      if (_pauseTime) _startTime += options.clock() - _pauseTime;
+      if (_pauseTime) _startTime += _options.clock() - _pauseTime;
       _lastRefreshTime = null;
       _playing = true;
       requestAnimationFrame(refresh);
@@ -343,7 +451,7 @@ function BulletScreenEngine(element, options) {
 
   this.pause = function () {
     if (_playing) {
-      _pauseTime = options.clock();
+      _pauseTime = _options.clock();
       _playing = false;
     }
   };
@@ -357,19 +465,19 @@ function BulletScreenEngine(element, options) {
     _bulletScreens.clean();
   };
   /**
-   * 清空屏幕弹幕。
-   * @description 清空屏幕弹幕。清空屏幕上已经出现的弹幕，不包括弹幕列表中的弹幕。
+   * 清空屏幕内容。
+   * @description 清空屏幕内容。清空屏幕上已经出现的弹幕，不包括弹幕列表中的弹幕。
    */
 
 
-  this.cleanBulletScreenListOnScreen = function () {
+  this.cleanScreen = function () {
     _bulletScreensOnScreen.clean();
 
     _renderer.cleanScreen();
   };
   /**
    * 停止播放弹幕。
-   * @description 停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认[时间基准（options.clock）]{@link openBSE~BulletScreenStyle}归零，并[清空弹幕列表]{@link BulletScreenEngine#cleanBulletScreenList}、[清空屏幕弹幕]{@link BulletScreenEngine#cleanBulletScreenListOnScreen}。
+   * @description 停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认[时间基准（options.clock）]{@link openBSE~BulletScreenStyle}归零，并[清空弹幕列表]{@link openBSE.BulletScreenEngine#cleanBulletScreenList}、[清空屏幕弹幕]{@link openBSE.BulletScreenEngine#cleanBulletScreenListOnScreen}。
    */
 
 
@@ -397,24 +505,10 @@ function BulletScreenEngine(element, options) {
 
   this.show = _renderer.show;
   /**
-   * 设置弹幕不透明度。
-   * @function
-   * @param {number} opacity - 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
-   */
-
-  this.setOpacity = _renderer.setOpacity;
-  /**
-   * 获取弹幕不透明度。
-   * @function
-   * @returns {number} - 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
-   */
-
-  this.getOpacity = _renderer.getOpacity;
-  /**
    * 获取弹幕可见性。
    * @function
    * @returns {boolean} - 指示弹幕是否可见。
-   * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{{@link BulletScreenEngine#hide}} 。
+   * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link openBSE.BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{@link openBSE.BulletScreenEngine#hide} 。
    */
 
   this.getVisibility = _renderer.getVisibility;
@@ -443,116 +537,14 @@ function BulletScreenEngine(element, options) {
 
   this.getDebugInfo = function () {
     return {
-      time: _playing ? options.clock() : _pauseTime,
+      time: _playing ? _options.clock() : _pauseTime,
       bulletScreensOnScreenCount: _bulletScreensOnScreen.getLength(),
       bulletScreensCount: _bulletScreens.getLength(),
       delay: _delay,
       delayBulletScreensCount: _delayBulletScreensCount,
-      fps: _playing ? Math.floor(_refreshRate * 1000) : 0 //帧频
-
+      fps: _playing ? Math.floor(_refreshRate * 1000) : 0
     };
   };
-  /**
-   * 获取版本信息。
-   * @returns {openBSE~VersionInfo} 版本信息：一个 {@link openBSE~VersionInfo} 结构。
-   */
-
-
-  this.getVersion = function () {
-    return {
-      version: _version.VERSION,
-      buildDate: _version.BUILE_DATE
-    };
-  }; //内部函数
-
-  /**
-   * 设置值
-   * @private
-   * @param {string} value - 值
-   * @param {string} defaultBalue - 默认值
-   * @param {string} type 类型
-   * @returns {object} - 值
-   */
-
-
-  function setValue(value, defaultBalue) {
-    var type = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-    var returnValue = value;
-    if (typeof value === 'undefined' || typeof value === 'number' && isNaN(value) || value === null) returnValue = defaultBalue;
-    checkType(returnValue, type);
-    return returnValue;
-  }
-  /**
-   * 检查类型
-   * @private
-   * @param {string} value - 值
-   * @param {string} type - 类型
-   * @param {boolean} canBeNull - 可以为空
-   */
-
-
-  function checkType(value, type) {
-    var canBeNull = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
-    if (type === null) return;
-    if (canBeNull && (typeof value === 'undefined' || typeof value === 'number' && isNaN(value) || value === null)) return;
-
-    if (_typeof(type) === 'object') {
-      var flat = false;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = type[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var item = _step.value;
-          if (_typeof(value) === item) flat = true;
-          break;
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return != null) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      if (!flat) throw new TypeError(PARAMETERS_TYPE_ERROR);
-    } else if (_typeof(value) != type) throw new TypeError(PARAMETERS_TYPE_ERROR);
-  }
-  /**
-   * 检查弹幕样式类型
-   * @private
-   * @param {object} style - 弹幕样式
-   */
-
-
-  function bulletScreenStyleCheckType(style) {
-    checkType(style, 'object', true);
-    checkType(style.shadowBlur, 'number', true); //全局：阴影的模糊级别，0为不显示阴影
-
-    checkType(style.fontWeight, ['string', 'number'], true); //全局：字体粗细
-
-    checkType(style.fontFamily, 'string', true); //全局：字体系列
-
-    checkType(style.size, 'number', true); //全局：字体大小（单位：像素）
-
-    checkType(style.boxColor, 'string', true); //全局：外框颜色
-
-    checkType(style.color, 'string', true); //全局：字体颜色
-
-    checkType(style.borderColor, 'string', true); //全局：描边颜色
-
-    checkType(style.speed, 'number', true); //全局：弹幕速度（单位：像素/毫秒） 仅类型0、1有效
-
-    checkType(style.residenceTime, 'number', true); //全局：弹幕停留时间 仅类型2、3有效
-  }
   /**
    * 刷新弹幕函数
    * @private
@@ -566,8 +558,7 @@ function BulletScreenEngine(element, options) {
     addBulletScreensToScreen();
     moveBulletScreenOnScreen();
 
-    _renderer.draw(); //绘制弹幕
-
+    _renderer.draw();
 
     if (_playing) requestAnimationFrame(refresh);
   }
@@ -579,12 +570,12 @@ function BulletScreenEngine(element, options) {
 
   function moveBulletScreenOnScreen() {
     _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-      var nowTime = options.clock();
+      var nowTime = _options.clock();
 
       switch (bulletScreenOnScreen.bulletScreen.type) {
-        case _bulletScreenType.BulletScreenType.rightToLeft:
+        case _bulletScreenType2.BulletScreenType.rightToLeft:
           if (bulletScreenOnScreen.x > -bulletScreenOnScreen.width) {
-            bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * options.playSpeed / _refreshRate;
+            bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
           } else {
             _renderer.delete(bulletScreenOnScreen);
 
@@ -595,9 +586,9 @@ function BulletScreenEngine(element, options) {
 
           break;
 
-        case _bulletScreenType.BulletScreenType.leftToRight:
+        case _bulletScreenType2.BulletScreenType.leftToRight:
           if (bulletScreenOnScreen.x < _elementSize.width) {
-            bulletScreenOnScreen.x += bulletScreenOnScreen.bulletScreen.style.speed * options.playSpeed / _refreshRate;
+            bulletScreenOnScreen.x += bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
           } else {
             _renderer.delete(bulletScreenOnScreen);
 
@@ -608,8 +599,8 @@ function BulletScreenEngine(element, options) {
 
           break;
 
-        case _bulletScreenType.BulletScreenType.top:
-        case _bulletScreenType.BulletScreenType.bottom:
+        case _bulletScreenType2.BulletScreenType.top:
+        case _bulletScreenType2.BulletScreenType.bottom:
           if (bulletScreenOnScreen.endTime < nowTime) {
             _renderer.delete(bulletScreenOnScreen);
 
@@ -636,13 +627,14 @@ function BulletScreenEngine(element, options) {
       var bulletScreen = _bulletScreens.pop(false, false);
 
       if (bulletScreen === null) return;
-      var nowTime = options.clock();
+
+      var nowTime = _options.clock();
+
       if (bulletScreen.startTime > nowTime) return;
 
-      if (!options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
-        setDefaultStyle(bulletScreen); //填充默认样式
-
-        getBulletScreenOnScreen(nowTime, bulletScreen); //生成屏幕弹幕对象并添加到屏幕弹幕集合
+      if (!_options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
+        bulletScreen.style = _helper.Helper.setValues(bulletScreen.style, _options.defaultStyle, _optionsType.defaultStyle);
+        getBulletScreenOnScreen(nowTime, bulletScreen);
       } else _delayBulletScreensCount++;
 
       _bulletScreens.pop(true, false);
@@ -651,37 +643,10 @@ function BulletScreenEngine(element, options) {
     } while (_bulletScreensOnScreen.getLength() === 0 || times > 0);
   }
   /**
-   * 填充默认样式
-   * @private
-   * @param {openBSE~BulletScreen} bulletScreen 弹幕
-   */
-
-
-  function setDefaultStyle(bulletScreen) {
-    bulletScreen.style = setValue(bulletScreen.style, {});
-    bulletScreen.style.shadowBlur = setValue(bulletScreen.style.shadowBlur, options.defaultStyle.shadowBlur); //阴影的模糊级别，0为不显示阴影
-
-    bulletScreen.style.fontWeight = setValue(bulletScreen.style.fontWeight, options.defaultStyle.fontWeight); //字体粗细
-
-    bulletScreen.style.fontFamily = setValue(bulletScreen.style.fontFamily, options.defaultStyle.fontFamily); //字体系列
-
-    bulletScreen.style.size = setValue(bulletScreen.style.size, options.defaultStyle.size); //字体大小（单位：像素）
-
-    bulletScreen.style.boxColor = setValue(bulletScreen.style.boxColor, options.defaultStyle.boxColor); //方框颜色
-
-    bulletScreen.style.color = setValue(bulletScreen.style.color, options.defaultStyle.color); //字体颜色
-
-    bulletScreen.style.borderColor = setValue(bulletScreen.style.borderColor, options.defaultStyle.borderColor); //边框颜色
-
-    bulletScreen.style.speed = setValue(bulletScreen.style.speed, options.defaultStyle.speed); //弹幕速度（单位：像素/毫秒） 仅类型0、1有效
-
-    bulletScreen.style.residenceTime = setValue(bulletScreen.style.residenceTime, options.defaultStyle.residenceTime); //弹幕停留时间 仅类型2、3有效
-  }
-  /**
    * 生成屏幕弹幕对象函数
    * @private
-   * @param {number} nowTime 当前时间
-   * @param {openBSE~BulletScreen} bulletScreen 弹幕
+   * @param {number} nowTime - 当前时间
+   * @param {openBSE~BulletScreen} bulletScreen - 弹幕
    */
 
 
@@ -689,70 +654,54 @@ function BulletScreenEngine(element, options) {
     _delay = nowTime - bulletScreen.startTime;
     var bulletScreenOnScreen = {};
     bulletScreenOnScreen.bulletScreen = bulletScreen;
-    bulletScreenOnScreen.startTime = nowTime; //弹幕头部进屏幕时间
-
+    bulletScreenOnScreen.startTime = nowTime;
     bulletScreenOnScreen.size = bulletScreenOnScreen.bulletScreen.style.size;
-    bulletScreenOnScreen.height = bulletScreenOnScreen.size; //弹幕的高度：像素
+    bulletScreenOnScreen.height = bulletScreenOnScreen.size;
 
-    _renderer.creatAndgetWidth(bulletScreenOnScreen); //创建弹幕元素并计算宽度
-
+    _renderer.creatAndgetWidth(bulletScreenOnScreen);
 
     switch (bulletScreen.type) {
-      case _bulletScreenType.BulletScreenType.rightToLeft:
-        bulletScreenOnScreen.endTime = parseInt(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * options.playSpeed)); //弹幕尾部出屏幕的时间
-
-        bulletScreenOnScreen.x = _elementSize.width; //弹幕初始X坐标
-
-        bulletScreenOnScreen.y = options.verticalInterval; //弹幕初始Y坐标
-
+      case _bulletScreenType2.BulletScreenType.rightToLeft:
+        bulletScreenOnScreen.endTime = parseInt(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed));
+        bulletScreenOnScreen.x = _elementSize.width;
+        bulletScreenOnScreen.y = _options.verticalInterval;
         break;
 
-      case _bulletScreenType.BulletScreenType.leftToRight:
-        bulletScreenOnScreen.endTime = parseInt(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * options.playSpeed)); //弹幕尾部出屏幕的时间
-
-        bulletScreenOnScreen.x = -bulletScreenOnScreen.width; //弹幕初始X坐标
-
-        bulletScreenOnScreen.y = options.verticalInterval; //弹幕初始Y坐标
-
+      case _bulletScreenType2.BulletScreenType.leftToRight:
+        bulletScreenOnScreen.endTime = parseInt(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed));
+        bulletScreenOnScreen.x = -bulletScreenOnScreen.width;
+        bulletScreenOnScreen.y = _options.verticalInterval;
         break;
 
-      case _bulletScreenType.BulletScreenType.top:
-        bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * options.playSpeed;
-        bulletScreenOnScreen.x = parseInt((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
-
-        bulletScreenOnScreen.y = options.verticalInterval; //弹幕初始Y坐标
-
+      case _bulletScreenType2.BulletScreenType.top:
+        bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
+        bulletScreenOnScreen.x = parseInt((_elementSize.width - bulletScreenOnScreen.width) / 2);
+        bulletScreenOnScreen.y = _options.verticalInterval;
         break;
 
-      case _bulletScreenType.BulletScreenType.bottom:
-        bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * options.playSpeed;
-        bulletScreenOnScreen.x = parseInt((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
-
-        bulletScreenOnScreen.y = -options.verticalInterval - bulletScreenOnScreen.height; //弹幕初始Y坐标
-
+      case _bulletScreenType2.BulletScreenType.bottom:
+        bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
+        bulletScreenOnScreen.x = parseInt((_elementSize.width - bulletScreenOnScreen.width) / 2);
+        bulletScreenOnScreen.y = -_options.verticalInterval - bulletScreenOnScreen.height;
         break;
     }
 
     var oldLength = _bulletScreensOnScreen.getLength();
 
-    if (bulletScreen.type === _bulletScreenType.BulletScreenType.top || bulletScreen.type === _bulletScreenType.BulletScreenType.bottom) {
+    if (bulletScreen.type === _bulletScreenType2.BulletScreenType.top || bulletScreen.type === _bulletScreenType2.BulletScreenType.bottom) {
       _bulletScreensOnScreen.forEach(function (nextBulletScreenOnScreen) {
-        //弹幕不在流中，是固定弹幕
-        if (nextBulletScreenOnScreen.bulletScreen.type != bulletScreen.type) return; //不是同一种类型的弹幕
+        if (nextBulletScreenOnScreen.bulletScreen.type != bulletScreen.type) return;
 
-        if (bulletScreen.type === _bulletScreenType.BulletScreenType.top) {
-          //如果新弹幕在当前弹幕上方且未与当前弹幕重叠
+        if (bulletScreen.type === _bulletScreenType2.BulletScreenType.top) {
           if (bulletScreenOnScreen.y + bulletScreenOnScreen.height < nextBulletScreenOnScreen.y) return {
             add: {
               addToUp: true,
               element: setActualY(bulletScreenOnScreen)
             },
             stop: true
-          }; //如果上一条弹幕的消失时间小于当前弹幕的出现时间
-
-          if (nextBulletScreenOnScreen.endTime < nowTime) bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + options.verticalInterval;
+          };
+          if (nextBulletScreenOnScreen.endTime < nowTime) bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + _options.verticalInterval;
         } else {
-          //如果新弹幕在当前弹幕下方且未与当前弹幕重叠
           if (bulletScreenOnScreen.y > nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height) {
             return {
               add: {
@@ -761,34 +710,25 @@ function BulletScreenEngine(element, options) {
               },
               stop: true
             };
-          } //如果上一条弹幕的消失时间小于当前弹幕的出现时间
+          }
 
-
-          if (nextBulletScreenOnScreen.endTime < nowTime) bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y - bulletScreenOnScreen.height - options.verticalInterval;
+          if (nextBulletScreenOnScreen.endTime < nowTime) bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y - bulletScreenOnScreen.height - _options.verticalInterval;
         }
       }, true);
     } else {
-      //当前弹幕经过一个点需要的总时长
-      var bulletScreenOnScreenWidthTime = bulletScreenOnScreen.width / (bulletScreen.style.speed * options.playSpeed);
+      var bulletScreenOnScreenWidthTime = bulletScreenOnScreen.width / (bulletScreen.style.speed * _options.playSpeed);
 
       _bulletScreensOnScreen.forEach(function (nextBulletScreenOnScreen) {
-        //弹幕在流中，是移动弹幕
-        if (nextBulletScreenOnScreen.bulletScreen.type === _bulletScreenType.BulletScreenType.top || nextBulletScreenOnScreen.bulletScreen.type === _bulletScreenType.BulletScreenType.bottom) return; //弹幕不在流中，为固定弹幕
-        //如果新弹幕在当前弹幕上方且未与当前弹幕重叠
-
+        if (nextBulletScreenOnScreen.bulletScreen.type === _bulletScreenType2.BulletScreenType.top || nextBulletScreenOnScreen.bulletScreen.type === _bulletScreenType2.BulletScreenType.bottom) return;
         if (bulletScreenOnScreen.y + bulletScreenOnScreen.height < nextBulletScreenOnScreen.y) return {
           add: {
             addToUp: true,
             element: setActualY(bulletScreenOnScreen)
           },
           stop: true
-        }; //上一条弹幕经过一个点需要的总时长
-
-        var nextBulletScreenOnScreenWidthTime = nextBulletScreenOnScreen.width / (nextBulletScreenOnScreen.bulletScreen.style.speed * options.playSpeed); //如果上一条弹幕的消失时间小于当前弹幕的出现时间
-
-        if (nextBulletScreenOnScreen.startTime + nextBulletScreenOnScreenWidthTime >= nowTime || //如果上一条弹幕的头进入了，但是尾还没进入
-        nextBulletScreenOnScreen.endTime >= bulletScreenOnScreen.endTime - bulletScreenOnScreenWidthTime) //如果当前弹幕头出去了，上一条弹幕尾还没出去
-          bulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + options.verticalInterval;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
+        };
+        var nextBulletScreenOnScreenWidthTime = nextBulletScreenOnScreen.width / (nextBulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed);
+        if (nextBulletScreenOnScreen.startTime + nextBulletScreenOnScreenWidthTime >= nowTime || nextBulletScreenOnScreen.endTime >= bulletScreenOnScreen.endTime - bulletScreenOnScreenWidthTime) bulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + _options.verticalInterval;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
       }, true);
     }
 
@@ -797,7 +737,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 设置真实的Y坐标
    * @private
-   * @param {object} bulletScreenOnScreen 屏幕弹幕事件
+   * @param {object} bulletScreenOnScreen - 屏幕弹幕事件
    * @returns {object} 屏幕弹幕事件
    */
 
@@ -805,9 +745,9 @@ function BulletScreenEngine(element, options) {
   function setActualY(bulletScreenOnScreen) {
     var bulletScreen = bulletScreenOnScreen.bulletScreen;
 
-    if (bulletScreen.type === _bulletScreenType.BulletScreenType.leftToRight || bulletScreen.type === _bulletScreenType.BulletScreenType.rightToLeft || bulletScreen.type === _bulletScreenType.BulletScreenType.top) {
+    if (bulletScreen.type === _bulletScreenType2.BulletScreenType.leftToRight || bulletScreen.type === _bulletScreenType2.BulletScreenType.rightToLeft || bulletScreen.type === _bulletScreenType2.BulletScreenType.top) {
       bulletScreenOnScreen.actualY = bulletScreenOnScreen.y % (_elementSize.height - bulletScreenOnScreen.height);
-    } else if (bulletScreen.type === _bulletScreenType.BulletScreenType.bottom) {
+    } else if (bulletScreen.type === _bulletScreenType2.BulletScreenType.bottom) {
       bulletScreenOnScreen.actualY = _elementSize.height + bulletScreenOnScreen.y % _elementSize.height;
     }
 
@@ -820,25 +760,26 @@ function BulletScreenEngine(element, options) {
 
 
   function setSize() {
-    if (_oldDevicePixelRatio != window.devicePixelRatio || _oldScaling != options.scaling || _oldClientWidth != element.clientWidth || _oldClientHeight != element.clientHeight || _oldHiddenTypes != options.hiddenTypes) {
-      _elementSize.width = element.clientWidth / options.scaling;
-      _elementSize.height = element.clientHeight / options.scaling;
-      _oldDevicePixelRatio = window.devicePixelRatio;
-      _oldScaling = options.scaling;
+    if (_oldDevicePixelRatio != window.devicePixelRatio || _oldClientWidth != element.clientWidth || _oldClientHeight != element.clientHeight || _oldScaling != _options.scaling) {
+      _oldScaling = _options.scaling;
+      _elementSize.width = element.clientWidth / _options.scaling;
+      _elementSize.height = element.clientHeight / _options.scaling;
       _oldClientWidth = element.clientWidth;
       _oldClientHeight = element.clientHeight;
-      _oldHiddenTypes = options.hiddenTypes;
+      _oldDevicePixelRatio = window.devicePixelRatio;
 
       _renderer.setSize();
 
-      if (!_playing) _renderer.draw(); //非播放状态则重绘
+      if (!_playing) _renderer.draw();
     }
   }
+
+  console.info('%c%s%c now loaded.\n\n%cVersion: %s\nBuild Date: %s\n\n%c%s\nHome: %s', 'font-weight:bold; color:#0099FF;', BUILD.name, '', 'font-style:italic;', BUILD.version, BUILD.buildDate, '', BUILD.description, BUILD.home);
 };
 
 exports.BulletScreenEngine = BulletScreenEngine;
 
-},{"./bulletScreenType":4,"./lib/event":5,"./lib/linkedList":6,"./lib/renderers/renderersFactory":11,"./version":15}],4:[function(require,module,exports){
+},{"../build.json":1,"./buildDate.json":4,"./bulletScreenType":6,"./lib/event":7,"./lib/helper":8,"./lib/linkedList":9,"./lib/renderers/renderersFactory":14}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -853,21 +794,33 @@ exports.BulletScreenType = void 0;
  * @enum {number}
  */
 var BulletScreenType = {
-  /** 从右到左弹幕 */
+  /** 
+   * 从右到左弹幕
+   * @readonly
+   */
   rightToLeft: 1,
 
-  /** 从左到右弹幕（逆向弹幕） */
+  /** 
+   * 从左到右弹幕（逆向弹幕）
+   * @readonly
+   */
   leftToRight: 2,
 
-  /** 顶部弹幕 */
+  /** 
+   * 顶部弹幕
+   * @readonly
+   */
   top: 4,
 
-  /** 底部弹幕 */
+  /** 
+   * 底部弹幕
+   * @readonly
+   */
   bottom: 8
 };
 exports.BulletScreenType = BulletScreenType;
 
-},{}],5:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -875,14 +828,21 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Event = void 0;
 
+var _helper = require("./helper");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var EVENT_NAME_NOT_FOUND = 'Event name not found.';
+var EVENT_ALREADY_EXISTS = 'Event already exists.';
+/**
+ * 事件模型类
+ */
+
+var Event =
 /**
  * 创建一个新的事件模型。
- * @class
- * @public
  */
-var Event = function Event() {
+function Event() {
   _classCallCheck(this, Event);
 
   /**
@@ -892,44 +852,43 @@ var Event = function Event() {
   var eventList = {};
   /**
    * 添加事件
-   * @function
    * @public
-   * @param {String} name 事件名称
-   * @returns {Boolean} true: 成功 false: 失败
+   * @param {string} name - 事件名称
+   * @throws {TypeError} 传入的参数错误或事件已存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
   this.add = function (name) {
-    if (typeof eventList[name] != 'undefined') return false;
+    if (typeof name != 'string') throw new TypeError(_helper.Helper.PARAMETERS_TYPE_ERROR);
+    if (typeof eventList[name] != 'undefined') throw new TypeError(EVENT_ALREADY_EXISTS);
     eventList[name] = [];
-    return true;
   };
   /**
    * 删除事件
-   * @function
    * @public
-   * @param {String} name 事件名称
-   * @returns {Boolean} true: 成功 false: 失败
+   * @param {string} name - 事件名称
+   * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
 
   this.remove = function (name) {
-    if (typeof eventList[name] === 'undefined') return false;
+    if (typeof name != 'string') throw new TypeError(_helper.Helper.PARAMETERS_TYPE_ERROR);
+    if (typeof eventList[name] === 'undefined') throw new TypeError(EVENT_NAME_NOT_FOUND);
     delete eventList[name];
-    return true;
   };
   /**
    * 绑定事件处理程序
-   * @function
    * @public
-   * @param {String} name 事件名称
-   * @param {Function} fun 事件处理程序
-   * @returns false: 失败 数字: 添加后的事件数
+   * @param {string} name - 事件名称
+   * @param {function} fun - 事件处理程序
+   * @returns {number} 添加后的事件数
+   * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
 
   this.bind = function (name, fun) {
+    if (typeof name != 'string' || typeof fun != 'function') throw new TypeError(_helper.Helper.PARAMETERS_TYPE_ERROR);
     var event = eventList[name];
-    if (typeof event === 'undefined' || typeof fun != 'function') return false;
+    if (typeof event === 'undefined') throw new TypeError(EVENT_NAME_NOT_FOUND);
 
     for (var index in event) {
       if (event[index] === fun) return false;
@@ -939,22 +898,19 @@ var Event = function Event() {
   };
   /**
    * 解绑事件处理程序（fun为空解绑所有事件处理程序）
-   * @function
    * @public
-   * @param {String} name 事件名称
-   * @param {Function} fun 事件处理程序
-   * @returns true: 成功 false: 失败 数字: 删除后的事件数
+   * @param {string} name - 事件名称
+   * @param {function} fun - 事件处理程序
+   * @returns {number} 删除后的事件数
+   * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
 
   this.unbind = function (name, fun) {
+    if (typeof name != 'string' || typeof fun != 'function') throw new TypeError(_helper.Helper.PARAMETERS_TYPE_ERROR);
     var event = eventList[name];
-    if (typeof event === 'undefined') return false;
-
-    if (typeof fun != 'function') {
-      eventList[name] = [];
-      return true;
-    } else {
+    if (typeof event === 'undefined') throw new TypeError(EVENT_NAME_NOT_FOUND);
+    if (typeof fun != 'function') eventList[name] = [];else {
       for (var index in event) {
         if (event[index] === fun) {
           event.splice(fun, 1);
@@ -965,17 +921,17 @@ var Event = function Event() {
   };
   /**
    * 触发事件
-   * @function
    * @public
-   * @param {String} name 事件名称
-   * @param {Object} e 事件数据
-   * @returns {Boolean} true: 成功 false: 失败
+   * @param {string} name - 事件名称
+   * @param {object} e - 事件数据
+   * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
 
   this.trigger = function (name, e) {
+    if (typeof name != 'string') throw new TypeError(_helper.Helper.PARAMETERS_TYPE_ERROR);
     var event = eventList[name];
-    if (typeof event === 'undefined') return false;
+    if (typeof event === 'undefined') throw new TypeError(EVENT_NAME_NOT_FOUND);
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
     var _iteratorError = undefined;
@@ -983,7 +939,7 @@ var Event = function Event() {
     try {
       for (var _iterator = event[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var fun = _step.value;
-        if (!fun(e)) return true;
+        if (!fun(e)) return;
       }
     } catch (err) {
       _didIteratorError = true;
@@ -1000,13 +956,173 @@ var Event = function Event() {
       }
     }
 
-    return true;
+    return;
   };
 };
 
 exports.Event = Event;
 
-},{}],6:[function(require,module,exports){
+},{"./helper":8}],8:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Helper = void 0;
+var PARAMETERS_TYPE_ERROR = 'Parameters type error.';
+/**
+ * 设置值
+ * @alias Helper.setValue
+ * @param {*} value - 值
+ * @param {*} defaultValue - 默认值
+ * @param {string} type - 类型
+ * @returns {*} - 值
+ */
+
+function setValue(value, defaultValue, type) {
+  var returnValue;
+  if (isEmpty(value)) returnValue = clone(defaultValue);else returnValue = clone(value);
+  if (!isEmpty(type)) checkType(returnValue, type);else if (!isEmpty(defaultValue)) checkType(returnValue, _typeof(defaultValue));
+  return returnValue;
+}
+/**
+ * 设置多个值
+ * @param {object} values - 值
+ * @param {object} defaultValues - 默认值
+ * @param {object} types - 类型
+ * @returns {object} - 值
+ */
+
+
+function setValues(values, defaultValues, types) {
+  var clone = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+  var returnValues = clone ? setValue(values, {}) : defaultValues;
+
+  var _values = clone ? returnValues : setValue(values, {});
+
+  for (var key in defaultValues) {
+    if (_typeof(defaultValues[key]) === 'object') returnValues[key] = setValues(_values[key], defaultValues[key], types[key]);else returnValues[key] = setValue(_values[key], defaultValues[key], types[key]);
+  }
+
+  return returnValues;
+}
+/**
+ * 检查类型
+ * @alias Helper.checkType
+ * @param {string} value - 值
+ * @param {string} type - 类型
+ * @param {boolean} canBeNull - 可以为空
+ */
+
+
+function checkType(value, type) {
+  var canBeNull = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  if (typeof type != 'string' && _typeof(type) != 'array') throw new TypeError(PARAMETERS_TYPE_ERROR);
+  if (canBeNull && isEmpty(value)) return;
+
+  if (_typeof(type) === 'array') {
+    var flat = false;
+    var _iteratorNormalCompletion = true;
+    var _didIteratorError = false;
+    var _iteratorError = undefined;
+
+    try {
+      for (var _iterator = type[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+        var item = _step.value;
+        if (typeof item != 'string') throw new TypeError(PARAMETERS_TYPE_ERROR);
+        if (_typeof(value) === item) flat = true;
+        break;
+      }
+    } catch (err) {
+      _didIteratorError = true;
+      _iteratorError = err;
+    } finally {
+      try {
+        if (!_iteratorNormalCompletion && _iterator.return != null) {
+          _iterator.return();
+        }
+      } finally {
+        if (_didIteratorError) {
+          throw _iteratorError;
+        }
+      }
+    }
+
+    if (!flat) throw new TypeError(PARAMETERS_TYPE_ERROR);
+  } else if (_typeof(value) != type) throw new TypeError(PARAMETERS_TYPE_ERROR);
+}
+/**
+ * 检查多个值
+ * @param {object} values - 值
+ * @param {object} types - 类型
+ * @returns {object} - 值
+ */
+
+
+function checkTypes(values, types) {
+  var canBeNull = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : true;
+  if (canBeNull && isEmpty(values)) return;
+
+  for (var key in types) {
+    if (_typeof(types[key]) === 'object') checkTypes(values[key], types[key]);else checkType(values[key], types[key], canBeNull);
+  }
+}
+/**
+ * 检查是否为空
+ * @param {*} value - 值
+ */
+
+
+function isEmpty(value) {
+  return typeof value === 'undefined' || typeof value === 'number' && isNaN(value) || value === null;
+}
+/**
+ * 获取对象的类型（可区分数组等）
+ * @alias Helper._typeof
+ * @param {*} object - 对象
+ */
+
+
+function _typeof(object) {
+  return Object.prototype.toString.call(object).slice(8, -1).toLowerCase();
+}
+/**
+ * 克隆对象
+ * @param {*} object 
+ */
+
+
+function clone(object) {
+  var result,
+      type = _typeof(object);
+
+  if (type === 'object') result = {};else if (type === 'array') result = [];else return object;
+
+  for (var key in object) {
+    result[key] = clone(object[key]);
+  }
+
+  return result;
+}
+/**
+ * 帮助对象
+ * @namespace
+ */
+
+
+var Helper = {
+  setValue: setValue,
+  setValues: setValues,
+  checkType: checkType,
+  checkTypes: checkTypes,
+  isEmpty: isEmpty,
+  _typeof: _typeof,
+  clone: clone,
+  PARAMETERS_TYPE_ERROR: PARAMETERS_TYPE_ERROR
+};
+exports.Helper = Helper;
+
+},{}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1017,16 +1133,17 @@ exports.LinkedList = void 0;
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
- * 创建一个双向链表。
- * @class
- * @public
+ * 双向链表类
  */
-var LinkedList = function LinkedList() {
+var LinkedList =
+/**
+ * 创建一个双向链表。
+ */
+function LinkedList() {
   _classCallCheck(this, LinkedList);
 
   /**
    * 双向链表节点
-   * @class
    * @private
   */
   var node = function node(element) {
@@ -1035,20 +1152,16 @@ var LinkedList = function LinkedList() {
     this.element = element;
     this.next = null;
     this.previous = null;
-  }; //初始化
-
+  };
 
   var topNode = new node(null);
   var bottomNode = new node(null);
   var length = 0;
   topNode.next = bottomNode;
-  bottomNode.previous = topNode; //公共函数
-
+  bottomNode.previous = topNode;
   /**
    * 获取元素个数
-   * @function
-   * @public
-   * @returns {Number} 元素个数
+   * @returns {number} 元素个数
    */
 
   this.getLength = function (l) {
@@ -1056,10 +1169,8 @@ var LinkedList = function LinkedList() {
   };
   /**
    * 插入元素
-   * @function
-   * @public
-   * @param {Object} element 元素
-   * @param {Boolean} top true: 插入到顶部 false: 插入到底部
+   * @param {*} element - 元素
+   * @param {boolean} top - true: 插入到顶部 false: 插入到底部
    */
 
 
@@ -1080,11 +1191,9 @@ var LinkedList = function LinkedList() {
   };
   /**
    * 读取元素
-   * @function
-   * @public
-   * @param {Boolean} remove 读取后是否删除
-   * @param {Boolean} top true: 读取顶部 false: 读取底部
-   * @returns {Object} 元素
+   * @param {boolean} remove - 读取后是否删除
+   * @param {boolean} top - true: 读取顶部 false: 读取底部
+   * @returns {*} 元素
    */
 
 
@@ -1112,8 +1221,6 @@ var LinkedList = function LinkedList() {
   };
   /**
    * 清空链表
-   * @function
-   * @public
    */
 
 
@@ -1126,11 +1233,9 @@ var LinkedList = function LinkedList() {
   };
   /**
    * 遍历链表
-   * @function
-   * @public
-   * @param {Function} fun 遍历回调函数
+   * @param {function} fun - 遍历回调函数
    * 回调函数（参数：元素，返回：{remove：删除此元素，add:插入元素(add.addToUp:插入到上方, add.element:元素), stop：停止遍历}）
-   * @param {boolean} topToBottom true: 从顶到底 false: 从底到顶
+   * @param {boolean} topToBottom - true: 从顶到底 false: 从底到顶
    */
 
 
@@ -1175,7 +1280,7 @@ var LinkedList = function LinkedList() {
 
 exports.LinkedList = LinkedList;
 
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1183,32 +1288,47 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BaseRenderer = void 0;
 
+var _helper = require("../helper");
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var BaseRenderer = function BaseRenderer(element, options, elementSize) {
+/**
+ * 渲染器抽象类
+ */
+var BaseRenderer =
+/**
+ * 实例化一个渲染器抽象类
+ * @param {object} element - Element 元素
+ * @param {openBSE~Options} options - 全局选项
+ * @param {object} elementSize - 元素大小
+ */
+function BaseRenderer(element, options, elementSize) {
   _classCallCheck(this, BaseRenderer);
 
   if ((this instanceof BaseRenderer ? this.constructor : void 0) === BaseRenderer) {
-    throw new Error();
+    throw new SyntaxError();
   }
 
-  init(); //初始化
-
+  init();
   /**
    * 隐藏弹幕
-   * @private @type {Boolean}
+   * @private @type {boolean}
    */
 
   var _hide = false;
   /**
    * 透明度
-   * @private @type {Float}
+   * @private @type {number}
    */
 
   var _opacity = 0.0;
+  /**
+   * 清除屏幕内容
+   * @abstract
+   */
 
   this.cleanScreen = function () {
-    throw new Error();
+    throw new SyntaxError();
   };
   /**
    * 隐藏弹幕。
@@ -1230,18 +1350,20 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 设置弹幕不透明度。
-   * @param {Float} opacity 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
    */
 
 
-  this.setOpacity = function (opacity) {
-    if (typeof opacity != 'number') throw new Error();
-    _opacity = opacity;
-    element.style.opacity = _opacity;
-  };
+  this.setOpacity = _setOpacity;
+  /**
+   * 设置弹幕不透明度。
+   */
+
+  function _setOpacity() {
+    if (options.opacity === 1) element.style.opacity = '';else element.style.opacity = options.opacity;
+  }
   /**
    * 获取弹幕不透明度。
-   * @returns {Float} 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
+   * @returns {number} 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
    */
 
 
@@ -1250,8 +1372,8 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 获取弹幕可见性。
-   * @returns {Boolean}  指示弹幕是否可见。
-   * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{{@link BulletScreenEngine#hide}} 。
+   * @returns {boolean} 指示弹幕是否可见。
+   * @description 获取弹幕可见性。
    */
 
 
@@ -1260,44 +1382,53 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
   };
   /**
    * 绘制函数
+   * @abstract
    */
 
 
   this.draw = function () {
-    throw new Error();
+    throw new SyntaxError();
   };
   /**
    * 创建弹幕元素
-   * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+   * @abstract
+   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
    */
 
 
   this.creatAndgetWidth = function (bulletScreenOnScreen) {
-    throw new Error();
+    throw new SyntaxError();
   };
   /**
    * 删除弹幕元素
-   * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+   * @abstract
+   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
    */
 
 
   this.delete = function (bulletScreenOnScreen) {
-    throw new Error();
+    throw new SyntaxError();
   };
   /**
-   * 设置尺寸
-   */
-
-
-  this.setSize = setSize;
-  /**
    * 检查弹幕是否被隐藏
-   * @param {object} - 屏幕弹幕对象
+   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
    */
+
 
   this.checkWhetherHide = function (bulletScreenOnScreen) {
     return (bulletScreenOnScreen.bulletScreen.type & options.hiddenTypes) === bulletScreenOnScreen.bulletScreen.type;
   };
+  /**
+  * 设置尺寸
+  * @function
+  */
+
+
+  this.setSize = setSize;
+  /**
+   * 设置尺寸
+   * @private
+   */
 
   function setSize() {
     element.style.width = "".concat(elementSize.width, "px");
@@ -1318,13 +1449,16 @@ var BaseRenderer = function BaseRenderer(element, options, elementSize) {
 
   function init() {
     setSize();
+
+    _setOpacity();
+
     element.style.position = 'relative';
   }
 };
 
 exports.BaseRenderer = BaseRenderer;
 
-},{}],8:[function(require,module,exports){
+},{"../helper":8}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1333,6 +1467,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.CanvasBaseRenderer = void 0;
 
 var _baseRenderer = require("./baseRenderer");
+
+var _helper = require("../helper");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1348,31 +1484,49 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var CanvasBaseRenderer =
-/*#__PURE__*/
-function (_BaseRenderer) {
+/**
+ * Canvas 渲染器抽象类
+ */
+var CanvasBaseRenderer = function (_BaseRenderer) {
   _inherits(CanvasBaseRenderer, _BaseRenderer);
 
+  /**
+   * 实例化一个 Canvas 渲染器抽象类
+   * @param {object} element - Element 元素
+   * @param {openBSE~Options} options - 全局选项
+   * @param {object} elementSize - 元素大小
+   * @param {Event} event - 事件对象
+   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   */
   function CanvasBaseRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
     var _this;
 
     _classCallCheck(this, CanvasBaseRenderer);
 
     if ((this instanceof CanvasBaseRenderer ? this.constructor : void 0) === CanvasBaseRenderer) {
-      throw new Error();
+      throw new SyntaxError();
     }
+    /**
+     * DPI 缩放比例（倍数）
+     * @private @type {number}
+     */
+
 
     var _devicePixelRatio = typeof window.devicePixelRatio === 'undefined' ? 1 : window.devicePixelRatio;
 
     _devicePixelRatio *= options.scaling;
+    /**
+     * 画布元素
+     * @private @type {Element}
+     */
 
     var _canvas = init();
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CanvasBaseRenderer).call(this, _canvas, options, elementSize));
     /**
      * 创建弹幕元素
-     * @function
-     * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+     * @override
+     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
      */
 
     _this.creatAndgetWidth = function (bulletScreenOnScreen) {
@@ -1380,8 +1534,7 @@ function (_BaseRenderer) {
       var hideCanvas = document.createElement('canvas');
       var hideCanvasContext = hideCanvas.getContext('2d');
       hideCanvasContext.font = "".concat(bulletScreen.style.fontWeight, " ").concat(bulletScreenOnScreen.size, "px ").concat(bulletScreen.style.fontFamily);
-      bulletScreenOnScreen.width = hideCanvasContext.measureText(bulletScreen.text).width; //弹幕的宽度：像素
-
+      bulletScreenOnScreen.width = hideCanvasContext.measureText(bulletScreen.text).width;
       hideCanvas.width = (bulletScreenOnScreen.width + 8) * _devicePixelRatio;
       hideCanvas.height = (bulletScreenOnScreen.height + 8) * _devicePixelRatio;
       hideCanvasContext.shadowColor = 'black';
@@ -1413,8 +1566,8 @@ function (_BaseRenderer) {
     };
     /**
      * 删除弹幕元素
-     * @function
-     * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+     * @override
+     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
      */
 
 
@@ -1423,7 +1576,7 @@ function (_BaseRenderer) {
     var _setSize = _this.setSize;
     /**
      * 设置尺寸
-     * @function
+     * @override
      */
 
     _this.setSize = function () {
@@ -1436,8 +1589,7 @@ function (_BaseRenderer) {
     };
     /**
      * 获取缩放比例
-     * @function
-     * @returns {Float} 缩放比例
+     * @returns {number} 缩放比例
      */
 
 
@@ -1446,7 +1598,6 @@ function (_BaseRenderer) {
     };
     /**
      * 获取画布对象
-     * @function
      * @returns {Element} 画布对象
      */
 
@@ -1456,30 +1607,26 @@ function (_BaseRenderer) {
     };
     /**
      * 添加Canvas
-     * @function
      * @private
      * @returns {Element} 画布对象
      */
 
 
     function init() {
-      var canvas = document.createElement('canvas'); //canvas对象
-
+      var canvas = document.createElement('canvas');
       element.innerHTML = '';
       element.appendChild(canvas);
       canvas.width = elementSize.width * _devicePixelRatio;
       canvas.height = elementSize.height * _devicePixelRatio;
-      registerEvent(canvas); //注册事件响应程序
-
+      registerEvent(canvas);
       return canvas;
     }
 
     var _checkWhetherHide = _this.checkWhetherHide;
     /**
      * 注册事件响应程序
-     * @function
      * @private
-     * @property {Element} element 元素
+     * @param {Element} element - 元素
      */
 
     function registerEvent(element) {
@@ -1493,7 +1640,7 @@ function (_BaseRenderer) {
           var y2 = y1 + bulletScreenOnScreen.height + 8;
 
           if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-            bulletScreen = bulletScreenOnScreen.bulletScreen;
+            bulletScreen = _helper.Helper.clone(bulletScreenOnScreen.bulletScreen);
             return {
               stop: true
             };
@@ -1544,8 +1691,7 @@ function (_BaseRenderer) {
           x: e.offsetX,
           y: e.offsetY
         };
-      } //上下文菜单
-
+      }
 
       element.oncontextmenu = function (e) {
         var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
@@ -1553,8 +1699,7 @@ function (_BaseRenderer) {
           bulletScreen: bulletScreen
         });
         return false;
-      }; //单击
-
+      };
 
       element.onclick = function (e) {
         var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
@@ -1573,7 +1718,7 @@ function (_BaseRenderer) {
 
 exports.CanvasBaseRenderer = CanvasBaseRenderer;
 
-},{"./baseRenderer":7}],9:[function(require,module,exports){
+},{"../helper":8,"./baseRenderer":10}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1599,11 +1744,21 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var CanvasRenderer =
-/*#__PURE__*/
-function (_CanvasBaseRenderer) {
+/**
+ * Canvas 渲染器类
+ */
+var CanvasRenderer = function (_CanvasBaseRenderer) {
   _inherits(CanvasRenderer, _CanvasBaseRenderer);
 
+  /**
+   * 实例化一个 Canvas 渲染器类
+   * @param {object} element - Element 元素
+   * @param {openBSE~Options} options - 全局选项
+   * @param {object} elementSize - 元素大小
+   * @param {Event} event - 事件对象
+   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
+   */
   function CanvasRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
     var _this;
 
@@ -1611,6 +1766,10 @@ function (_CanvasBaseRenderer) {
 
     supportCheck();
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CanvasRenderer).call(this, element, options, elementSize, event, bulletScreensOnScreen));
+    /**
+     * 清除屏幕内容
+     * @override
+     */
 
     _this.cleanScreen = function () {
       var canvas = this.getCanvas();
@@ -1618,7 +1777,7 @@ function (_CanvasBaseRenderer) {
     };
     /**
      * 绘制函数
-     * @function
+     * @override
      */
 
 
@@ -1626,8 +1785,7 @@ function (_CanvasBaseRenderer) {
       var _this2 = this;
 
       var canvas = this.getCanvas();
-      var devicePixelRatio = this.getDevicePixelRatio(); //离屏渲染
-
+      var devicePixelRatio = this.getDevicePixelRatio();
       var hideCanvas = document.createElement('canvas');
       hideCanvas.width = canvas.width;
       hideCanvas.height = canvas.height;
@@ -1641,14 +1799,14 @@ function (_CanvasBaseRenderer) {
       canvasContext.drawImage(hideCanvas, 0, 0);
     };
     /**
-     * 支持检测
-     * @function
+     * 浏览器支持检测
+     * @private
+     * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
 
 
     function supportCheck() {
-      var canvas = document.createElement('canvas'); //canvas对象
-
+      var canvas = document.createElement('canvas');
       if (typeof canvas.getContext != 'function') throw new _browserNotSupportError.BrowserNotSupportError('Canvas');
       var context = canvas.getContext('2d');
       if (context === null) throw new _browserNotSupportError.BrowserNotSupportError('Canvas 2D');
@@ -1663,7 +1821,7 @@ function (_CanvasBaseRenderer) {
 
 exports.CanvasRenderer = CanvasRenderer;
 
-},{"../../browserNotSupportError":2,"./canvasBaseRenderer":8}],10:[function(require,module,exports){
+},{"../../browserNotSupportError":3,"./canvasBaseRenderer":11}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1674,6 +1832,8 @@ exports.CSS3Renderer = void 0;
 var _baseRenderer = require("./baseRenderer");
 
 var _browserNotSupportError = require("../../browserNotSupportError");
+
+var _helper = require("../helper");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1689,11 +1849,21 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var CSS3Renderer =
-/*#__PURE__*/
-function (_BaseRenderer) {
+/**
+ * CSS3 渲染器类
+ */
+var CSS3Renderer = function (_BaseRenderer) {
   _inherits(CSS3Renderer, _BaseRenderer);
 
+  /**
+   * 实例化一个 CSS3 渲染器类
+   * @param {object} element - Element 元素
+   * @param {openBSE~Options} options - 全局选项
+   * @param {object} elementSize - 元素大小
+   * @param {Event} event - 事件对象
+   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
+   */
   function CSS3Renderer(element, options, elementSize, event, bulletScreensOnScreen) {
     var _this;
 
@@ -1704,13 +1874,17 @@ function (_BaseRenderer) {
     var _div = init();
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CSS3Renderer).call(this, _div, options, elementSize));
+    /**
+     * 清除屏幕内容
+     * @override
+     */
 
     _this.cleanScreen = function () {
       _div.innerHTML = '';
     };
     /**
      * 绘制函数
-     * @function
+     * @override
      */
 
 
@@ -1729,8 +1903,8 @@ function (_BaseRenderer) {
     };
     /**
      * 创建弹幕元素
-     * @function
-     * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+     * @override
+     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
      */
 
 
@@ -1764,14 +1938,13 @@ function (_BaseRenderer) {
 
       _div.appendChild(bulletScreenDiv);
 
-      bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8; //弹幕的宽度：像素
-
+      bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8;
       bulletScreenOnScreen.div = bulletScreenDiv;
     };
     /**
     * 删除弹幕元素
-    * @function
-    * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+    * @override
+    * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
     */
 
 
@@ -1780,15 +1953,13 @@ function (_BaseRenderer) {
     };
     /**
      * 添加Div
-     * @function
      * @private
      * @returns {Element} Div
      */
 
 
     function init() {
-      var div = document.createElement('div'); //DIV
-
+      var div = document.createElement('div');
       element.innerHTML = '';
       element.appendChild(div);
       div.style.overflow = 'hidden';
@@ -1796,13 +1967,13 @@ function (_BaseRenderer) {
       div.style.margin = '0';
       div.style.userSelect = div.style.webkitUserSelect = div.style.msUserSelect = 'none';
       div.style.cursor = 'default';
-      registerEvent(div); //注册事件响应程序
-
+      registerEvent(div);
       return div;
     }
     /**
-     * 支持检测
-     * @function
+     * 浏览器支持检测
+     * @private
+     * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
 
 
@@ -1812,25 +1983,22 @@ function (_BaseRenderer) {
     }
     /**
      * 注册事件响应程序
-     * @function
      * @private
-     * @property {Element} element 元素
+     * @param {Element} element - 元素
      */
 
 
     function registerEvent(element) {
-      //上下文菜单
       element.oncontextmenu = function (e) {
         if (e.target != this) event.trigger('contextmenu', {
-          bulletScreen: e.target.bulletScreen
+          bulletScreen: _helper.Helper.clone(e.target.bulletScreen)
         });
         return false;
-      }; //单击
-
+      };
 
       element.onclick = function (e) {
         if (e.target != this) event.trigger('click', {
-          bulletScreen: e.target.bulletScreen
+          bulletScreen: _helper.Helper.clone(e.target.bulletScreen)
         });
         return false;
       };
@@ -1844,13 +2012,15 @@ function (_BaseRenderer) {
 
 exports.CSS3Renderer = CSS3Renderer;
 
-},{"../../browserNotSupportError":2,"./baseRenderer":7}],11:[function(require,module,exports){
+},{"../../browserNotSupportError":3,"../helper":8,"./baseRenderer":10}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.RenderersFactory = void 0;
+
+var _baseRenderer = require("./baseRenderer");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -1882,15 +2052,30 @@ var RENDERERS = {
    * @private @readonly
    */
   canvas: require('./canvasRenderer').CanvasRenderer
+  /**
+   * 渲染器工厂
+   */
+
 };
 
-var RenderersFactory = function RenderersFactory(element, options, elementSize, event, bulletScreensOnScreen) {
+var RenderersFactory =
+/**
+ * 实例化一个渲染器工厂
+ * @param {object} element - Element 元素
+ * @param {openBSE~Options} options - 全局选项
+ * @param {object} elementSize - 元素大小
+ * @param {Event} event - 事件对象
+ * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+ */
+function RenderersFactory(element, options, elementSize, event, bulletScreensOnScreen) {
   _classCallCheck(this, RenderersFactory);
 
   /**
    * 获取渲染器
-   * @function
-   * @param {String} renderMode - 渲染模式
+   * @param {string} renderMode - 渲染模式
+   * @returns {BaseRenderer} 渲染器的实例
+   * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
+   * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
   this.getRenderer = function (renderMode) {
     var renderer = RENDERERS[renderMode];
@@ -1901,7 +2086,7 @@ var RenderersFactory = function RenderersFactory(element, options, elementSize, 
 
 exports.RenderersFactory = RenderersFactory;
 
-},{"./canvasRenderer":9,"./css3Renderer":10,"./svgRenderer":12,"./webglRenderer":13}],12:[function(require,module,exports){
+},{"./baseRenderer":10,"./canvasRenderer":12,"./css3Renderer":13,"./svgRenderer":15,"./webglRenderer":16}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1912,6 +2097,8 @@ exports.SVGRenderer = void 0;
 var _baseRenderer = require("./baseRenderer");
 
 var _browserNotSupportError = require("../../browserNotSupportError");
+
+var _helper = require("../helper");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -1927,11 +2114,21 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var SVGRenderer =
-/*#__PURE__*/
-function (_BaseRenderer) {
+/**
+ * SVG 渲染器类
+ */
+var SVGRenderer = function (_BaseRenderer) {
   _inherits(SVGRenderer, _BaseRenderer);
 
+  /**
+   * 实例化一个 SVG 渲染器类
+   * @param {object} element - Element 元素
+   * @param {openBSE~Options} options - 全局选项
+   * @param {object} elementSize - 元素大小
+   * @param {Event} event - 事件对象
+   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
+   */
   function SVGRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
     var _this;
 
@@ -1946,16 +2143,20 @@ function (_BaseRenderer) {
     var _defsSvg;
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(SVGRenderer).call(this, _div, options, elementSize));
+    /**
+     * 清除屏幕内容
+     * @override
+     */
 
     _this.cleanScreen = function () {
       _svg.innerHTML = '';
-      _defsSvg = createElementSVG('defs'); //defs
+      _defsSvg = createElementSVG('defs');
 
       _svg.appendChild(_defsSvg);
     };
     /**
      * 绘制函数
-     * @function
+     * @override
      */
 
 
@@ -1972,8 +2173,8 @@ function (_BaseRenderer) {
     };
     /**
      * 创建弹幕元素
-     * @function
-     * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+     * @override
+     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
      */
 
 
@@ -2032,7 +2233,7 @@ function (_BaseRenderer) {
       _svg.appendChild(textSvg);
 
       bulletScreenOnScreen.svg.text = textSvg;
-      bulletScreenOnScreen.width = textSvg.getComputedTextLength(); //弹幕的宽度：像素
+      bulletScreenOnScreen.width = textSvg.getComputedTextLength();
 
       if (bulletScreen.style.boxColor != null) {
         var rectSvg = createElementSVG('rect');
@@ -2051,8 +2252,8 @@ function (_BaseRenderer) {
     };
     /**
     * 删除弹幕元素
-    * @function
-    * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+    * @override
+    * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
     */
 
 
@@ -2070,7 +2271,7 @@ function (_BaseRenderer) {
     var _setSize = _this.setSize;
     /**
      * 设置尺寸
-     * @function
+     * @override
      */
 
     _this.setSize = function () {
@@ -2082,22 +2283,19 @@ function (_BaseRenderer) {
     };
     /**
      * 添加Div
-     * @function
      * @private
      * @returns {Element} Div
      */
 
 
     function init() {
-      var div = document.createElement('div'); //DIV
-
+      var div = document.createElement('div');
       element.innerHTML = '';
       element.appendChild(div);
       div.style.padding = '0';
       div.style.margin = '0';
-      _svg = createElementSVG('svg'); //SVG
-
-      _defsSvg = createElementSVG('defs'); //defs
+      _svg = createElementSVG('svg');
+      _defsSvg = createElementSVG('defs');
 
       _svg.appendChild(_defsSvg);
 
@@ -2106,18 +2304,17 @@ function (_BaseRenderer) {
       _svg.setAttribute('width', elementSize.width);
 
       div.appendChild(_svg);
-      var eventDiv = document.createElement('div'); //DIV
-
+      var eventDiv = document.createElement('div');
       eventDiv.style.position = 'absolute';
       eventDiv.style.top = eventDiv.style.right = eventDiv.style.bottom = eventDiv.style.left = '0';
       div.appendChild(eventDiv);
-      registerEvent(eventDiv); //注册事件响应程序
-
+      registerEvent(eventDiv);
       return div;
     }
     /**
-     * 支持检测
-     * @function
+     * 浏览器支持检测
+     * @private
+     * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
 
 
@@ -2129,9 +2326,8 @@ function (_BaseRenderer) {
     var _checkWhetherHide = _this.checkWhetherHide;
     /**
      * 注册事件响应程序
-     * @function
      * @private
-     * @property {Element} element - 元素
+     * @param {Element} element - 元素
      */
 
     function registerEvent(element) {
@@ -2145,7 +2341,7 @@ function (_BaseRenderer) {
           var y2 = y1 + bulletScreenOnScreen.height + 8;
 
           if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-            bulletScreen = bulletScreenOnScreen.bulletScreen;
+            bulletScreen = _helper.Helper.clone(bulletScreenOnScreen.bulletScreen);
             return {
               stop: true
             };
@@ -2196,8 +2392,7 @@ function (_BaseRenderer) {
           x: e.offsetX,
           y: e.offsetY
         };
-      } //上下文菜单
-
+      }
 
       element.oncontextmenu = function (e) {
         var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
@@ -2205,8 +2400,7 @@ function (_BaseRenderer) {
           bulletScreen: bulletScreen
         });
         return false;
-      }; //单击
-
+      };
 
       element.onclick = function (e) {
         var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
@@ -2218,10 +2412,9 @@ function (_BaseRenderer) {
     }
     /**
      * 创建 SVG 元素
-     * @function
      * @private
-     * @param {String} qualifiedName - Element 名称
-     * @param {*} options - 选项
+     * @param {string} qualifiedName - Element 名称
+     * @param {object} options - 选项
      */
 
 
@@ -2237,7 +2430,7 @@ function (_BaseRenderer) {
 
 exports.SVGRenderer = SVGRenderer;
 
-},{"../../browserNotSupportError":2,"./baseRenderer":7}],13:[function(require,module,exports){
+},{"../../browserNotSupportError":3,"../helper":8,"./baseRenderer":10}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2263,11 +2456,21 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
 function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
 
-var WebGLRenderer =
-/*#__PURE__*/
-function (_CanvasBaseRenderer) {
+/**
+ * WebGL 渲染器类
+ */
+var WebGLRenderer = function (_CanvasBaseRenderer) {
   _inherits(WebGLRenderer, _CanvasBaseRenderer);
 
+  /**
+   * 实例化一个 WebGL 渲染器类
+   * @param {object} element - Element 元素
+   * @param {openBSE~Options} options - 全局选项
+   * @param {object} elementSize - 元素大小
+   * @param {Event} event - 事件对象
+   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
+   */
   function WebGLRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
     var _this;
 
@@ -2275,75 +2478,74 @@ function (_CanvasBaseRenderer) {
 
     supportCheck();
     _this = _possibleConstructorReturn(this, _getPrototypeOf(WebGLRenderer).call(this, element, options, elementSize, event, bulletScreensOnScreen));
+    /**
+     * WebGL 上下文对象
+     * @private @type {object}
+     */
 
     var _webglContext;
 
     var _positionAttributeLocation;
 
     var _resolutionUniformLocation;
+    /**
+     * Canvas 元素
+     * @private @type {object}
+     */
+
 
     var _canvas = _this.getCanvas();
 
     init();
+    /**
+     * 清除屏幕内容
+     * @override
+     */
 
     _this.cleanScreen = function () {
       _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
     };
     /**
      * 绘制函数
-     * @function
+     * @override
      */
 
 
     _this.draw = function () {
       var _this2 = this;
 
-      var devicePixelRatio = this.getDevicePixelRatio(); // 清空画布
+      var devicePixelRatio = this.getDevicePixelRatio();
 
       _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
 
       bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-        if (_this2.checkWhetherHide(bulletScreenOnScreen)) return; // 四个顶点坐标
-
+        if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
         var x1 = (bulletScreenOnScreen.x - 4) * devicePixelRatio;
         var x2 = x1 + (bulletScreenOnScreen.width + 8) * devicePixelRatio;
         var y1 = (bulletScreenOnScreen.actualY - 4) * devicePixelRatio;
-        var y2 = y1 + (bulletScreenOnScreen.height + 8) * devicePixelRatio; //绑定纹理
+        var y2 = y1 + (bulletScreenOnScreen.height + 8) * devicePixelRatio;
 
-        _webglContext.bindTexture(_webglContext.TEXTURE_2D, bulletScreenOnScreen.texture2D); //绑定范围
+        _webglContext.bindTexture(_webglContext.TEXTURE_2D, bulletScreenOnScreen.texture2D);
 
-
-        var positionBuffer = _webglContext.createBuffer(); // 将绑定点绑定到缓冲数据（positionBuffer）
-
+        var positionBuffer = _webglContext.createBuffer();
 
         _webglContext.bindBuffer(_webglContext.ARRAY_BUFFER, positionBuffer);
 
-        _webglContext.enableVertexAttribArray(_positionAttributeLocation); // 告诉属性怎么从positionBuffer中读取数据 (ARRAY_BUFFER)
+        _webglContext.enableVertexAttribArray(_positionAttributeLocation);
 
+        _webglContext.vertexAttribPointer(_positionAttributeLocation, 2, _webglContext.FLOAT, false, 0, 0);
 
-        _webglContext.vertexAttribPointer(_positionAttributeLocation, 2, //size 每次迭代运行提取两个单位数据
-        _webglContext.FLOAT, //type 每个单位的数据类型是32位浮点型
-        false, //normalize 不需要归一化数据
-        0, //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
-        // 每次迭代运行运动多少内存到下一个数据开始点
-        0 //offset 从缓冲起始位置开始读取
-        );
+        _webglContext.bufferData(_webglContext.ARRAY_BUFFER, new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]), _webglContext.STATIC_DRAW);
 
-        _webglContext.bufferData(_webglContext.ARRAY_BUFFER, new Float32Array([x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]), _webglContext.STATIC_DRAW); //绘制
-
-
-        _webglContext.drawArrays(_webglContext.TRIANGLES, //primitiveType
-        0, //offset
-        6 //count
-        );
+        _webglContext.drawArrays(_webglContext.TRIANGLES, 0, 6);
       }, true);
     };
 
     var _creatAndgetWidth = _this.creatAndgetWidth;
     /**
      * 创建弹幕元素
-     * @function
-     * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+     * @override
+     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
      */
 
     _this.creatAndgetWidth = function (bulletScreenOnScreen) {
@@ -2351,8 +2553,7 @@ function (_CanvasBaseRenderer) {
 
       var texture = _webglContext.createTexture();
 
-      _webglContext.bindTexture(_webglContext.TEXTURE_2D, texture); // 设置参数
-
+      _webglContext.bindTexture(_webglContext.TEXTURE_2D, texture);
 
       _webglContext.texParameteri(_webglContext.TEXTURE_2D, _webglContext.TEXTURE_MIN_FILTER, _webglContext.NEAREST);
 
@@ -2370,7 +2571,7 @@ function (_CanvasBaseRenderer) {
     var _setSize = _this.setSize;
     /**
      * 设置尺寸
-     * @function
+     * @override
      */
 
     _this.setSize = function () {
@@ -2378,24 +2579,18 @@ function (_CanvasBaseRenderer) {
 
       _webglContext.viewport(0, 0, _canvas.width, _canvas.height);
 
-      _webglContext.uniform2f(_resolutionUniformLocation, _canvas.width, _canvas.height); // 设置全局变量 分辨率
-
+      _webglContext.uniform2f(_resolutionUniformLocation, _canvas.width, _canvas.height);
     };
     /**
      * 初始化
-     * @function
      */
 
 
     function init() {
-      // 创建着色器方法，输入参数：渲染上下文，着色器类型，数据源
       var createShader = function createShader(gl, type, source) {
-        var shader = gl.createShader(type); // 创建着色器对象
-
-        gl.shaderSource(shader, source); // 提供数据源
-
-        gl.compileShader(shader); // 编译 -> 生成着色器
-
+        var shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
         var success = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
 
         if (success) {
@@ -2403,8 +2598,7 @@ function (_CanvasBaseRenderer) {
         }
 
         gl.deleteShader(shader);
-      }; // 创建着色程序，输入参数：渲染上下文，顶点着色器，片段着色器
-
+      };
 
       var createProgram = function createProgram(gl, vertexShader, fragmentShader) {
         var program = gl.createProgram();
@@ -2418,48 +2612,36 @@ function (_CanvasBaseRenderer) {
         }
 
         gl.deleteProgram(program);
-      }; //顶点着色器代码
-
+      };
 
       var vertexShaderSource = 'attribute vec2 a_position;';
       vertexShaderSource += 'attribute vec2 a_texcoord;';
       vertexShaderSource += 'uniform vec2 u_resolution;';
       vertexShaderSource += 'varying vec2 v_texcoord;';
-      vertexShaderSource += 'void main() {'; // 从像素坐标转换到 0.0 到 1.0
-
-      vertexShaderSource += 'vec2 zeroToOne = a_position / u_resolution;'; // 再把 0->1 转换 0->2
-
-      vertexShaderSource += 'vec2 zeroToTwo = zeroToOne * 2.0;'; // 把 0->2 转换到 -1->+1 (裁剪空间)
-
+      vertexShaderSource += 'void main() {';
+      vertexShaderSource += 'vec2 zeroToOne = a_position / u_resolution;';
+      vertexShaderSource += 'vec2 zeroToTwo = zeroToOne * 2.0;';
       vertexShaderSource += 'vec2 clipSpace = zeroToTwo - 1.0;';
-      vertexShaderSource += 'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);'; // 传递纹理坐标到片断着色器
-
+      vertexShaderSource += 'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);';
       vertexShaderSource += 'v_texcoord = a_texcoord;';
-      vertexShaderSource += '}'; //片段着色器代码
-
-      var fragmentShaderSource = 'precision mediump float;'; // 从顶点着色器中传入的值
-
-      fragmentShaderSource += 'varying vec2 v_texcoord;'; // 纹理
-
+      vertexShaderSource += '}';
+      var fragmentShaderSource = 'precision mediump float;';
+      fragmentShaderSource += 'varying vec2 v_texcoord;';
       fragmentShaderSource += 'uniform sampler2D u_texture;';
       fragmentShaderSource += 'void main() {';
       fragmentShaderSource += 'gl_FragColor = texture2D(u_texture, v_texcoord);';
       fragmentShaderSource += '}';
       _webglContext = _canvas.getContext('webgl');
 
-      _webglContext.enable(_webglContext.BLEND); //开启混合功能
+      _webglContext.enable(_webglContext.BLEND);
 
-
-      _webglContext.clearColor(0, 0, 0, 0); //设置清除颜色
-
+      _webglContext.clearColor(0, 0, 0, 0);
 
       _webglContext.blendFunc(_webglContext.SRC_ALPHA, _webglContext.ONE_MINUS_SRC_ALPHA);
 
-      var vertexShader = createShader(_webglContext, _webglContext.VERTEX_SHADER, vertexShaderSource); //创建顶点着色器
-
-      var fragmentShader = createShader(_webglContext, _webglContext.FRAGMENT_SHADER, fragmentShaderSource); //创建片段着色器
-
-      var program = createProgram(_webglContext, vertexShader, fragmentShader); //创建着色程序
+      var vertexShader = createShader(_webglContext, _webglContext.VERTEX_SHADER, vertexShaderSource);
+      var fragmentShader = createShader(_webglContext, _webglContext.FRAGMENT_SHADER, fragmentShaderSource);
+      var program = createProgram(_webglContext, vertexShader, fragmentShader);
 
       _webglContext.useProgram(program);
 
@@ -2471,43 +2653,31 @@ function (_CanvasBaseRenderer) {
 
       _webglContext.viewport(0, 0, _canvas.width, _canvas.height);
 
-      _webglContext.uniform2f(_resolutionUniformLocation, _canvas.width, _canvas.height); // 设置全局变量 分辨率
-      //绑定范围
+      _webglContext.uniform2f(_resolutionUniformLocation, _canvas.width, _canvas.height);
 
-
-      var texcoordBuffer = _webglContext.createBuffer(); // 将绑定点绑定到缓冲数据（texcoordBuffer）
-
+      var texcoordBuffer = _webglContext.createBuffer();
 
       _webglContext.bindBuffer(_webglContext.ARRAY_BUFFER, texcoordBuffer);
 
-      _webglContext.enableVertexAttribArray(texcoordAttributeLocation); // 以浮点型格式传递纹理坐标
+      _webglContext.enableVertexAttribArray(texcoordAttributeLocation);
 
-
-      _webglContext.vertexAttribPointer(texcoordAttributeLocation, 2, //size 每次迭代运行提取两个单位数据
-      _webglContext.FLOAT, //type 每个单位的数据类型是32位浮点型
-      false, //normalize 不需要归一化数据 
-      0, //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
-      // 每次迭代运行运动多少内存到下一个数据开始点
-      0 //offset 从缓冲起始位置开始读取
-      );
+      _webglContext.vertexAttribPointer(texcoordAttributeLocation, 2, _webglContext.FLOAT, false, 0, 0);
 
       _webglContext.bufferData(_webglContext.ARRAY_BUFFER, new Float32Array([0, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1, 1]), _webglContext.STATIC_DRAW);
     }
     /**
-     * 支持检测
-     * @function
+     * 浏览器支持检测
+     * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
 
 
     function supportCheck() {
-      var canvas = document.createElement('canvas'); //canvas对象
-
+      var canvas = document.createElement('canvas');
       if (typeof canvas.getContext != 'function') throw new _browserNotSupportError.BrowserNotSupportError('Canvas');
       var context = canvas.getContext('2d');
       if (context === null) throw new _browserNotSupportError.BrowserNotSupportError('Canvas 2D');
       if (typeof context.fillText != 'function') throw new _browserNotSupportError.BrowserNotSupportError('Canvas 2D fillText Function');
-      canvas = document.createElement('canvas'); //canvas对象
-
+      canvas = document.createElement('canvas');
       context = canvas.getContext('webgl');
       if (context === null) throw new _browserNotSupportError.BrowserNotSupportError('WebGL');
     }
@@ -2520,7 +2690,7 @@ function (_CanvasBaseRenderer) {
 
 exports.WebGLRenderer = WebGLRenderer;
 
-},{"../../browserNotSupportError":2,"./canvasBaseRenderer":8}],14:[function(require,module,exports){
+},{"../../browserNotSupportError":3,"./canvasBaseRenderer":11}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2528,14 +2698,28 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.openBSE = void 0;
 
+var _helper = require("./lib/helper");
+
+var BUILD = require('../build.json');
+
+BUILD.buildDate = require('./buildDate.json').buildDate;
 /**
  * openBSE 根命名空间
  * @namespace
  */
+
 var openBSE = {
   BulletScreenEngine: require('./bulletScreenEngine').BulletScreenEngine,
   BrowserNotSupportError: require('./browserNotSupportError').BrowserNotSupportError,
-  BulletScreenType: require('./bulletScreenType').BulletScreenType
+  BulletScreenType: require('./bulletScreenType').BulletScreenType,
+
+  /**
+   * 获取版本信息。
+   * @returns {openBSE~VersionInfo} 版本信息：一个 {@link openBSE~VersionInfo} 结构。
+   */
+  getVersion: function getVersion() {
+    return _helper.Helper.clone(BUILD);
+  }
 };
 /**
  * 全局选项
@@ -2546,7 +2730,8 @@ var openBSE = {
  * @property {openBSE~clockCallback} [clock=time => new Date().getTime() - startTime] - 时间基准：此时间基准可指向一个方法用于获取播放器当前进度，这个方法返回值即为播放进度（单位：毫秒）。
  * @property {number} [scaling=1] 弹幕缩放比例（倍数）
  * @property {openBSE~BulletScreenStyle} [defaultStyle] 默认弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。
- * @property {openBSE.BulletScreenType} [hiddenTypes] 隐藏的弹幕类型：一个 {@link openBSE.BulletScreenType} 枚举，将要隐藏的弹幕类型相加。
+ * @property {openBSE.BulletScreenType} [hiddenTypes=0] 隐藏的弹幕类型：一个 {@link openBSE.BulletScreenType} 枚举。将要隐藏的弹幕类型相加，0为不隐藏任何类型的弹幕。
+ * @property {number} [opacity=1.0] 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
  */
 
 /**
@@ -2561,10 +2746,11 @@ var openBSE = {
  * @typedef {object} openBSE~BulletScreen
  * @description BulletScreen 结构用于存放单条弹幕数据。
  * @property {string} text 弹幕文本
- * @property {boolean} [canDiscard=true] 是否允许丢弃：在弹幕过多时，程序将自动丢弃一些延迟过高的弹幕。此选项为 false 时本条弹幕无论如何都不会被丢弃，使用本选项的场景如本用户发送的弹幕。注意：不要将太多的弹幕的 canDiscard 设为 false， 否则会因超时的弹幕不会被丢弃而造成意外的问题。
+ * @property {boolean} [canDiscard=true] 是否允许丢弃：在弹幕过多时，程序将自动丢弃一些延迟过高的弹幕。此选项为 false 时本条弹幕无论如何都不会被丢弃，使用本选项的场景如本用户发送的弹幕。（注意：不要将太多的弹幕的 canDiscard 设为 false， 否则会因超时的弹幕不会被丢弃而造成意外的问题。）
  * @property {number} [startTime=options.clock()] 弹幕进入时间：单位：毫秒，默认为[时间基准（options.clock）]{@link openBSE~Options}当前时间。
  * @property {openBSE.BulletScreenType} [type=openBSE.BulletScreenType.rightToLeft] 弹幕类型：一个类型为 {@link openBSE.BulletScreenType} 的枚举。
  * @property {openBSE~BulletScreenStyle} style 弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。设置此选项中的任何一个值，将覆盖对应的全局设置。
+ * @property {any} more... 其他自定义字段：例如 uuid 、 id 等。（注意：因为在事件响应方法中返回的弹幕对象是原对象克隆的，所以无法直接比较，必须使用自定义字段唯一标识一条弹幕。）
  */
 
 /**
@@ -2573,7 +2759,7 @@ var openBSE = {
  * @description BulletScreenStyle 结构用于存放弹幕样式信息。
  * @property {number} [shadowBlur=2] 弹幕阴影的模糊级别：0为不显示阴影。
  * @property {string} [fontWeight="600"] 字体粗细：可选值：lighter：更细；normal：标准；bold：粗体；bolder: 更粗；100、200、300、400、500、600、700、800、900：定义由粗到细的字符（400 等同于 normal；700 等同于 bold）。
- * @property {string} [fontFamily="sans-serif"] 字体系列：弹幕的字体族名称或/及类族名称的一个优先表。
+ * @property {string} [fontFamily="sans-serif"] 字体系列：弹幕的字体族名称或/及类族名称的一个优先表。（注意：如果使用了用“@font-face”定义的字体，请确保在使用前完全加载完成，否则弹幕可能无法显示。如果要预加载这些字体，建议使用 [Web Font Loader]{@link https://github.com/typekit/webfontloader} 。）
  * @property {number} [size=19] 字体大小：单位：像素。
  * @property {string} [boxColor] 外框颜色：参照CSS颜色设置方法，为 null 不显示外框。
  * @property {string} [color="white"] 弹幕颜色：参照CSS颜色设置方法，为 null 不显示此弹幕。
@@ -2604,16 +2790,7 @@ var openBSE = {
 
 exports.openBSE = openBSE;
 
-},{"./browserNotSupportError":2,"./bulletScreenEngine":3,"./bulletScreenType":4}],15:[function(require,module,exports){
-"use strict";
+},{"../build.json":1,"./browserNotSupportError":3,"./buildDate.json":4,"./bulletScreenEngine":5,"./bulletScreenType":6,"./lib/helper":8}]},{},[2])
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.BUILE_DATE = exports.VERSION = void 0;
-var VERSION = '2.0-Alpha';
-exports.VERSION = VERSION;
-var BUILE_DATE = 'Fri, 11 Jan 2019 10:58:47 GMT';
-exports.BUILE_DATE = BUILE_DATE;
 
-},{}]},{},[1,14]);
+//# sourceMappingURL=openBSE.all.js.map
