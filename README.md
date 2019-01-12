@@ -6,7 +6,7 @@
 [English Version](https://github.com/iamscottxu/openBSE/blob/master/README.en.md) |
 [wiki](https://github.com/iamscottxu/openBSE/wiki) |
 [Demo](https://iamscottxu.github.io/openBSE/demo/openBSEDemo.html) |
-[2.0-Alpha Docs](https://iamscottxu.github.io/openBSE/docs/2.0-Beta/index.html)
+[2.0-Beta Docs](https://iamscottxu.github.io/openBSE/docs/2.0-Beta/index.html)
 
 高性能 JavaScript 弹幕引擎。同屏弹幕1000+
 
