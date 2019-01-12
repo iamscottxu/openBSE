@@ -2,7 +2,7 @@ import { Helper } from './lib/helper'
 import { BulletScreenEngine } from './bulletScreenEngine'
 import { BrowserNotSupportError } from './browserNotSupportError'
 import { BulletScreenType } from './bulletScreenType'
-import { BUILD } from './build.json'
+import * as BUILD from './build.json'
 
 /**
  * 获取版本信息。

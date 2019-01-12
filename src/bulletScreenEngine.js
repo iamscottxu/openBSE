@@ -170,11 +170,11 @@ class BulletScreenEngine {
          * @function
          */
         let requestAnimationFrame;
-        if(typeof window.requestAnimationFrame === 'function') requestAnimationFrame = window.requestAnimationFrame(fun);
+        if(typeof window.requestAnimationFrame === 'function') requestAnimationFrame = window.requestAnimationFrame;
         else 
         {
             console.warn('Your browser does not support method "requestAnimationFrame" and will switch to method "setTimeout", which may affect performance.');
-            requestAnimationFrame = window.setTimeout(fun, 17); //60fps
+            requestAnimationFrame = (fun) => window.setTimeout(fun, 17); //60fps
         }
 
 
