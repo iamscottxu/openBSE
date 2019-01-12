@@ -1,19 +1,36 @@
 import { BaseRenderer } from './baseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
+import { Helper } from '../helper'
 
+/**
+ * CSS3 渲染器类
+ */
 class CSS3Renderer extends BaseRenderer {
+    /**
+     * 实例化一个 CSS3 渲染器类
+     * @param {object} element - Element 元素
+     * @param {openBSE~Options} options - 全局选项
+     * @param {object} elementSize - 元素大小
+     * @param {Event} event - 事件对象
+     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
+     */
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
-        supportCheck();
+        supportCheck(); //浏览器支持检测
         let _div = init();
         super(_div, options, elementSize);
 
+        /**
+         * 清除屏幕内容
+         * @override
+         */
         this.cleanScreen = function () {
             _div.innerHTML = '';
         }
 
         /**
          * 绘制函数
-         * @function
+         * @override
          */
         this.draw = function () {
             bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
@@ -31,8 +48,8 @@ class CSS3Renderer extends BaseRenderer {
 
         /**
          * 创建弹幕元素
-         * @function
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+         * @override
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
         this.creatAndgetWidth = function (bulletScreenOnScreen) {
             let bulletScreen = bulletScreenOnScreen.bulletScreen;
@@ -67,8 +84,8 @@ class CSS3Renderer extends BaseRenderer {
 
         /**
         * 删除弹幕元素
-        * @function
-        * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+        * @override
+        * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
         */
         this.delete = function (bulletScreenOnScreen) {
             _div.removeChild(bulletScreenOnScreen.div);
@@ -76,7 +93,6 @@ class CSS3Renderer extends BaseRenderer {
 
         /**
          * 添加Div
-         * @function
          * @private
          * @returns {Element} Div
          */
@@ -96,30 +112,30 @@ class CSS3Renderer extends BaseRenderer {
         }
 
         /**
-         * 支持检测
-         * @function
+         * 浏览器支持检测
+         * @private
+         * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
          */
         function supportCheck() {
             let style = document.createElement('div').style;
             if (
-                typeof (style.transform) === 'undefined' &&
-                typeof (style.msTransform) === 'undefined' &&
-                typeof (style.webkitTransform) === 'undefined'
+                typeof style.transform === 'undefined' &&
+                typeof style.msTransform === 'undefined' &&
+                typeof style.webkitTransform === 'undefined'
             ) throw new BrowserNotSupportError('CSS3 transform');
         }
 
         /**
          * 注册事件响应程序
-         * @function
          * @private
-         * @property {Element} element 元素
+         * @param {Element} element - 元素
          */
         function registerEvent(element) {
             //上下文菜单
             element.oncontextmenu = function (e) {
                 if (e.target != this)
                     event.trigger('contextmenu', {
-                        bulletScreen: e.target.bulletScreen
+                        bulletScreen: Helper.clone(e.target.bulletScreen)
                     });
                 return false;
             };
@@ -127,7 +143,7 @@ class CSS3Renderer extends BaseRenderer {
             element.onclick = function (e) {
                 if (e.target != this)
                     event.trigger('click', {
-                        bulletScreen: e.target.bulletScreen
+                        bulletScreen: Helper.clone(e.target.bulletScreen)
                     });
                 return false;
             };

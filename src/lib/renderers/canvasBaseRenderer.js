@@ -1,20 +1,40 @@
 import { BaseRenderer } from './baseRenderer'
+import { Helper } from '../helper'
 
+/**
+ * Canvas 渲染器抽象类
+ */
 class CanvasBaseRenderer extends BaseRenderer {
+    /**
+     * 实例化一个 Canvas 渲染器抽象类
+     * @param {object} element - Element 元素
+     * @param {openBSE~Options} options - 全局选项
+     * @param {object} elementSize - 元素大小
+     * @param {Event} event - 事件对象
+     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     */
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
         if (new.target === CanvasBaseRenderer) {
-            throw new Error();
+            throw new SyntaxError();
         }
 
-        let _devicePixelRatio = typeof (window.devicePixelRatio) === 'undefined' ? 1 : window.devicePixelRatio;
+        /**
+         * DPI 缩放比例（倍数）
+         * @private @type {number}
+         */
+        let _devicePixelRatio = typeof window.devicePixelRatio === 'undefined' ? 1 : window.devicePixelRatio;
         _devicePixelRatio *= options.scaling;
+        /**
+         * 画布元素
+         * @private @type {Element}
+         */
         let _canvas = init();
         super(_canvas, options, elementSize);
 
         /**
          * 创建弹幕元素
-         * @function
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+         * @override
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
         this.creatAndgetWidth = function (bulletScreenOnScreen) {
             let bulletScreen = bulletScreenOnScreen.bulletScreen;
@@ -53,8 +73,8 @@ class CanvasBaseRenderer extends BaseRenderer {
 
         /**
          * 删除弹幕元素
-         * @function
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+         * @override
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
         this.delete = function (bulletScreenOnScreen) {
 
@@ -63,11 +83,11 @@ class CanvasBaseRenderer extends BaseRenderer {
         let _setSize = this.setSize;
         /**
          * 设置尺寸
-         * @function
+         * @override
          */
         this.setSize = function () {
             _setSize();
-            _devicePixelRatio = typeof (window.devicePixelRatio) === 'undefined' ? 1 : window.devicePixelRatio;
+            _devicePixelRatio = typeof window.devicePixelRatio === 'undefined' ? 1 : window.devicePixelRatio;
             _devicePixelRatio *= options.scaling;
             _canvas.width = elementSize.width * _devicePixelRatio;
             _canvas.height = elementSize.height * _devicePixelRatio;
@@ -75,21 +95,18 @@ class CanvasBaseRenderer extends BaseRenderer {
 
         /**
          * 获取缩放比例
-         * @function
-         * @returns {Float} 缩放比例
+         * @returns {number} 缩放比例
          */
         this.getDevicePixelRatio = () => _devicePixelRatio;
 
         /**
          * 获取画布对象
-         * @function
          * @returns {Element} 画布对象
          */
         this.getCanvas = () => _canvas;
 
         /**
          * 添加Canvas
-         * @function
          * @private
          * @returns {Element} 画布对象
          */
@@ -106,9 +123,8 @@ class CanvasBaseRenderer extends BaseRenderer {
         let _checkWhetherHide = this.checkWhetherHide;
         /**
          * 注册事件响应程序
-         * @function
          * @private
-         * @property {Element} element 元素
+         * @param {Element} element - 元素
          */
         function registerEvent(element) {
             function getBulletScreenOnScreenByLocation(location) {
@@ -120,7 +136,7 @@ class CanvasBaseRenderer extends BaseRenderer {
                     let y1 = bulletScreenOnScreen.actualY - 4;
                     let y2 = y1 + bulletScreenOnScreen.height + 8;
                     if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-                        bulletScreen = bulletScreenOnScreen.bulletScreen;
+                        bulletScreen = Helper.clone(bulletScreenOnScreen.bulletScreen);
                         return { stop: true };
                     }
                 }, false);
@@ -141,9 +157,9 @@ class CanvasBaseRenderer extends BaseRenderer {
                     } while ((element = element.offsetParent) != null);
                     return offsetLeft;
                 }
-                if (typeof (e.offsetX) === 'undefined' || e.offsetX === null) {
-                    if (typeof (e.layerX) === 'undefined' || e.layerX === null) {
-                        if (typeof (e.pageX) === 'undefined' || e.pageX === null) {
+                if (typeof e.offsetX === 'undefined' || e.offsetX === null) {
+                    if (typeof e.layerX === 'undefined' || e.layerX === null) {
+                        if (typeof e.pageX === 'undefined' || e.pageX === null) {
                             let doc = document.documentElement, body = document.body;
                             e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
                             e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);

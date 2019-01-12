@@ -1,25 +1,40 @@
+import { Helper } from '../helper'
+
+/**
+ * 渲染器抽象类
+ */
 class BaseRenderer {
+    /**
+     * 实例化一个渲染器抽象类
+     * @param {object} element - Element 元素
+     * @param {openBSE~Options} options - 全局选项
+     * @param {object} elementSize - 元素大小
+     */
     constructor(element, options, elementSize) {
         if (new.target === BaseRenderer) {
-            throw new Error();
+            throw new SyntaxError();
         }
 
         init(); //初始化
 
         /**
          * 隐藏弹幕
-         * @private @type {Boolean}
+         * @private @type {boolean}
          */
         let _hide = false;
 
         /**
          * 透明度
-         * @private @type {Float}
+         * @private @type {number}
          */
         let _opacity = 0.0;
 
+        /**
+         * 清除屏幕内容
+         * @abstract
+         */
         this.cleanScreen = function () {
-            throw new Error();
+            throw new SyntaxError();
         }
 
         /**
@@ -40,61 +55,72 @@ class BaseRenderer {
 
         /**
          * 设置弹幕不透明度。
-         * @param {Float} opacity 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
          */
-        this.setOpacity = function (opacity) {
-            if (typeof (opacity) != 'number') throw new Error();
-            _opacity = opacity;
-            element.style.opacity = _opacity;
+        this.setOpacity = _setOpacity;
+
+        /**
+         * 设置弹幕不透明度。
+         */
+        function _setOpacity() {
+            if (options.opacity === 1) element.style.opacity = '';
+            else element.style.opacity = options.opacity;
         }
 
         /**
          * 获取弹幕不透明度。
-         * @returns {Float} 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
+         * @returns {number} 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
          */
         this.getOpacity = () => _opacity;
 
         /**
          * 获取弹幕可见性。
-         * @returns {Boolean}  指示弹幕是否可见。
-         * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{{@link BulletScreenEngine#hide}} 。
+         * @returns {boolean} 指示弹幕是否可见。
+         * @description 获取弹幕可见性。
          */
         this.getVisibility = () => !_hide;
 
         /**
          * 绘制函数
+         * @abstract
          */
         this.draw = function () {
-            throw new Error();
+            throw new SyntaxError();
         }
 
         /**
          * 创建弹幕元素
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+         * @abstract
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
         this.creatAndgetWidth = function (bulletScreenOnScreen) {
-            throw new Error();
+            throw new SyntaxError();
         }
 
         /**
          * 删除弹幕元素
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+         * @abstract
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
         this.delete = function (bulletScreenOnScreen) {
-            throw new Error();
+            throw new SyntaxError();
         }
 
         /**
-         * 设置尺寸
-         */
-        this.setSize = setSize;
-
-        /**
          * 检查弹幕是否被隐藏
-         * @param {object} - 屏幕弹幕对象
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
         this.checkWhetherHide = (bulletScreenOnScreen) => (bulletScreenOnScreen.bulletScreen.type & options.hiddenTypes) === bulletScreenOnScreen.bulletScreen.type;
 
+        /**
+        * 设置尺寸
+        * @function
+        */
+        this.setSize = setSize;
+
+        /**
+         * 设置尺寸
+         * @private
+         */
         function setSize() {
             element.style.width = `${elementSize.width}px`;
             element.style.height = `${elementSize.height}px`;
@@ -121,6 +147,7 @@ class BaseRenderer {
          */
         function init() {
             setSize();
+            _setOpacity();
             element.style.position = 'relative';
         }
     }

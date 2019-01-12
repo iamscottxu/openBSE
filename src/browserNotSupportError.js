@@ -7,7 +7,7 @@
 class BrowserNotSupportError extends Error {
     /**
      * 创建一个异常对象
-     * @param {String} message 
+     * @param {string} message - 消息
      */
     constructor(message) {
         super(`This browser does not support "${message}".`);

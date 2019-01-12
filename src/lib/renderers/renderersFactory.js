@@ -1,3 +1,5 @@
+import { BaseRenderer } from './baseRenderer';
+
 /**
  * 渲染器
  * @private @constant
@@ -25,12 +27,25 @@ const RENDERERS = {
     canvas: require('./canvasRenderer').CanvasRenderer
 }
 
+/**
+ * 渲染器工厂
+ */
 class RenderersFactory {
+    /**
+     * 实例化一个渲染器工厂
+     * @param {object} element - Element 元素
+     * @param {openBSE~Options} options - 全局选项
+     * @param {object} elementSize - 元素大小
+     * @param {Event} event - 事件对象
+     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     */
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
         /**
          * 获取渲染器
-         * @function
-         * @param {String} renderMode - 渲染模式
+         * @param {string} renderMode - 渲染模式
+         * @returns {BaseRenderer} 渲染器的实例
+         * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
+         * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
          */
         this.getRenderer = function (renderMode) {
             let renderer = RENDERERS[renderMode];

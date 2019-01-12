@@ -1,13 +1,13 @@
 /**
- * 创建一个双向链表。
- * @class
- * @public
+ * 双向链表类
  */
 class LinkedList {
+    /**
+     * 创建一个双向链表。
+     */
     constructor() {
         /**
          * 双向链表节点
-         * @class
          * @private
         */
         class node {
@@ -26,17 +26,13 @@ class LinkedList {
         //公共函数
         /**
          * 获取元素个数
-         * @function
-         * @public
-         * @returns {Number} 元素个数
+         * @returns {number} 元素个数
          */
         this.getLength = l => length;
         /**
          * 插入元素
-         * @function
-         * @public
-         * @param {Object} element 元素
-         * @param {Boolean} top true: 插入到顶部 false: 插入到底部
+         * @param {*} element - 元素
+         * @param {boolean} top - true: 插入到顶部 false: 插入到底部
          */
         this.push = function (element, top) {
             let thisNode = new node(element);
@@ -54,11 +50,9 @@ class LinkedList {
         };
         /**
          * 读取元素
-         * @function
-         * @public
-         * @param {Boolean} remove 读取后是否删除
-         * @param {Boolean} top true: 读取顶部 false: 读取底部
-         * @returns {Object} 元素
+         * @param {boolean} remove - 读取后是否删除
+         * @param {boolean} top - true: 读取顶部 false: 读取底部
+         * @returns {*} 元素
          */
         this.pop = function (remove, top) {
             let thisNode;
@@ -82,8 +76,6 @@ class LinkedList {
         };
         /**
          * 清空链表
-         * @function
-         * @public
          */
         this.clean = function () {
             topNode = new node(null);
@@ -94,11 +86,9 @@ class LinkedList {
         };
         /**
          * 遍历链表
-         * @function
-         * @public
-         * @param {Function} fun 遍历回调函数
+         * @param {function} fun - 遍历回调函数
          * 回调函数（参数：元素，返回：{remove：删除此元素，add:插入元素(add.addToUp:插入到上方, add.element:元素), stop：停止遍历}）
-         * @param {boolean} topToBottom true: 从顶到底 false: 从底到顶
+         * @param {boolean} topToBottom - true: 从顶到底 false: 从底到顶
          */
         this.forEach = function (fun, topToBottom) {
             let thisNode = topToBottom ? topNode : bottomNode;

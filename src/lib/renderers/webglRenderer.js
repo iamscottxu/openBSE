@@ -1,23 +1,47 @@
 import { CanvasBaseRenderer } from './canvasBaseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
 
+/**
+ * WebGL 渲染器类
+ */
 class WebGLRenderer extends CanvasBaseRenderer {
+    /**
+     * 实例化一个 WebGL 渲染器类
+     * @param {object} element - Element 元素
+     * @param {openBSE~Options} options - 全局选项
+     * @param {object} elementSize - 元素大小
+     * @param {Event} event - 事件对象
+     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
+     */
     constructor(element, options, elementSize, event, bulletScreensOnScreen) {
-        supportCheck();
+        supportCheck(); //浏览器支持检测
         super(element, options, elementSize, event, bulletScreensOnScreen);
+        /**
+         * WebGL 上下文对象
+         * @private @type {object}
+         */
         let _webglContext;
         let _positionAttributeLocation;
         let _resolutionUniformLocation;
+        /**
+         * Canvas 元素
+         * @private @type {object}
+         */
         let _canvas = this.getCanvas();
         init();
 
+        /**
+         * 清除屏幕内容
+         * @override
+         */
         this.cleanScreen = function () {
             _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
         }
 
         /**
          * 绘制函数
-         * @function
+         * @override
          */
         this.draw = function () {
             let devicePixelRatio = this.getDevicePixelRatio();
@@ -62,8 +86,8 @@ class WebGLRenderer extends CanvasBaseRenderer {
         let _creatAndgetWidth = this.creatAndgetWidth;
         /**
          * 创建弹幕元素
-         * @function
-         * @property {Object} bulletScreenOnScreen 屏幕弹幕对象
+         * @override
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
         this.creatAndgetWidth = function (bulletScreenOnScreen) {
             _creatAndgetWidth(bulletScreenOnScreen);
@@ -81,7 +105,7 @@ class WebGLRenderer extends CanvasBaseRenderer {
         let _setSize = this.setSize;
         /**
          * 设置尺寸
-         * @function
+         * @override
          */
         this.setSize = function () {
             _setSize();
@@ -91,7 +115,6 @@ class WebGLRenderer extends CanvasBaseRenderer {
 
         /**
          * 初始化
-         * @function
          */
         function init() {
             // 创建着色器方法，输入参数：渲染上下文，着色器类型，数据源
@@ -177,15 +200,15 @@ class WebGLRenderer extends CanvasBaseRenderer {
         }
 
         /**
-         * 支持检测
-         * @function
+         * 浏览器支持检测
+         * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
          */
         function supportCheck() {
             let canvas = document.createElement('canvas'); //canvas对象
-            if (typeof (canvas.getContext) != 'function') throw new BrowserNotSupportError('Canvas');
+            if (typeof canvas.getContext != 'function') throw new BrowserNotSupportError('Canvas');
             let context = canvas.getContext('2d');
             if (context === null) throw new BrowserNotSupportError('Canvas 2D');
-            if (typeof (context.fillText) != 'function') throw new BrowserNotSupportError('Canvas 2D fillText Function');
+            if (typeof context.fillText != 'function') throw new BrowserNotSupportError('Canvas 2D fillText Function');
             canvas = document.createElement('canvas'); //canvas对象
             context = canvas.getContext('webgl');
             if (context === null) throw new BrowserNotSupportError('WebGL');
