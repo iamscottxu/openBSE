@@ -50,8 +50,10 @@ function checkType(value, type, canBeNull = true) {
         let flat = false;
         for (let item of type) {
             if (typeof item != 'string') throw new TypeError(PARAMETERS_TYPE_ERROR);
-            if (_typeof(value) === item) flat = true;
-            break;
+            if (_typeof(value) === item) {
+                flat = true;
+                break;
+            }
         }
         if (!flat) throw new TypeError(PARAMETERS_TYPE_ERROR);
     } else if (_typeof(value) != type) throw new TypeError(PARAMETERS_TYPE_ERROR);

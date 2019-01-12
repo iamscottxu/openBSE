@@ -65,18 +65,15 @@ class Event {
          * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
          */
         this.unbind = function (name, fun) {
-            if (typeof name != 'string' || typeof fun != 'function') throw new TypeError(Helper.PARAMETERS_TYPE_ERROR);
+            if (typeof name != 'string') throw new TypeError(Helper.PARAMETERS_TYPE_ERROR);
             let event = eventList[name];
             if (typeof event === 'undefined') throw new TypeError(EVENT_NAME_NOT_FOUND);
-            if (typeof fun != 'function') eventList[name] = [];
-            else {
-                for (let index in event) {
-                    if (event[index] === fun) {
-                        event.splice(fun, 1);
-                        return event.length;
-                    }
+            if (typeof fun == 'function') for (let index in event) {
+                if (event[index] === fun) {
+                    event.splice(fun, 1);
+                    return event.length;
                 }
-            }
+            } else eventList[name] = [];
         };
         /**
          * 触发事件
