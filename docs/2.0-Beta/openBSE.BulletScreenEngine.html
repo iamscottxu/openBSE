@@ -102,7 +102,7 @@
         
 <hr>
 <dt>
-    <h4 class="name" id="BulletScreenEngine"><span class="type-signature"></span>new BulletScreenEngine(element [, options] [, renderMode])</h4>
+    <h4 class="name" id="BulletScreenEngine"><span class="type-signature"></span>new BulletScreenEngine(element [, _options] [, renderMode])</h4>
     
     
 </dt>
@@ -185,7 +185,7 @@
 
         <tr>
             
-                <td class="name"><code>options</code></td>
+                <td class="name"><code>_options</code></td>
             
 
             <td class="type">
@@ -388,81 +388,6 @@
     
 
     
-        <h3 class="subsection-title">Members</h3>
-
-        <dl>
-            
-<hr>
-<dt class="name" id="options">
-    <h4 id="options"><span class="type-signature">&lt;readonly> </span>options<span class="type-signature"> :<a href="openBSE.html#~Options">openBSE~Options</a></span></h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        全局选项：一个 <a href="openBSE.html#~Options">openBSE~Options</a> 结构。
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type"><a href="openBSE.html#~Options">openBSE~Options</a></span>
-
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-        </dl>
-    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -479,7 +404,7 @@
 
     
     <div class="description">
-        添加弹幕到弹幕列表。由于弹幕在屏幕上出现过后，弹幕引擎将从列表中彻底删除此弹幕。所以，在改变播放进度时，可能需要先清空弹幕列表，然后重新加载此播放进度以后的弹幕。
+        添加弹幕到弹幕列表。由于弹幕在屏幕上出现过后，弹幕引擎将从列表中彻底删除此弹幕。所以，在改变播放进度时，可能需要先<a href="openBSE.BulletScreenEngine.html#cleanBulletScreenList">清空弹幕列表</a>，然后重新加载此播放进度以后的弹幕。
     </div>
     
 
@@ -589,6 +514,34 @@
     
 
     
+    <h5>Throws:</h5>
+    
+            
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        传入的参数错误时引发错误。请参阅 MDN <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> 。
+        </div>
+    </dt>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">TypeError</span>
+
+
+
+            </dd>
+        </dl>
+    </dt>
+</dl>
+
+
+        
 
     
 
@@ -748,19 +701,36 @@
     
 
     
-
-    
-    <h5>Returns:</h5>
+    <h5>Throws:</h5>
     
             
-<div class="param-desc">
-    false: 失败 数字: 添加后的事件数
-</div>
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        传入的参数错误或事件不存在时引发错误。请参阅 MDN <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> 。
+        </div>
+    </dt>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">TypeError</span>
 
 
+
+            </dd>
+        </dl>
+    </dt>
+</dl>
 
 
         
+
+    
 
     
 </dd>
@@ -847,7 +817,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="cleanBulletScreenListOnScreen"><span class="type-signature"></span>cleanBulletScreenListOnScreen()</h4>
+    <h4 class="name" id="cleanScreen"><span class="type-signature"></span>cleanScreen()</h4>
     
     
 </dt>
@@ -855,7 +825,7 @@
 
     
     <div class="description">
-        清空屏幕弹幕。清空屏幕上已经出现的弹幕，不包括弹幕列表中的弹幕。
+        清空屏幕内容。清空屏幕上已经出现的弹幕，不包括弹幕列表中的弹幕。
     </div>
     
 
@@ -1027,7 +997,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="getOpacity"><span class="type-signature"></span>getOpacity()</h4>
+    <h4 class="name" id="getOptions"><span class="type-signature"></span>getOptions()</h4>
     
     
 </dt>
@@ -1035,7 +1005,7 @@
 
     
     <div class="description">
-        获取弹幕不透明度。
+        获取全局选项
     </div>
     
 
@@ -1101,7 +1071,7 @@
     
             
 <div class="param-desc">
-    - 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
+    全局选项：一个 <a href="openBSE.html#~Options">openBSE~Options</a> 结构。
 </div>
 
 
@@ -1112,7 +1082,7 @@
     </dt>
     <dd>
         
-<span class="param-type">number</span>
+<span class="param-type"><a href="openBSE.html#~Options">openBSE~Options</a></span>
 
 
 
@@ -1333,108 +1303,6 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="getVersion"><span class="type-signature"></span>getVersion()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        获取版本信息。
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    版本信息：一个 <a href="openBSE.html#~VersionInfo">openBSE~VersionInfo</a> 结构。
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type"><a href="openBSE.html#~VersionInfo">openBSE~VersionInfo</a></span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
     <h4 class="name" id="getVisibility"><span class="type-signature"></span>getVisibility()</h4>
     
     
@@ -1443,7 +1311,7 @@
 
     
     <div class="description">
-        获取弹幕可见性。如要显示弹幕请调用 bulletScreenEngine.show(); ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{BulletScreenEngine#hide} 。
+        获取弹幕可见性。如要显示弹幕请调用 <a href="openBSE.BulletScreenEngine.html#show">bulletScreenEngine.show();</a> ，要隐藏弹幕请调用 <a href="openBSE.BulletScreenEngine.html#hide">bulletScreenEngine.hide();</a> 。
     </div>
     
 
@@ -1771,7 +1639,7 @@
             
 <hr>
 <dt>
-    <h4 class="name" id="setOpacity"><span class="type-signature"></span>setOpacity(opacity)</h4>
+    <h4 class="name" id="setOptions"><span class="type-signature"></span>setOptions(options)</h4>
     
     
 </dt>
@@ -1779,7 +1647,7 @@
 
     
     <div class="description">
-        设置弹幕不透明度。
+        设置全局选项
     </div>
     
 
@@ -1814,13 +1682,13 @@
 
         <tr>
             
-                <td class="name"><code>opacity</code></td>
+                <td class="name"><code>options</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">number</span>
+<span class="param-type"><a href="openBSE.html#~Options">openBSE~Options</a></span>
 
 
 
@@ -1831,7 +1699,7 @@
 
             
 
-            <td class="description last">弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。</td>
+            <td class="description last">全局选项：一个 <a href="openBSE.html#~Options">openBSE~Options</a> 结构。</td>
         </tr>
 
     
@@ -1889,6 +1757,34 @@
     
 
     
+    <h5>Throws:</h5>
+    
+            
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        传入的参数错误时引发错误。请参阅 MDN <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> 。
+        </div>
+    </dt>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">TypeError</span>
+
+
+
+            </dd>
+        </dl>
+    </dt>
+</dl>
+
+
+        
 
     
 
@@ -1985,7 +1881,7 @@
 
     
     <div class="description">
-        停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认<a href="openBSE.html#~BulletScreenStyle">时间基准（options.clock）</a>归零，并清空弹幕列表、清空屏幕弹幕。
+        停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认<a href="openBSE.html#~BulletScreenStyle">时间基准（options.clock）</a>归零，并<a href="openBSE.BulletScreenEngine.html#cleanBulletScreenList">清空弹幕列表</a>、清空屏幕弹幕。
     </div>
     
 
@@ -2197,19 +2093,36 @@
     
 
     
-
-    
-    <h5>Returns:</h5>
+    <h5>Throws:</h5>
     
             
-<div class="param-desc">
-    true: 成功 false: 失败 数字: 删除后的事件数
-</div>
+
+<dl>
+    <dt>
+        <div class="param-desc">
+        传入的参数错误或事件不存在时引发错误。请参阅 MDN <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError">TypeError</a> 。
+        </div>
+    </dt>
+    <dt>
+        <dl>
+            <dt>
+                Type
+            </dt>
+            <dd>
+                
+<span class="param-type">TypeError</span>
 
 
+
+            </dd>
+        </dl>
+    </dt>
+</dl>
 
 
         
+
+    
 
     
 </dd>
@@ -2244,16 +2157,10 @@
 
     
     
+        <h5>Parameters:</h5>
+        
 
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -2292,14 +2199,17 @@
 
             
 
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。</td>
+            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
         </tr>
 
     
     </tbody>
 </table>
-</dl>
 
+    
+
+    
+<dl class="details">
     
 
 	
@@ -2380,16 +2290,10 @@
 
     
     
+        <h5>Parameters:</h5>
+        
 
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
+<table class="params table table-striped">
     <thead>
     <tr>
         
@@ -2428,14 +2332,17 @@
 
             
 
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。</td>
+            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
         </tr>
 
     
     </tbody>
 </table>
-</dl>
 
+    
+
+    
+<dl class="details">
     
 
 	
@@ -2540,7 +2447,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
-		on 2019-01-11T18:58:51+08:00
+		on 2019-01-12T13:29:02+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
