@@ -9,6 +9,7 @@ const jsdoc = require('gulp-jsdoc3');
 const fs = require('fs-extra');
 const sourcemaps = require('gulp-sourcemaps');
 const buffer = require('vinyl-buffer');
+const stream = require('stream');
 const buildConfig = require('./build.json');
 
 gulp.task('doc', function (cb) {
@@ -19,15 +20,16 @@ gulp.task('doc', function (cb) {
 });
 
 gulp.task('build', () => {
-    fs.writeFileSync('./src/buildDate.json',
-        JSON.stringify({
-            buildDate: new Date().toUTCString()
-        }), { 'flag': 'w' });
+    buildConfig.buildDate = new Date().toUTCString();
     let license = fs.readFileSync('./LICENSE').toString();
+    
+    fs.writeJSONSync('src/build.json', buildConfig);
+
     return browserify({
         entries: 'src/app.js',
         debug: true
     })
+        .require('./src/openBSE.js', {expose: 'openbse'})
         .transform(babelify, {
             presets: [
                 [
