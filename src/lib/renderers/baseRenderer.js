@@ -1,5 +1,3 @@
-import { Helper } from '../helper'
-
 /**
  * 渲染器抽象类
  */

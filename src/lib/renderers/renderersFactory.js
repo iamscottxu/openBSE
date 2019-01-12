@@ -1,5 +1,3 @@
-import { BaseRenderer } from './baseRenderer';
-
 /**
  * 渲染器
  * @private @constant
