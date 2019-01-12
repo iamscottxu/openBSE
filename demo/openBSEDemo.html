@@ -4,19 +4,18 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>弹幕引擎Demo</title>
-    <link href="./fonts/SourceHanSans-Medium.css" rel="stylesheet">
     <script src="../dist/openBSE.all.min.js"></script>
     <script>
         window.onload = function () {
-            bulletScreenEngine = new openBSE.BulletScreenEngine(document.getElementById('BulletScreensDiv'), {
-                defaultStyle: {
-                    fontFamily: '思源黑体 Medium, Source Han Sans TC Medium, Source Han Sans HC Medium, Source Han Sans K Medium, Source Han Sans Medium, sans-serif',
-                    fontWeight: '400'
-                }
-            }, 'canvas');
-            var versionInfo = bulletScreenEngine.getVersion();
+            var versionInfo = openBSE.getVersion();
             document.getElementById("version").innerText = versionInfo.version;
             document.getElementById("buildDate").innerText = versionInfo.buildDate;
+            bulletScreenEngine = new openBSE.BulletScreenEngine(document.getElementById('BulletScreensDiv'), {
+                defaultStyle: {
+                    fontFamily: 'Microsoft Yahei UI, Microsoft Yahei, SimHei, Heiti SC, sans-serif',
+                    fontWeight: '600'
+                }
+            }, 'canvas');
             bulletScreenEngine.bind('click', function (e) {
                 document.getElementById("clickText").innerText = e.bulletScreen.text;
             });
@@ -33,7 +32,7 @@
                         type: openBSE.BulletScreenType.rightToLeft,
                         style: {
                             speed: 0.15 + Math.random() / 90,
-                            size: 22,
+                            size: 19,
                             color: 'white',
                         }
                     });
@@ -44,7 +43,7 @@
                         type: (Math.random() > 0.4) ? openBSE.BulletScreenType.rightToLeft : openBSE.BulletScreenType.top,
                         style: {
                             speed: 0.1 + Math.random() / 90,
-                            size: 23,
+                            size: 20,
                             color: '#FFCC66',
                         }
                     });
@@ -66,7 +65,7 @@
             bulletScreenEngine.addBulletScreen({
                 text: bulletScreenText,
                 style: {
-                    size: 23,
+                    size: 20,
                     boxColor: 'white'
                 },
                 canDiscard: false
@@ -77,7 +76,14 @@
             var hiddenTypesList = formData.getAll('hiddenTypes');
             var hiddenTypes = 0;
             for (var index in hiddenTypesList) hiddenTypes += parseInt(hiddenTypesList[index]);
-            bulletScreenEngine.options.hiddenTypes = hiddenTypes;
+            bulletScreenEngine.setOptions({
+                hiddenTypes: hiddenTypes
+            });
+        }
+        function set(key, value) {
+            var object = {};
+            object[key] = value;
+            bulletScreenEngine.setOptions(object);
         }
     </script>
 </head>
@@ -107,13 +113,13 @@
     <a href="#" onclick="bulletScreenEngine.show();">显示弹幕</a>&nbsp;<a href="#" onclick="bulletScreenEngine.hide();">隐藏弹幕</a>&nbsp;
     <a href="#" onclick="bulletScreenEngine.cleanBulletScreenList();loadData(bulletScreenEngine);">重新加载弹幕</a>&nbsp;<a
         href="#" onclick="bulletScreenEngine.cleanBulletScreenListOnScreen();">清空屏幕弹幕</a>&nbsp;<br>
-    <a href="#" onclick="bulletScreenEngine.options.playSpeed = 1;">1倍速</a>&nbsp;<a href="#" onclick="bulletScreenEngine.options.playSpeed = 1.5;">1.5倍数</a>&nbsp;
-    <a href="#" onclick="bulletScreenEngine.options.playSpeed = 2;">2倍速</a>&nbsp;<a href="#" onclick="bulletScreenEngine.options.playSpeed = 2.5;">2.5倍数</a>&nbsp;
-    <a href="#" onclick="bulletScreenEngine.options.scaling = 1;">1倍缩放</a>&nbsp;<a href="#" onclick="bulletScreenEngine.options.scaling = 1.5;">1.5倍缩放</a>&nbsp;
-    <a href="#" onclick="bulletScreenEngine.options.scaling = 2;">2倍缩放</a>&nbsp;<a href="#" onclick="bulletScreenEngine.options.scaling = 0.75;">0.75倍缩放</a>&nbsp;<br>
-    <a href="#" onclick="bulletScreenEngine.setOpacity(0.0);">100%透明</a>&nbsp;<a href="#" onclick="bulletScreenEngine.setOpacity(0.25);">75%透明</a>&nbsp;
-    <a href="#" onclick="bulletScreenEngine.setOpacity(0.5);">50%透明</a>&nbsp;<a href="#" onclick="bulletScreenEngine.setOpacity(0.75);">25%透明</a>&nbsp;
-    <a href="#" onclick="bulletScreenEngine.setOpacity(1.0);">不透明</a>
+    <a href="#" onclick="set('playSpeed', 1);">1倍速</a>&nbsp;<a href="#" onclick="set('playSpeed', 1.5);">1.5倍数</a>&nbsp;
+    <a href="#" onclick="set('playSpeed', 2);">2倍速</a>&nbsp;<a href="#" onclick="set('playSpeed', 2.5);">2.5倍数</a>&nbsp;
+    <a href="#" onclick="set('scaling', 1);">1倍缩放</a>&nbsp;<a href="#" onclick="set('scaling', 1.5);">1.5倍缩放</a>&nbsp;
+    <a href="#" onclick="set('scaling', 2);">2倍缩放</a>&nbsp;<a href="#" onclick="set('scaling', 0.75);">0.75倍缩放</a>&nbsp;<br>
+    <a href="#" onclick="set('opacity', 0);">100%透明</a>&nbsp;<a href="#" onclick="set('opacity', 0.25);">75%透明</a>&nbsp;
+    <a href="#" onclick="set('opacity', 0.5);">50%透明</a>&nbsp;<a href="#" onclick="set('opacity', 0.75);">25%透明</a>&nbsp;
+    <a href="#" onclick="set('opacity', 1);">不透明</a>
 </body>
 
 </html>
