@@ -1,8 +1,8 @@
 {
   "name": "bullet-screen-engine",
-  "version": "1.3.3",
+  "version": "1.3.4",
   "description": "高性能 JavaScript 弹幕引擎。同屏弹幕1000+ A high-performance JavaScript bullet screen (danmaku) engine. ",
-  "main": "index.js",
+  "browser": "src/bulletScreenEngine.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp"
