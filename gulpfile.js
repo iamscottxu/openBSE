@@ -29,7 +29,14 @@ gulp.task('build', () => {
         debug: true
     })
         .transform(babelify, {
-            presets: ['@babel/preset-env'],
+            presets: [
+                [
+                    '@babel/preset-env',
+                    {
+                        useBuiltIns: 'usage'
+                    }
+                ]
+            ],
             shouldPrintComment: (val) => /^\*/.test(val)
         })
         .bundle()
