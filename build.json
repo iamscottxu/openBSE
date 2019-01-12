@@ -1,5 +1,6 @@
 {
-    "version": "2.0-Alpha",
+    "version": "2.0-Beta",
     "home": "https://iamscottxu.github.io/openBSE/",
-    "name": "openBSE"
+    "name": "openBSE",
+    "description": "openBSE is a high-performance JavaScript bullet-screen (danmaku) engine."
 }
