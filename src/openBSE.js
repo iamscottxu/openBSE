@@ -1,25 +1,19 @@
 import { Helper } from './lib/helper'
-const BUILD = require('../build.json');
-BUILD.buildDate = require('./buildDate.json').buildDate;
+import { BulletScreenEngine } from './bulletScreenEngine'
+import { BrowserNotSupportError } from './browserNotSupportError'
+import { BulletScreenType } from './bulletScreenType'
+import { BUILD } from './build.json'
 
 /**
- * openBSE 根命名空间
- * @namespace
+ * 获取版本信息。
+ * @alias openBSE.getVersion
+ * @returns {openBSE~VersionInfo} 版本信息：一个 {@link openBSE~VersionInfo} 结构。
  */
-let openBSE = {
-    BulletScreenEngine: require('./bulletScreenEngine').BulletScreenEngine,
-    BrowserNotSupportError: require('./browserNotSupportError').BrowserNotSupportError,
-    BulletScreenType: require('./bulletScreenType').BulletScreenType,
-    /**
-     * 获取版本信息。
-     * @returns {openBSE~VersionInfo} 版本信息：一个 {@link openBSE~VersionInfo} 结构。
-     */
-    getVersion: function () {
-        return Helper.clone(BUILD);
-    }
+function getVersion() {
+    return Helper.clone(BUILD);
 }
 
-export { openBSE }
+export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, getVersion }
 
 /**
  * 全局选项
@@ -86,4 +80,7 @@ export { openBSE }
  * @description VersionInfo 结构用于存放版本信息。
  * @property {string} version 版本号
  * @property {string} buildDate 构建日期：时区：UTC。
+ * @property {string} name 名称
+ * @property {string} description 描述
+ * @property {string} home 主页
  */

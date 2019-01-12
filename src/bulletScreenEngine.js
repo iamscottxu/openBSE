@@ -4,8 +4,7 @@ import { RenderersFactory } from './lib/renderers/renderersFactory'
 import { BulletScreenType } from './bulletScreenType'
 import { Helper } from './lib/helper'
 
-const BUILD = require('../build.json');
-BUILD.buildDate = require('./buildDate.json').buildDate;
+const BUILD = require('./build.json');
 
 /** 
  * 弹幕引擎对象类 
@@ -164,6 +163,20 @@ class BulletScreenEngine {
             startTime: 'number',
             type: 'number'
         }
+
+        /**
+         * requestAnimationFrame 定义（一些老式浏览器不支持 requestAnimationFrame ）
+         * @param {function} fun - 回调方法 
+         * @function
+         */
+        let requestAnimationFrame;
+        if(typeof window.requestAnimationFrame === 'function') requestAnimationFrame = window.requestAnimationFrame(fun);
+        else 
+        {
+            console.warn('Your browser does not support method "requestAnimationFrame" and will switch to method "setTimeout", which may affect performance.');
+            requestAnimationFrame = window.setTimeout(fun, 17); //60fps
+        }
+
 
         _options = Helper.setValues(options, _defaultOptions, _optionsType); //设置默认值
 
