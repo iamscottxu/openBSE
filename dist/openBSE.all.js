@@ -94,7 +94,7 @@ var BrowserNotSupportError = function (_Error) {
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
 },{}],4:[function(require,module,exports){
-module.exports={"buildDate":"Sat, 12 Jan 2019 05:28:57 GMT"}
+module.exports={"buildDate":"Sat, 12 Jan 2019 08:52:34 GMT"}
 },{}],5:[function(require,module,exports){
 "use strict";
 
@@ -907,17 +907,15 @@ function Event() {
 
 
   this.unbind = function (name, fun) {
-    if (typeof name != 'string' || typeof fun != 'function') throw new TypeError(_helper.Helper.PARAMETERS_TYPE_ERROR);
+    if (typeof name != 'string') throw new TypeError(_helper.Helper.PARAMETERS_TYPE_ERROR);
     var event = eventList[name];
     if (typeof event === 'undefined') throw new TypeError(EVENT_NAME_NOT_FOUND);
-    if (typeof fun != 'function') eventList[name] = [];else {
-      for (var index in event) {
-        if (event[index] === fun) {
-          event.splice(fun, 1);
-          return event.length;
-        }
+    if (typeof fun == 'function') for (var index in event) {
+      if (event[index] === fun) {
+        event.splice(fun, 1);
+        return event.length;
       }
-    }
+    } else eventList[name] = [];
   };
   /**
    * 触发事件
@@ -1030,8 +1028,11 @@ function checkType(value, type) {
       for (var _iterator = type[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var item = _step.value;
         if (typeof item != 'string') throw new TypeError(PARAMETERS_TYPE_ERROR);
-        if (_typeof(value) === item) flat = true;
-        break;
+
+        if (_typeof(value) === item) {
+          flat = true;
+          break;
+        }
       }
     } catch (err) {
       _didIteratorError = true;
@@ -1288,8 +1289,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BaseRenderer = void 0;
 
-var _helper = require("../helper");
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -1458,7 +1457,7 @@ function BaseRenderer(element, options, elementSize) {
 
 exports.BaseRenderer = BaseRenderer;
 
-},{"../helper":8}],11:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -2020,8 +2019,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.RenderersFactory = void 0;
 
-var _baseRenderer = require("./baseRenderer");
-
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 /**
@@ -2086,7 +2083,7 @@ function RenderersFactory(element, options, elementSize, event, bulletScreensOnS
 
 exports.RenderersFactory = RenderersFactory;
 
-},{"./baseRenderer":10,"./canvasRenderer":12,"./css3Renderer":13,"./svgRenderer":15,"./webglRenderer":16}],15:[function(require,module,exports){
+},{"./canvasRenderer":12,"./css3Renderer":13,"./svgRenderer":15,"./webglRenderer":16}],15:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
