@@ -1,6 +1,6 @@
 {
   "name": "openbse",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "openBSE 是一个高性能 JavaScript 弹幕引擎。同屏弹幕1000+ A high-performance JavaScript bullet screen (danmaku) engine. ",
   "browser": "/src/openBSE.js",
   "scripts": {
