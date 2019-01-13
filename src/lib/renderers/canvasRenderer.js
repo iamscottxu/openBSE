@@ -10,13 +10,18 @@ class CanvasRenderer extends CanvasBaseRenderer {
      * @param {object} element - Element 元素
      * @param {openBSE~Options} options - 全局选项
      * @param {object} elementSize - 元素大小
-     * @param {Event} event - 事件对象
-     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     * @param {Event} eventTrigger - 事件引发方法
      * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
-    constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+    constructor(element, options, elementSize, eventTrigger) {
         supportCheck(); //浏览器支持检测
-        super(element, options, elementSize, event, bulletScreensOnScreen);
+        super(element, options, elementSize, eventTrigger);
+
+        /**
+         * 屏幕上的弹幕
+         * @private @type {LinkedList}
+         */
+        let _bulletScreensOnScreen = this.getBulletScreensOnScreen();
 
         /**
          * 清除屏幕内容
@@ -39,7 +44,7 @@ class CanvasRenderer extends CanvasBaseRenderer {
             hideCanvas.width = canvas.width;
             hideCanvas.height = canvas.height;
             let hideCanvasContext = hideCanvas.getContext('2d');
-            bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
+            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
                 if (this.checkWhetherHide(bulletScreenOnScreen)) return;
                 hideCanvasContext.drawImage(bulletScreenOnScreen.hideCanvas, (bulletScreenOnScreen.x - 4) * devicePixelRatio, (bulletScreenOnScreen.actualY - 4) * devicePixelRatio, (bulletScreenOnScreen.width + 8) * devicePixelRatio, (bulletScreenOnScreen.height + 8) * devicePixelRatio);
             }, true);

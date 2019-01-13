@@ -104,6 +104,15 @@ class BaseRenderer {
         }
 
         /**
+         * 重新添加弹幕
+         * @abstract
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         */
+        this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+            throw new SyntaxError();
+        }
+
+        /**
          * 检查弹幕是否被隐藏
          * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */

@@ -1,6 +1,5 @@
 import { BaseRenderer } from './baseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
-import { Helper } from '../helper'
 
 /**
  * CSS3 渲染器类
@@ -11,11 +10,10 @@ class CSS3Renderer extends BaseRenderer {
      * @param {object} element - Element 元素
      * @param {openBSE~Options} options - 全局选项
      * @param {object} elementSize - 元素大小
-     * @param {Event} event - 事件对象
-     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     * @param {Event} eventTrigger - 事件引发方法
      * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
-    constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+    constructor(element, options, elementSize, eventTrigger) {
         supportCheck(); //浏览器支持检测
         let _div = init();
         super(_div, options, elementSize);
@@ -33,17 +31,18 @@ class CSS3Renderer extends BaseRenderer {
          * @override
          */
         this.draw = function () {
-            bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                if (this.checkWhetherHide(bulletScreenOnScreen)) {
-                    bulletScreenOnScreen.div.style.visibility = 'hidden';
-                    return;
+            for (let bulletScreenDiv of _div.getElementsByTagName('div')) {
+                if (typeof bulletScreenDiv.bulletScreenOnScreen != 'object') continue;
+                if (this.checkWhetherHide(bulletScreenDiv.bulletScreenOnScreen)) {
+                    bulletScreenDiv.style.visibility = 'hidden';
+                    continue;
                 }
-                bulletScreenOnScreen.div.style.visibility = 'visible';
-                bulletScreenOnScreen.div.style.transform =
-                    bulletScreenOnScreen.div.style.webkitTransform =
-                    bulletScreenOnScreen.div.style.msTransform =
-                    `translate(${(bulletScreenOnScreen.x - 4)}px,${(bulletScreenOnScreen.actualY - 4)}px)`;
-            }, true);
+                bulletScreenDiv.style.visibility = 'visible';
+                bulletScreenDiv.style.transform =
+                    bulletScreenDiv.style.webkitTransform =
+                    bulletScreenDiv.style.msTransform =
+                    `translate(${(bulletScreenDiv.bulletScreenOnScreen.x - 4)}px,${(bulletScreenDiv.bulletScreenOnScreen.actualY - 4)}px)`;
+            }
         }
 
         /**
@@ -53,7 +52,7 @@ class CSS3Renderer extends BaseRenderer {
          */
         this.creatAndgetWidth = function (bulletScreenOnScreen) {
             let bulletScreen = bulletScreenOnScreen.bulletScreen;
-            let bulletScreenDiv = document.createElement('div');
+            let bulletScreenDiv = bulletScreenOnScreen.div ? bulletScreenOnScreen.div : document.createElement('div');
             bulletScreenDiv.style.position = 'absolute';
             bulletScreenDiv.style.whiteSpace = 'nowrap';
             bulletScreenDiv.style.fontWeight = bulletScreen.style.fontWeight;
@@ -75,9 +74,21 @@ class CSS3Renderer extends BaseRenderer {
             else {
                 bulletScreenDiv.style.padding = '4px';
             }
+            bulletScreenDiv.innerHTML = '';
             bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
-            bulletScreenDiv.bulletScreen = bulletScreen;
-            _div.appendChild(bulletScreenDiv);
+            bulletScreenDiv.bulletScreenOnScreen = bulletScreenOnScreen;
+
+            //insert
+            let bulletScreenDivs = _div.getElementsByTagName('div');
+            if (bulletScreenDivs.length === 0) _div.appendChild(bulletScreenDiv);
+            let index;
+            for (index = bulletScreenDivs.length - 1; index > 0; index--) {
+                let _layer = bulletScreenDivs[index].bulletScreenOnScreen.bulletScreen.layer;
+                if (_layer <= bulletScreen.layer) break;
+            }
+            if (++index === bulletScreenDivs.length) _div.appendChild(bulletScreenDiv);
+            else _div.insertBefore(bulletScreenDiv, bulletScreenDivs[index]);
+
             bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8; //弹幕的宽度：像素
             bulletScreenOnScreen.div = bulletScreenDiv;
         }
@@ -89,6 +100,16 @@ class CSS3Renderer extends BaseRenderer {
         */
         this.delete = function (bulletScreenOnScreen) {
             _div.removeChild(bulletScreenOnScreen.div);
+        }
+
+        /**
+         * 重新添加弹幕
+         * @override
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         */
+        this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+            this.delete(bulletScreenOnScreen);
+            this.creatAndgetWidth(bulletScreenOnScreen);
         }
 
         /**
@@ -134,19 +155,29 @@ class CSS3Renderer extends BaseRenderer {
             //上下文菜单
             element.oncontextmenu = function (e) {
                 if (e.target != this)
-                    event.trigger('contextmenu', {
-                        bulletScreen: Helper.clone(e.target.bulletScreen)
-                    });
+                    eventTrigger('contextmenu', e.target.bulletScreenOnScreen);
                 return false;
             };
             //单击
             element.onclick = function (e) {
                 if (e.target != this)
-                    event.trigger('click', {
-                        bulletScreen: Helper.clone(e.target.bulletScreen)
-                    });
+                    eventTrigger('click', e.target.bulletScreenOnScreen);
                 return false;
             };
+            //鼠标移动
+            element.onmousemove = function (e) {
+                let bulletScreenOnScreen = e.target.bulletScreenOnScreen;
+                if (e.target === this || bulletScreenOnScreen.mousein) return;
+                bulletScreenOnScreen.mousein = true;
+                eventTrigger('mouseenter', bulletScreenOnScreen);
+            }
+            //鼠标离开
+            element.onmouseout = function (e) {
+                let bulletScreenOnScreen = e.target.bulletScreenOnScreen;
+                if (e.target === this || !bulletScreenOnScreen.mousein) return;
+                bulletScreenOnScreen.mousein = false;
+                eventTrigger('mouseleave', bulletScreenOnScreen);
+            }
         }
     }
 }

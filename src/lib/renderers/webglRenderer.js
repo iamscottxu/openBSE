@@ -10,13 +10,17 @@ class WebGLRenderer extends CanvasBaseRenderer {
      * @param {object} element - Element 元素
      * @param {openBSE~Options} options - 全局选项
      * @param {object} elementSize - 元素大小
-     * @param {Event} event - 事件对象
-     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     * @param {Event} eventTrigger - 事件引发方法
      * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
-    constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+    constructor(element, options, elementSize, eventTrigger) {
         supportCheck(); //浏览器支持检测
-        super(element, options, elementSize, event, bulletScreensOnScreen);
+        super(element, options, elementSize, eventTrigger);
+        /**
+         * 屏幕上的弹幕
+         * @private @type {LinkedList}
+         */
+        let _bulletScreensOnScreen = this.getBulletScreensOnScreen();
         /**
          * WebGL 上下文对象
          * @private @type {object}
@@ -47,7 +51,7 @@ class WebGLRenderer extends CanvasBaseRenderer {
             let devicePixelRatio = this.getDevicePixelRatio();
             // 清空画布
             _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
-            bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
+            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
                 if (this.checkWhetherHide(bulletScreenOnScreen)) return;
                 // 四个顶点坐标
                 let x1 = (bulletScreenOnScreen.x - 4) * devicePixelRatio;

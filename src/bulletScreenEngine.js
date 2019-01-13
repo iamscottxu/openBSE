@@ -150,7 +150,9 @@ class BulletScreenEngine {
             /** 弹幕进入时间 */
             startTime: null,
             /** 弹幕类型 */
-            type: BulletScreenType.rightToLeft
+            type: BulletScreenType.rightToLeft,
+            /** 弹幕层级（越大越前） */
+            layer: 0
         }
 
         /**
@@ -161,7 +163,8 @@ class BulletScreenEngine {
             text: 'string',
             canDiscard: 'boolean',
             startTime: 'number',
-            type: 'number'
+            type: 'number',
+            layer: 'number'
         }
 
         /**
@@ -170,9 +173,8 @@ class BulletScreenEngine {
          * @function
          */
         let requestAnimationFrame;
-        if(typeof window.requestAnimationFrame === 'function') requestAnimationFrame = window.requestAnimationFrame;
-        else 
-        {
+        if (typeof window.requestAnimationFrame === 'function') requestAnimationFrame = window.requestAnimationFrame;
+        else {
             console.warn(Resources.REQUESTANIMATIONFRAME_NOT_SUPPORT_WARN);
             requestAnimationFrame = (fun) => window.setTimeout(fun, 17); //60fps
         }
@@ -194,6 +196,18 @@ class BulletScreenEngine {
          * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
          */
         _event.add('contextmenu');
+         /**
+         * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
+         * @event openBSE.BulletScreenEngine#mouseleave
+         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         */
+        _event.add('mouseleave');
+        /**
+         * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
+         * @event openBSE.BulletScreenEngine#mouseenter
+         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         */
+        _event.add('mouseenter');
         /**
          * 绑定事件处理程序
          * @function
@@ -225,7 +239,7 @@ class BulletScreenEngine {
         let _oldHiddenTypes = _options.hiddenTypes;
         let _oldOpacity = _options.opacity;
         //渲染器工厂
-        let renderersFactory = new RenderersFactory(element, _options, _elementSize, _event, _bulletScreensOnScreen);
+        let renderersFactory = new RenderersFactory(element, _options, _elementSize, bulletScreenEventTrigger);
         let _renderer = renderersFactory.getRenderer(renderMode); //实例化渲染器
         setInterval(setSize, 100);
 
@@ -242,7 +256,7 @@ class BulletScreenEngine {
                 _oldHiddenTypes = _options.hiddenTypes;
                 if (!_playing) _renderer.draw(); //非播放状态则重绘
             }
-            if ( _oldOpacity != _options.opacity) {
+            if (_oldOpacity != _options.opacity) {
                 _oldOpacity = _options.opacity;
                 _renderer.setOpacity();
             }
@@ -277,10 +291,7 @@ class BulletScreenEngine {
             _bulletScreens.forEach(function (lastBulletScreen) {
                 if (bulletScreen.startTime > lastBulletScreen.startTime)
                     return {
-                        add: {
-                            addToUp: true,
-                            element: bulletScreen
-                        },
+                        add: { addToUp: true, element: bulletScreen },
                         stop: true
                     };
             }, true);
@@ -395,6 +406,29 @@ class BulletScreenEngine {
         //内部函数
 
         /**
+         * 弹幕事件响应
+         * @param {string} name - 事件名称
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         */
+        function bulletScreenEventTrigger(name, bulletScreenOnScreen) {
+            let e = {
+                bulletScreen: Helper.clone(bulletScreenOnScreen.bulletScreen),
+                redraw: false,
+                pause: bulletScreenOnScreen.pause
+            }
+            _event.trigger(name, e);
+            //重新创建弹幕
+            if (e.redraw === true) {
+                let bulletScreenType = Helper.clone(_bulletScreenType);
+                bulletScreenType.style = _optionsType.defaultStyle;
+                bulletScreenOnScreen.bulletScreen = Helper.setValues(e.bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType, false); //设置值
+                _renderer.reCreatAndgetWidth(bulletScreenOnScreen);
+            }
+            if (typeof e.pause === 'boolean') bulletScreenOnScreen.pause = e.pause; //设置暂停移动
+            if (!_playing && (e.redraw || e.bringToTop)) _renderer.draw(); //非播放状态则重绘
+        }
+
+        /**
          * 刷新弹幕函数
          * @private
          */
@@ -416,6 +450,7 @@ class BulletScreenEngine {
          */
         function moveBulletScreenOnScreen() {
             _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
+                if (bulletScreenOnScreen.pause) return; //暂停移动
                 let nowTime = _options.clock();
                 switch (bulletScreenOnScreen.bulletScreen.type) {
                     case BulletScreenType.rightToLeft:
@@ -457,17 +492,14 @@ class BulletScreenEngine {
             let times = Math.floor(_refreshRate * 2000);
             do {
                 let bulletScreen = _bulletScreens.pop(false, false);
-                if (bulletScreen === null)
-                    return;
+                if (bulletScreen === null) return;
                 let nowTime = _options.clock();
-                if (bulletScreen.startTime > nowTime)
-                    return;
+                if (bulletScreen.startTime > nowTime) return;
                 if (!_options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
                     bulletScreen.style = Helper.setValues(bulletScreen.style, _options.defaultStyle, _optionsType.defaultStyle); //填充默认样式
-                    getBulletScreenOnScreen(nowTime, bulletScreen); //生成屏幕弹幕对象并添加到屏幕弹幕集合
+                    getBulletScreenOnScreen(nowTime, bulletScreen); //生成屏幕弹幕对象并添加到屏幕弹幕集合            
                 }
-                else
-                    _delayBulletScreensCount++;
+                else _delayBulletScreensCount++;
                 _bulletScreens.pop(true, false);
                 times--;
             } while (_bulletScreensOnScreen.getLength() === 0 || times > 0);
@@ -482,6 +514,7 @@ class BulletScreenEngine {
         function getBulletScreenOnScreen(nowTime, bulletScreen) {
             _delay = nowTime - bulletScreen.startTime;
             let bulletScreenOnScreen = {};
+            bulletScreenOnScreen.pause = false; //是否暂停移动
             bulletScreenOnScreen.bulletScreen = bulletScreen;
             bulletScreenOnScreen.startTime = nowTime; //弹幕头部进屏幕时间
             bulletScreenOnScreen.size = bulletScreenOnScreen.bulletScreen.style.size;

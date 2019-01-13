@@ -37,10 +37,9 @@ class RenderersFactory {
      * @param {object} element - Element 元素
      * @param {openBSE~Options} options - 全局选项
      * @param {object} elementSize - 元素大小
-     * @param {Event} event - 事件对象
-     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     * @param {Event} eventTrigger - 事件引发方法
      */
-    constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+    constructor(element, options, elementSize, eventTrigger) {
         /**
          * 获取渲染器
          * @param {string} renderMode - 渲染模式
@@ -51,7 +50,7 @@ class RenderersFactory {
         this.getRenderer = function (renderMode) {
             let renderer = RENDERERS[renderMode];
             if (typeof (renderer) === 'undefined') throw new TypeError(Helper.signMix(Resources.RENDER_MODE_ERROR, { renderMode: renderMode }));
-            return new renderer(element, options, elementSize, event, bulletScreensOnScreen);
+            return new renderer(element, options, elementSize, eventTrigger);
         }
     }
 }

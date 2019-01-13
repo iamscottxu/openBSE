@@ -1,6 +1,5 @@
 import { BaseRenderer } from './baseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
-import { Helper } from '../helper'
 
 /**
  * SVG 渲染器类
@@ -11,11 +10,11 @@ class SVGRenderer extends BaseRenderer {
      * @param {object} element - Element 元素
      * @param {openBSE~Options} options - 全局选项
      * @param {object} elementSize - 元素大小
-     * @param {Event} event - 事件对象
+     * @param {Event} eventTrigger - 事件引发方法
      * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
      * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
-    constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+    constructor(element, options, elementSize, eventTrigger, bulletScreensOnScreen) {
         supportCheck(); //浏览器支持检测
         let _div = init();
         let _svg;
@@ -192,19 +191,19 @@ class SVGRenderer extends BaseRenderer {
          */
         function registerEvent(element) {
             function getBulletScreenOnScreenByLocation(location) {
-                let bulletScreen = null;
+                let _bulletScreenOnScreen = null;
                 bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-                    if (_checkWhetherHide(bulletScreenOnScreen)) return null;
+                    if (_checkWhetherHide(bulletScreenOnScreen)) return;
                     let x1 = bulletScreenOnScreen.x - 4;
                     let x2 = x1 + bulletScreenOnScreen.width + 8;
                     let y1 = bulletScreenOnScreen.actualY - 4;
                     let y2 = y1 + bulletScreenOnScreen.height + 8;
                     if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-                        bulletScreen = Helper.clone(bulletScreenOnScreen.bulletScreen);
+                        _bulletScreenOnScreen = bulletScreenOnScreen;
                         return { stop: true };
                     }
                 }, false);
-                return bulletScreen;
+                return _bulletScreenOnScreen;
             }
             function getLocation(e) {
                 function getOffsetTop(element) {
@@ -242,20 +241,16 @@ class SVGRenderer extends BaseRenderer {
 
             //上下文菜单
             element.oncontextmenu = function (e) {
-                let bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                if (bulletScreen)
-                    event.trigger('contextmenu', {
-                        bulletScreen: bulletScreen
-                    });
+                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+                if (bulletScreenOnScreen)
+                    eventTrigger('contextmenu', bulletScreenOnScreen);
                 return false;
             };
             //单击
             element.onclick = function (e) {
-                let bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                if (bulletScreen)
-                    event.trigger('click', {
-                        bulletScreen: bulletScreen
-                    });
+                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+                if (bulletScreenOnScreen)
+                    eventTrigger('click', bulletScreenOnScreen);
                 return false;
             };
         }

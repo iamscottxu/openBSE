@@ -1,5 +1,5 @@
 import { BaseRenderer } from './baseRenderer'
-import { Helper } from '../helper'
+import { Linklist, LinkedList } from '../linkedList'
 
 /**
  * Canvas 渲染器抽象类
@@ -10,14 +10,17 @@ class CanvasBaseRenderer extends BaseRenderer {
      * @param {object} element - Element 元素
      * @param {openBSE~Options} options - 全局选项
      * @param {object} elementSize - 元素大小
-     * @param {Event} event - 事件对象
-     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+     * @param {function} eventTrigger - 事件引发方法
      */
-    constructor(element, options, elementSize, event, bulletScreensOnScreen) {
+    constructor(element, options, elementSize, eventTrigger) {
         if (new.target === CanvasBaseRenderer) {
             throw new SyntaxError();
         }
-
+        /**
+         * 屏幕上的弹幕
+         * @private @type {LinkedList}
+         */
+        let _bulletScreensOnScreen = new LinkedList();
         /**
          * DPI 缩放比例（倍数）
          * @private @type {number}
@@ -69,6 +72,19 @@ class CanvasBaseRenderer extends BaseRenderer {
                 hideCanvasContext.strokeRect(_devicePixelRatio, _devicePixelRatio, hideCanvas.width - _devicePixelRatio, hideCanvas.height - _devicePixelRatio);
             }
             bulletScreenOnScreen.hideCanvas = hideCanvas;
+
+            if (_bulletScreensOnScreen.getLength() === 0) _bulletScreensOnScreen.push(bulletScreenOnScreen, true);
+            let flag = false;
+            _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
+                if (_bulletScreenOnScreen.bulletScreen.layer <= bulletScreen.layer) {
+                    flag = true;
+                    return {
+                        add: { element: bulletScreenOnScreen, addToUp: false },
+                        stop: true
+                    }
+                }
+            }, false);
+            if (!flag) _bulletScreensOnScreen.push(bulletScreenOnScreen, false);
         }
 
         /**
@@ -76,8 +92,18 @@ class CanvasBaseRenderer extends BaseRenderer {
          * @override
          * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
-        this.delete = function (bulletScreenOnScreen) {
+        this.delete = (bulletScreenOnScreen) => _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) =>
+            _bulletScreenOnScreen === bulletScreenOnScreen ? { remove: true, stop: true } : null
+        );
 
+        /**
+         * 重新添加弹幕
+         * @override
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         */
+        this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+            this.delete(bulletScreenOnScreen);
+            this.creatAndgetWidth(bulletScreenOnScreen);
         }
 
         let _setSize = this.setSize;
@@ -106,6 +132,12 @@ class CanvasBaseRenderer extends BaseRenderer {
         this.getCanvas = () => _canvas;
 
         /**
+         * 获取屏幕弹幕对象
+         * @returns {LinkedList} 画布对象
+         */
+        this.getBulletScreensOnScreen = () => _bulletScreensOnScreen;
+
+        /**
          * 添加Canvas
          * @private
          * @returns {Element} 画布对象
@@ -128,19 +160,19 @@ class CanvasBaseRenderer extends BaseRenderer {
          */
         function registerEvent(element) {
             function getBulletScreenOnScreenByLocation(location) {
-                let bulletScreen = null;
-                bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-                    if (_checkWhetherHide(bulletScreenOnScreen)) return null;
+                let _bulletScreenOnScreen = null;
+                _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+                    if (_checkWhetherHide(bulletScreenOnScreen)) return;
                     let x1 = bulletScreenOnScreen.x - 4;
                     let x2 = x1 + bulletScreenOnScreen.width + 8;
                     let y1 = bulletScreenOnScreen.actualY - 4;
                     let y2 = y1 + bulletScreenOnScreen.height + 8;
                     if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-                        bulletScreen = Helper.clone(bulletScreenOnScreen.bulletScreen);
+                        _bulletScreenOnScreen = bulletScreenOnScreen;
                         return { stop: true };
                     }
                 }, false);
-                return bulletScreen;
+                return _bulletScreenOnScreen;
             }
             function getLocation(e) {
                 function getOffsetTop(element) {
@@ -178,22 +210,41 @@ class CanvasBaseRenderer extends BaseRenderer {
 
             //上下文菜单
             element.oncontextmenu = function (e) {
-                let bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                if (bulletScreen)
-                    event.trigger('contextmenu', {
-                        bulletScreen: bulletScreen
-                    });
+                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+                if (bulletScreenOnScreen)
+                    eventTrigger('contextmenu', bulletScreenOnScreen);
                 return false;
             };
             //单击
             element.onclick = function (e) {
-                let bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                if (bulletScreen)
-                    event.trigger('click', {
-                        bulletScreen: bulletScreen
-                    });
+                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+                if (bulletScreenOnScreen)
+                    eventTrigger('click', bulletScreenOnScreen);
                 return false;
             };
+            //鼠标移动
+            element.onmousemove = function (e) {
+                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+                _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
+                    if (bulletScreenOnScreen != _bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
+                        _bulletScreenOnScreen.mousein = false;
+                        eventTrigger('mouseleave', _bulletScreenOnScreen);
+                    }
+                }, true);
+                if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
+                bulletScreenOnScreen.mousein = true;
+                eventTrigger('mouseenter', bulletScreenOnScreen);
+                return false;
+            }
+            //鼠标离开
+            element.onmouseout = function (e) {
+                _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
+                    if (_bulletScreenOnScreen.mousein) {
+                        _bulletScreenOnScreen.mousein = false;
+                        eventTrigger('mouseleave', _bulletScreenOnScreen);
+                    }
+                }, true);
+            }
         }
     }
 }
