@@ -2,7 +2,7 @@ import { Helper } from './lib/helper'
 import { BulletScreenEngine } from './bulletScreenEngine'
 import { BrowserNotSupportError } from './browserNotSupportError'
 import { BulletScreenType } from './bulletScreenType'
-import * as BUILD from './build.json'
+import * as build from './build.json'
 
 /**
  * 获取版本信息。
@@ -10,7 +10,7 @@ import * as BUILD from './build.json'
  * @returns {openBSE~VersionInfo} 版本信息：一个 {@link openBSE~VersionInfo} 结构。
  */
 function getVersion() {
-    return Helper.clone(BUILD);
+    return Helper.clone(build);
 }
 
 export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, getVersion }

@@ -1,3 +1,6 @@
+import { Resources } from '../resources'
+import { Helper } from '../helper'
+
 /**
  * 渲染器
  * @private @constant
@@ -47,7 +50,7 @@ class RenderersFactory {
          */
         this.getRenderer = function (renderMode) {
             let renderer = RENDERERS[renderMode];
-            if (typeof(renderer) === 'undefined') throw new TypeError(`The render mode "${renderMode}" is undefined.`);
+            if (typeof (renderer) === 'undefined') throw new TypeError(Helper.signMix(Resources.RENDER_MODE_ERROR, { renderMode: renderMode }));
             return new renderer(element, options, elementSize, event, bulletScreensOnScreen);
         }
     }

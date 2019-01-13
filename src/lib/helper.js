@@ -1,4 +1,4 @@
-const PARAMETERS_TYPE_ERROR = 'Parameters type error.';
+import { Resources } from './resources'
 
 /**
  * 设置值
@@ -19,6 +19,7 @@ function setValue(value, defaultValue, type) {
 
 /**
  * 设置多个值
+ * @alias Helper.setValues
  * @param {object} values - 值
  * @param {object} defaultValues - 默认值
  * @param {object} types - 类型
@@ -44,23 +45,24 @@ function setValues(values, defaultValues, types, clone = true) {
  * @param {boolean} canBeNull - 可以为空
  */
 function checkType(value, type, canBeNull = true) {
-    if (typeof type != 'string' && _typeof(type) != 'array') throw new TypeError(PARAMETERS_TYPE_ERROR);
+    if (typeof type != 'string' && _typeof(type) != 'array') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
     if (canBeNull && isEmpty(value)) return;
     if (_typeof(type) === 'array') {
         let flat = false;
         for (let item of type) {
-            if (typeof item != 'string') throw new TypeError(PARAMETERS_TYPE_ERROR);
+            if (typeof item != 'string') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
             if (_typeof(value) === item) {
                 flat = true;
                 break;
             }
         }
-        if (!flat) throw new TypeError(PARAMETERS_TYPE_ERROR);
-    } else if (_typeof(value) != type) throw new TypeError(PARAMETERS_TYPE_ERROR);
+        if (!flat) throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
+    } else if (_typeof(value) != type) throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
 }
 
 /**
  * 检查多个值
+ * @alias Helper.checkTypes
  * @param {object} values - 值
  * @param {object} types - 类型
  * @returns {object} - 值
@@ -77,6 +79,7 @@ function checkTypes(values, types, canBeNull = true) {
 
 /**
  * 检查是否为空
+ * @alias Helper.isEmpty
  * @param {*} value - 值
  */
 function isEmpty(value) {
@@ -112,6 +115,24 @@ function clone(object) {
 }
 
 /**
+ * 占位符拼接
+ * @param {object|...string} sign - 一组字符串或一个对象
+ */
+function signMix() {
+    if(arguments.length === 0) return this;
+    var param = arguments[0], str= this;
+    if(typeof(param) === 'object') {
+        for(var key in param)
+            str = str.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+        return str;
+    } else {
+        for(var i = 0; i < arguments.length; i++)
+            str = str.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+        return str;
+    }
+}
+
+/**
  * 帮助对象
  * @namespace
  */
@@ -123,7 +144,7 @@ const Helper = {
     isEmpty: isEmpty,
     _typeof: _typeof,
     clone: clone,
-    PARAMETERS_TYPE_ERROR: PARAMETERS_TYPE_ERROR
+    signMix: signMix
 }
 
 export { Helper }
