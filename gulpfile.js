@@ -9,7 +9,6 @@ const jsdoc = require('gulp-jsdoc3');
 const fs = require('fs-extra');
 const sourcemaps = require('gulp-sourcemaps');
 const buffer = require('vinyl-buffer');
-const stream = require('stream');
 const buildConfig = require('./build.json');
 
 gulp.task('doc', function (cb) {
