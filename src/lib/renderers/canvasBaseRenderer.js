@@ -1,5 +1,5 @@
 import { BaseRenderer } from './baseRenderer'
-import { Linklist, LinkedList } from '../linkedList'
+import { LinkedList } from '../linkedList'
 
 /**
  * Canvas 渲染器抽象类
