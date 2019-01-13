@@ -187,25 +187,33 @@ class BulletScreenEngine {
         /**
          * 弹幕单击事件。当单击弹幕时触发。
          * @event openBSE.BulletScreenEngine#click
-         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true ，否则修改无法生效。
+         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
          */
         _event.add('click');
         /**
          * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
          * @event openBSE.BulletScreenEngine#contextmenu
-         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
+         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
          */
         _event.add('contextmenu');
          /**
          * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
          * @event openBSE.BulletScreenEngine#mouseleave
-         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
+         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
          */
         _event.add('mouseleave');
         /**
          * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
          * @event openBSE.BulletScreenEngine#mouseenter
-         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+         * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
+         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
          */
         _event.add('mouseenter');
         /**
@@ -216,6 +224,8 @@ class BulletScreenEngine {
          * @param {function} fun - 事件处理程序
          * @listens openBSE.BulletScreenEngine#click
          * @listens openBSE.BulletScreenEngine#contextmenu
+         * @listens openBSE.BulletScreenEngine#mouseleave
+         * @listens openBSE.BulletScreenEngine#mouseenter
          * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
          */
         this.bind = _event.bind;
@@ -452,7 +462,7 @@ class BulletScreenEngine {
             _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
                 if (bulletScreenOnScreen.pause) return; //暂停移动
                 let nowTime = _options.clock();
-                switch (bulletScreenOnScreen.bulletScreen.type) {
+                switch (bulletScreenOnScreen.type) {
                     case BulletScreenType.rightToLeft:
                         if (bulletScreenOnScreen.x > -bulletScreenOnScreen.width) {
                             bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
@@ -517,7 +527,8 @@ class BulletScreenEngine {
             bulletScreenOnScreen.pause = false; //是否暂停移动
             bulletScreenOnScreen.bulletScreen = bulletScreen;
             bulletScreenOnScreen.startTime = nowTime; //弹幕头部进屏幕时间
-            bulletScreenOnScreen.size = bulletScreenOnScreen.bulletScreen.style.size;
+            bulletScreenOnScreen.size = bulletScreen.style.size; //字体大小：像素
+            bulletScreenOnScreen.type = bulletScreen.type; //弹幕类型
             bulletScreenOnScreen.height = bulletScreenOnScreen.size; //弹幕的高度：像素
             _renderer.creatAndgetWidth(bulletScreenOnScreen); //创建弹幕元素并计算宽度
             switch (bulletScreen.type) {
