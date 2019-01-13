@@ -3,8 +3,8 @@ import { Event } from './lib/event'
 import { RenderersFactory } from './lib/renderers/renderersFactory'
 import { BulletScreenType } from './bulletScreenType'
 import { Helper } from './lib/helper'
-
-const BUILD = require('./build.json');
+import { Resources } from './lib/resources'
+import * as build from './build.json'
 
 /** 
  * 弹幕引擎对象类 
@@ -173,7 +173,7 @@ class BulletScreenEngine {
         if(typeof window.requestAnimationFrame === 'function') requestAnimationFrame = window.requestAnimationFrame;
         else 
         {
-            console.warn('Your browser does not support method "requestAnimationFrame" and will switch to method "setTimeout", which may affect performance.');
+            console.warn(Resources.REQUESTANIMATIONFRAME_NOT_SUPPORT_WARN);
             requestAnimationFrame = (fun) => window.setTimeout(fun, 17); //60fps
         }
 
@@ -269,7 +269,7 @@ class BulletScreenEngine {
                 bulletScreen.type != BulletScreenType.rightToLeft &&
                 bulletScreen.type != BulletScreenType.top &&
                 bulletScreen.type != BulletScreenType.bottom
-            ) throw new TypeError(Helper.PARAMETERS_TYPE_ERROR);
+            ) throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
 
             Helper.checkTypes(bulletScreen.style, _optionsType.defaultStyle); //检查弹幕样式类型
 
@@ -603,10 +603,16 @@ class BulletScreenEngine {
             }
         }
 
-        console.info(
-            '%c%s%c now loaded.\n\n%cVersion: %s\nBuild Date: %s\n\n%c%s\nHome: %s',
-            'font-weight:bold; color:#0099FF;', BUILD.name, '', 'font-style:italic;',
-            BUILD.version, BUILD.buildDate, '', BUILD.description, BUILD.home
+        //IE IE 浏览器不支持 %c
+        if (!!window.ActiveXObject || "ActiveXObject" in window) console.info(
+            Resources.LOADED_INFO_IE,
+            build.name, build.version, build.buildDate, build.description, build.home
+        );
+        //Other
+        else console.info(
+            Resources.LOADED_INFO,
+            'font-weight:bold; color:#0099FF;', build.name, '', 'font-style:italic;',
+            build.version, build.buildDate, '', build.description, build.home
         );
     }
 }
