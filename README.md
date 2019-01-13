@@ -1,5 +1,5 @@
 # openBSE
-[![Version 2.0](https://img.shields.io/badge/version-2.0-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v2.0-beta.2)
+[![Version 2.0](https://img.shields.io/badge/version-2.0-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v2.0-beta.3)
 [![NPM](https://img.shields.io/npm/v/openbse.svg?style=flat-square)](https://www.npmjs.com/package/openbse)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)
@@ -16,7 +16,7 @@
 
 ## 安装和使用
 ### 安装
-你可以直接点击[这里](https://github.com/iamscottxu/openBSE/releases/tag/v2.0-beta.2)下载最新发行版本，也可以用以下命令安装NPM包。
+你可以直接点击[这里](https://github.com/iamscottxu/openBSE/releases/tag/v2.0-beta.3)下载最新发行版本，也可以用以下命令安装NPM包。
 ```Bash
 > npm install openbse
 ```
