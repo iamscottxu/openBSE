@@ -695,6 +695,10 @@
         <li><a href="openBSE.BulletScreenEngine.html#event:click">openBSE.BulletScreenEngine#event:click</a></li>
     
         <li><a href="openBSE.BulletScreenEngine.html#event:contextmenu">openBSE.BulletScreenEngine#event:contextmenu</a></li>
+    
+        <li><a href="openBSE.BulletScreenEngine.html#event:mouseleave">openBSE.BulletScreenEngine#event:mouseleave</a></li>
+    
+        <li><a href="openBSE.BulletScreenEngine.html#event:mouseenter">openBSE.BulletScreenEngine#event:mouseenter</a></li>
     </ul>
     
 
@@ -2170,7 +2174,11 @@
         <th>Type</th>
 
         
+        <th>Argument</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -2196,10 +2204,102 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.redraw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true ，否则修改无法生效。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pause</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。</td>
         </tr>
 
     
@@ -2303,7 +2403,11 @@
         <th>Type</th>
 
         
+        <th>Argument</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -2329,10 +2433,102 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.redraw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pause</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。</td>
         </tr>
 
     
@@ -2436,7 +2632,11 @@
         <th>Type</th>
 
         
+        <th>Argument</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -2462,10 +2662,102 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.redraw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pause</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。</td>
         </tr>
 
     
@@ -2520,6 +2812,11 @@
 
     
 
+    
+    <h5>Listeners of This Event:</h5>
+    <ul>
+        <li><a href="openBSE.BulletScreenEngine.html#bind">openBSE.BulletScreenEngine#bind</a></li>
+    </ul>
     
 
     
@@ -2564,7 +2861,11 @@
         <th>Type</th>
 
         
+        <th>Argument</th>
+        
 
+        
+        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -2590,10 +2891,102 @@
             </td>
 
             
+                <td class="attributes">
+                
 
+                
+
+                
+                </td>
             
 
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.redraw</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pause</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。</td>
         </tr>
 
     
@@ -2648,6 +3041,11 @@
 
     
 
+    
+    <h5>Listeners of This Event:</h5>
+    <ul>
+        <li><a href="openBSE.BulletScreenEngine.html#bind">openBSE.BulletScreenEngine#bind</a></li>
+    </ul>
     
 
     
@@ -2703,7 +3101,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
-		on 2019-01-13T20:50:22+08:00
+		on 2019-01-13T21:24:41+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
