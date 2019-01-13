@@ -4,7 +4,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>弹幕引擎Demo</title>
-    <script src="../dist/openBSE.all.min.js"></script>
+    <script src="../dist/openBSE.all.js"></script>
     <script>
         window.onload = function () {
             var versionInfo = openBSE.getVersion();
@@ -18,6 +18,17 @@
             }, 'canvas');
             bulletScreenEngine.bind('click', function (e) {
                 document.getElementById("clickText").innerText = e.bulletScreen.text;
+                e.bulletScreen.style.color = 'red';
+                e.bulletScreen.layer = 2;
+                e.redraw = true;
+            });
+            bulletScreenEngine.bind('mouseenter', function (e) {
+                e.bulletScreen.layer = 2;
+                e.redraw = true;
+                e.pause = true;
+            });
+            bulletScreenEngine.bind('mouseleave', function (e) {
+                e.pause = false;
             });
             loadData(bulletScreenEngine);
             setInterval(showDebugInfo, 500);
@@ -68,6 +79,7 @@
                     size: 20,
                     boxColor: 'white'
                 },
+                layer: 1,
                 canDiscard: false
             });
         }
@@ -112,7 +124,7 @@
         href="#" onclick="bulletScreenEngine.stop();">停止</a>&nbsp;
     <a href="#" onclick="bulletScreenEngine.show();">显示弹幕</a>&nbsp;<a href="#" onclick="bulletScreenEngine.hide();">隐藏弹幕</a>&nbsp;
     <a href="#" onclick="bulletScreenEngine.cleanBulletScreenList();loadData(bulletScreenEngine);">重新加载弹幕</a>&nbsp;<a
-        href="#" onclick="bulletScreenEngine.cleanBulletScreenListOnScreen();">清空屏幕弹幕</a>&nbsp;<br>
+        href="#" onclick="bulletScreenEngine.cleanScreen();">清空屏幕弹幕</a>&nbsp;<br>
     <a href="#" onclick="set('playSpeed', 1);">1倍速</a>&nbsp;<a href="#" onclick="set('playSpeed', 1.5);">1.5倍数</a>&nbsp;
     <a href="#" onclick="set('playSpeed', 2);">2倍速</a>&nbsp;<a href="#" onclick="set('playSpeed', 2.5);">2.5倍数</a>&nbsp;
     <a href="#" onclick="set('scaling', 1);">1倍缩放</a>&nbsp;<a href="#" onclick="set('scaling', 1.5);">1.5倍缩放</a>&nbsp;
