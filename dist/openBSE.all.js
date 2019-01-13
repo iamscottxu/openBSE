@@ -3207,7 +3207,7 @@ var BrowserNotSupportError = function (_Error) {
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
 },{"./lib/helper":116,"./lib/resources":125,"core-js/modules/es6.array.index-of":90,"core-js/modules/es6.array.iterator":91,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.map":95,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.reflect.construct":99,"core-js/modules/es6.regexp.to-string":104,"core-js/modules/es6.string.iterator":105,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],112:[function(require,module,exports){
-module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Sun, 13 Jan 2019 12:50:13 GMT"}
+module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Sun, 13 Jan 2019 13:24:31 GMT"}
 
 },{}],113:[function(require,module,exports){
 "use strict";
@@ -3465,7 +3465,9 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕单击事件。当单击弹幕时触发。
    * @event openBSE.BulletScreenEngine#click
-   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true ，否则修改无法生效。
+   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
    */
 
 
@@ -3473,7 +3475,9 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
    * @event openBSE.BulletScreenEngine#contextmenu
-   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
+   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
    */
 
 
@@ -3481,7 +3485,9 @@ function BulletScreenEngine(element, options) {
   /**
   * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
   * @event openBSE.BulletScreenEngine#mouseleave
-  * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+  * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+  * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
+  * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
   */
 
 
@@ -3489,7 +3495,9 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
    * @event openBSE.BulletScreenEngine#mouseenter
-   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
+   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
    */
 
 
@@ -3502,6 +3510,8 @@ function BulletScreenEngine(element, options) {
    * @param {function} fun - 事件处理程序
    * @listens openBSE.BulletScreenEngine#click
    * @listens openBSE.BulletScreenEngine#contextmenu
+   * @listens openBSE.BulletScreenEngine#mouseleave
+   * @listens openBSE.BulletScreenEngine#mouseenter
    * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
@@ -3762,7 +3772,7 @@ function BulletScreenEngine(element, options) {
 
       var nowTime = _options.clock();
 
-      switch (bulletScreenOnScreen.bulletScreen.type) {
+      switch (bulletScreenOnScreen.type) {
         case _bulletScreenType2.BulletScreenType.rightToLeft:
           if (bulletScreenOnScreen.x > -bulletScreenOnScreen.width) {
             bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
@@ -3846,7 +3856,8 @@ function BulletScreenEngine(element, options) {
     bulletScreenOnScreen.pause = false;
     bulletScreenOnScreen.bulletScreen = bulletScreen;
     bulletScreenOnScreen.startTime = nowTime;
-    bulletScreenOnScreen.size = bulletScreenOnScreen.bulletScreen.style.size;
+    bulletScreenOnScreen.size = bulletScreen.style.size;
+    bulletScreenOnScreen.type = bulletScreen.type;
     bulletScreenOnScreen.height = bulletScreenOnScreen.size;
 
     _renderer.creatAndgetWidth(bulletScreenOnScreen);
@@ -6266,10 +6277,11 @@ function getVersion() {
  * @typedef {object} openBSE~BulletScreen
  * @description BulletScreen 结构用于存放单条弹幕数据。
  * @property {string} text 弹幕文本
- * @property {boolean} [canDiscard=true] 是否允许丢弃：在弹幕过多时，程序将自动丢弃一些延迟过高的弹幕。此选项为 false 时本条弹幕无论如何都不会被丢弃，使用本选项的场景如本用户发送的弹幕。（注意：不要将太多的弹幕的 canDiscard 设为 false， 否则会因超时的弹幕不会被丢弃而造成意外的问题。）
- * @property {number} [startTime=options.clock()] 弹幕进入时间：单位：毫秒，默认为[时间基准（options.clock）]{@link openBSE~Options}当前时间。
- * @property {openBSE.BulletScreenType} [type=openBSE.BulletScreenType.rightToLeft] 弹幕类型：一个类型为 {@link openBSE.BulletScreenType} 的枚举。
+ * @property {boolean} [canDiscard=true] 是否允许丢弃：（此参数在事件中修改无效）在弹幕过多时，程序将自动丢弃一些延迟过高的弹幕。此选项为 false 时本条弹幕无论如何都不会被丢弃，使用本选项的场景如本用户发送的弹幕。（注意：不要将太多的弹幕的 canDiscard 设为 false， 否则会因超时的弹幕不会被丢弃而造成意外的问题。）
+ * @property {number} [startTime=options.clock()] 弹幕进入时间：（此参数在事件中修改无效）单位：毫秒，默认为[时间基准（options.clock）]{@link openBSE~Options}当前时间。
+ * @property {openBSE.BulletScreenType} [type=openBSE.BulletScreenType.rightToLeft] 弹幕类型：（此参数在事件中修改无效）一个类型为 {@link openBSE.BulletScreenType} 的枚举。
  * @property {openBSE~BulletScreenStyle} style 弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。设置此选项中的任何一个值，将覆盖对应的全局设置。
+ * @property {number} [layer=0] 弹幕层级：此参数越大，弹幕越靠前。一条弹幕在比它层级小的弹幕前面，在比它层级大的弹幕后面。如果层级相同按照进入时间确定层级顺序。
  * @property {any} more... 其他自定义字段：例如 uuid 、 id 等。（注意：因为在事件响应方法中返回的弹幕对象是原对象克隆的，所以无法直接比较，必须使用自定义字段唯一标识一条弹幕。）
  */
 
