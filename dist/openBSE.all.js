@@ -3207,7 +3207,7 @@ var BrowserNotSupportError = function (_Error) {
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
 },{"./lib/helper":116,"./lib/resources":125,"core-js/modules/es6.array.index-of":90,"core-js/modules/es6.array.iterator":91,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.map":95,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.reflect.construct":99,"core-js/modules/es6.regexp.to-string":104,"core-js/modules/es6.string.iterator":105,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],112:[function(require,module,exports){
-module.exports={"version":"2.0-Beta","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Sun, 13 Jan 2019 04:55:47 GMT"}
+module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Sun, 13 Jan 2019 12:50:13 GMT"}
 
 },{}],113:[function(require,module,exports){
 "use strict";
@@ -3428,7 +3428,10 @@ function BulletScreenEngine(element, options) {
     startTime: null,
 
     /** 弹幕类型 */
-    type: _bulletScreenType2.BulletScreenType.rightToLeft
+    type: _bulletScreenType2.BulletScreenType.rightToLeft,
+
+    /** 弹幕层级（越大越前） */
+    layer: 0
     /**
      * 弹幕数据类型
      * @private @readonly
@@ -3439,7 +3442,8 @@ function BulletScreenEngine(element, options) {
     text: 'string',
     canDiscard: 'boolean',
     startTime: 'number',
-    type: 'number'
+    type: 'number',
+    layer: 'number'
     /**
      * requestAnimationFrame 定义（一些老式浏览器不支持 requestAnimationFrame ）
      * @param {function} fun - 回调方法 
@@ -3475,6 +3479,22 @@ function BulletScreenEngine(element, options) {
 
   _event.add('contextmenu');
   /**
+  * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
+  * @event openBSE.BulletScreenEngine#mouseleave
+  * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+  */
+
+
+  _event.add('mouseleave');
+  /**
+   * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
+   * @event openBSE.BulletScreenEngine#mouseenter
+   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   */
+
+
+  _event.add('mouseenter');
+  /**
    * 绑定事件处理程序
    * @function
    * @description 绑定事件处理程序。当事件处理程序返回值为 false 时停止冒泡。
@@ -3506,7 +3526,7 @@ function BulletScreenEngine(element, options) {
   var _oldClientHeight = element.clientHeight;
   var _oldHiddenTypes = _options.hiddenTypes;
   var _oldOpacity = _options.opacity;
-  var renderersFactory = new _renderersFactory.RenderersFactory(element, _options, _elementSize, _event, _bulletScreensOnScreen);
+  var renderersFactory = new _renderersFactory.RenderersFactory(element, _options, _elementSize, bulletScreenEventTrigger);
 
   var _renderer = renderersFactory.getRenderer(renderMode);
 
@@ -3686,6 +3706,34 @@ function BulletScreenEngine(element, options) {
     };
   };
   /**
+   * 弹幕事件响应
+   * @param {string} name - 事件名称
+   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+   */
+
+
+  function bulletScreenEventTrigger(name, bulletScreenOnScreen) {
+    var e = {
+      bulletScreen: _helper.Helper.clone(bulletScreenOnScreen.bulletScreen),
+      redraw: false,
+      pause: bulletScreenOnScreen.pause
+    };
+
+    _event.trigger(name, e);
+
+    if (e.redraw === true) {
+      var bulletScreenType = _helper.Helper.clone(_bulletScreenType);
+
+      bulletScreenType.style = _optionsType.defaultStyle;
+      bulletScreenOnScreen.bulletScreen = _helper.Helper.setValues(e.bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType, false);
+
+      _renderer.reCreatAndgetWidth(bulletScreenOnScreen);
+    }
+
+    if (typeof e.pause === 'boolean') bulletScreenOnScreen.pause = e.pause;
+    if (!_playing && (e.redraw || e.bringToTop)) _renderer.draw();
+  }
+  /**
    * 刷新弹幕函数
    * @private
    */
@@ -3710,6 +3758,8 @@ function BulletScreenEngine(element, options) {
 
   function moveBulletScreenOnScreen() {
     _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+      if (bulletScreenOnScreen.pause) return;
+
       var nowTime = _options.clock();
 
       switch (bulletScreenOnScreen.bulletScreen.type) {
@@ -3793,6 +3843,7 @@ function BulletScreenEngine(element, options) {
   function getBulletScreenOnScreen(nowTime, bulletScreen) {
     _delay = nowTime - bulletScreen.startTime;
     var bulletScreenOnScreen = {};
+    bulletScreenOnScreen.pause = false;
     bulletScreenOnScreen.bulletScreen = bulletScreen;
     bulletScreenOnScreen.startTime = nowTime;
     bulletScreenOnScreen.size = bulletScreenOnScreen.bulletScreen.style.size;
@@ -4607,6 +4658,16 @@ function BaseRenderer(element, options, elementSize) {
     throw new SyntaxError();
   };
   /**
+   * 重新添加弹幕
+   * @abstract
+   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+   */
+
+
+  this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+    throw new SyntaxError();
+  };
+  /**
    * 检查弹幕是否被隐藏
    * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
    */
@@ -4679,7 +4740,7 @@ require("core-js/modules/es6.array.for-each");
 
 var _baseRenderer = require("./baseRenderer");
 
-var _helper = require("../helper");
+var _linkedList = require("../linkedList");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -4706,10 +4767,9 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
    * @param {object} element - Element 元素
    * @param {openBSE~Options} options - 全局选项
    * @param {object} elementSize - 元素大小
-   * @param {Event} event - 事件对象
-   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   * @param {function} eventTrigger - 事件引发方法
    */
-  function CanvasBaseRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
+  function CanvasBaseRenderer(element, options, elementSize, eventTrigger) {
     var _this;
 
     _classCallCheck(this, CanvasBaseRenderer);
@@ -4717,6 +4777,13 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
     if ((this instanceof CanvasBaseRenderer ? this.constructor : void 0) === CanvasBaseRenderer) {
       throw new SyntaxError();
     }
+    /**
+     * 屏幕上的弹幕
+     * @private @type {LinkedList}
+     */
+
+
+    var _bulletScreensOnScreen = new _linkedList.LinkedList();
     /**
      * DPI 缩放比例（倍数）
      * @private @type {number}
@@ -4774,6 +4841,23 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
       }
 
       bulletScreenOnScreen.hideCanvas = hideCanvas;
+      if (_bulletScreensOnScreen.getLength() === 0) _bulletScreensOnScreen.push(bulletScreenOnScreen, true);
+      var flag = false;
+
+      _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
+        if (_bulletScreenOnScreen.bulletScreen.layer <= bulletScreen.layer) {
+          flag = true;
+          return {
+            add: {
+              element: bulletScreenOnScreen,
+              addToUp: false
+            },
+            stop: true
+          };
+        }
+      }, false);
+
+      if (!flag) _bulletScreensOnScreen.push(bulletScreenOnScreen, false);
     };
     /**
      * 删除弹幕元素
@@ -4782,7 +4866,25 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
      */
 
 
-    _this.delete = function (bulletScreenOnScreen) {};
+    _this.delete = function (bulletScreenOnScreen) {
+      return _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
+        return _bulletScreenOnScreen === bulletScreenOnScreen ? {
+          remove: true,
+          stop: true
+        } : null;
+      });
+    };
+    /**
+     * 重新添加弹幕
+     * @override
+     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     */
+
+
+    _this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+      this.delete(bulletScreenOnScreen);
+      this.creatAndgetWidth(bulletScreenOnScreen);
+    };
 
     var _setSize = _this.setSize;
     /**
@@ -4817,6 +4919,15 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
       return _canvas;
     };
     /**
+     * 获取屏幕弹幕对象
+     * @returns {LinkedList} 画布对象
+     */
+
+
+    _this.getBulletScreensOnScreen = function () {
+      return _bulletScreensOnScreen;
+    };
+    /**
      * 添加Canvas
      * @private
      * @returns {Element} 画布对象
@@ -4842,22 +4953,24 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
 
     function registerEvent(element) {
       function getBulletScreenOnScreenByLocation(location) {
-        var bulletScreen = null;
-        bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-          if (_checkWhetherHide(bulletScreenOnScreen)) return null;
+        var _bulletScreenOnScreen = null;
+
+        _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+          if (_checkWhetherHide(bulletScreenOnScreen)) return;
           var x1 = bulletScreenOnScreen.x - 4;
           var x2 = x1 + bulletScreenOnScreen.width + 8;
           var y1 = bulletScreenOnScreen.actualY - 4;
           var y2 = y1 + bulletScreenOnScreen.height + 8;
 
           if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-            bulletScreen = _helper.Helper.clone(bulletScreenOnScreen.bulletScreen);
+            _bulletScreenOnScreen = bulletScreenOnScreen;
             return {
               stop: true
             };
           }
         }, false);
-        return bulletScreen;
+
+        return _bulletScreenOnScreen;
       }
 
       function getLocation(e) {
@@ -4905,19 +5018,40 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
       }
 
       element.oncontextmenu = function (e) {
-        var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreen) event.trigger('contextmenu', {
-          bulletScreen: bulletScreen
-        });
+        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        if (bulletScreenOnScreen) eventTrigger('contextmenu', bulletScreenOnScreen);
         return false;
       };
 
       element.onclick = function (e) {
-        var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreen) event.trigger('click', {
-          bulletScreen: bulletScreen
-        });
+        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        if (bulletScreenOnScreen) eventTrigger('click', bulletScreenOnScreen);
         return false;
+      };
+
+      element.onmousemove = function (e) {
+        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+
+        _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
+          if (bulletScreenOnScreen != _bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
+            _bulletScreenOnScreen.mousein = false;
+            eventTrigger('mouseleave', _bulletScreenOnScreen);
+          }
+        }, true);
+
+        if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
+        bulletScreenOnScreen.mousein = true;
+        eventTrigger('mouseenter', bulletScreenOnScreen);
+        return false;
+      };
+
+      element.onmouseout = function (e) {
+        _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
+          if (_bulletScreenOnScreen.mousein) {
+            _bulletScreenOnScreen.mousein = false;
+            eventTrigger('mouseleave', _bulletScreenOnScreen);
+          }
+        }, true);
       };
     }
 
@@ -4929,7 +5063,7 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
 
 exports.CanvasBaseRenderer = CanvasBaseRenderer;
 
-},{"../helper":116,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],120:[function(require,module,exports){
+},{"../linkedList":117,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],120:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -4980,21 +5114,27 @@ var CanvasRenderer = function (_CanvasBaseRenderer) {
    * @param {object} element - Element 元素
    * @param {openBSE~Options} options - 全局选项
    * @param {object} elementSize - 元素大小
-   * @param {Event} event - 事件对象
-   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   * @param {Event} eventTrigger - 事件引发方法
    * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
    */
-  function CanvasRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
+  function CanvasRenderer(element, options, elementSize, eventTrigger) {
     var _this;
 
     _classCallCheck(this, CanvasRenderer);
 
     supportCheck();
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(CanvasRenderer).call(this, element, options, elementSize, event, bulletScreensOnScreen));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(CanvasRenderer).call(this, element, options, elementSize, eventTrigger));
+    /**
+     * 屏幕上的弹幕
+     * @private @type {LinkedList}
+     */
+
+    var _bulletScreensOnScreen = _this.getBulletScreensOnScreen();
     /**
      * 清除屏幕内容
      * @override
      */
+
 
     _this.cleanScreen = function () {
       var canvas = this.getCanvas();
@@ -5015,10 +5155,12 @@ var CanvasRenderer = function (_CanvasBaseRenderer) {
       hideCanvas.width = canvas.width;
       hideCanvas.height = canvas.height;
       var hideCanvasContext = hideCanvas.getContext('2d');
-      bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+
+      _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
         if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
         hideCanvasContext.drawImage(bulletScreenOnScreen.hideCanvas, (bulletScreenOnScreen.x - 4) * devicePixelRatio, (bulletScreenOnScreen.actualY - 4) * devicePixelRatio, (bulletScreenOnScreen.width + 8) * devicePixelRatio, (bulletScreenOnScreen.height + 8) * devicePixelRatio);
       }, true);
+
       var canvasContext = canvas.getContext('2d');
       canvasContext.clearRect(0, 0, canvas.width, canvas.height);
       canvasContext.drawImage(hideCanvas, 0, 0);
@@ -5056,23 +5198,19 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CSS3Renderer = void 0;
 
-require("core-js/modules/es7.symbol.async-iterator");
-
-require("core-js/modules/es6.symbol");
-
 require("core-js/modules/es6.object.create");
 
 require("core-js/modules/es6.object.set-prototype-of");
 
-require("core-js/modules/web.dom.iterable");
+require("core-js/modules/es7.symbol.async-iterator");
 
-require("core-js/modules/es6.array.for-each");
+require("core-js/modules/es6.symbol");
+
+require("core-js/modules/web.dom.iterable");
 
 var _baseRenderer = require("./baseRenderer");
 
 var _browserNotSupportError = require("../../browserNotSupportError");
-
-var _helper = require("../helper");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -5099,11 +5237,10 @@ var CSS3Renderer = function (_BaseRenderer) {
    * @param {object} element - Element 元素
    * @param {openBSE~Options} options - 全局选项
    * @param {object} elementSize - 元素大小
-   * @param {Event} event - 事件对象
-   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   * @param {Event} eventTrigger - 事件引发方法
    * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
    */
-  function CSS3Renderer(element, options, elementSize, event, bulletScreensOnScreen) {
+  function CSS3Renderer(element, options, elementSize, eventTrigger) {
     var _this;
 
     _classCallCheck(this, CSS3Renderer);
@@ -5128,17 +5265,37 @@ var CSS3Renderer = function (_BaseRenderer) {
 
 
     _this.draw = function () {
-      var _this2 = this;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-      bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-        if (_this2.checkWhetherHide(bulletScreenOnScreen)) {
-          bulletScreenOnScreen.div.style.visibility = 'hidden';
-          return;
+      try {
+        for (var _iterator = _div.getElementsByTagName('div')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var bulletScreenDiv = _step.value;
+          if (_typeof(bulletScreenDiv.bulletScreenOnScreen) != 'object') continue;
+
+          if (this.checkWhetherHide(bulletScreenDiv.bulletScreenOnScreen)) {
+            bulletScreenDiv.style.visibility = 'hidden';
+            continue;
+          }
+
+          bulletScreenDiv.style.visibility = 'visible';
+          bulletScreenDiv.style.transform = bulletScreenDiv.style.webkitTransform = bulletScreenDiv.style.msTransform = "translate(".concat(bulletScreenDiv.bulletScreenOnScreen.x - 4, "px,").concat(bulletScreenDiv.bulletScreenOnScreen.actualY - 4, "px)");
         }
-
-        bulletScreenOnScreen.div.style.visibility = 'visible';
-        bulletScreenOnScreen.div.style.transform = bulletScreenOnScreen.div.style.webkitTransform = bulletScreenOnScreen.div.style.msTransform = "translate(".concat(bulletScreenOnScreen.x - 4, "px,").concat(bulletScreenOnScreen.actualY - 4, "px)");
-      }, true);
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
     };
     /**
      * 创建弹幕元素
@@ -5149,7 +5306,7 @@ var CSS3Renderer = function (_BaseRenderer) {
 
     _this.creatAndgetWidth = function (bulletScreenOnScreen) {
       var bulletScreen = bulletScreenOnScreen.bulletScreen;
-      var bulletScreenDiv = document.createElement('div');
+      var bulletScreenDiv = bulletScreenOnScreen.div ? bulletScreenOnScreen.div : document.createElement('div');
       bulletScreenDiv.style.position = 'absolute';
       bulletScreenDiv.style.whiteSpace = 'nowrap';
       bulletScreenDiv.style.fontWeight = bulletScreen.style.fontWeight;
@@ -5172,11 +5329,21 @@ var CSS3Renderer = function (_BaseRenderer) {
         bulletScreenDiv.style.padding = '4px';
       }
 
+      bulletScreenDiv.innerHTML = '';
       bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
-      bulletScreenDiv.bulletScreen = bulletScreen;
+      bulletScreenDiv.bulletScreenOnScreen = bulletScreenOnScreen;
 
-      _div.appendChild(bulletScreenDiv);
+      var bulletScreenDivs = _div.getElementsByTagName('div');
 
+      if (bulletScreenDivs.length === 0) _div.appendChild(bulletScreenDiv);
+      var index;
+
+      for (index = bulletScreenDivs.length - 1; index > 0; index--) {
+        var _layer = bulletScreenDivs[index].bulletScreenOnScreen.bulletScreen.layer;
+        if (_layer <= bulletScreen.layer) break;
+      }
+
+      if (++index === bulletScreenDivs.length) _div.appendChild(bulletScreenDiv);else _div.insertBefore(bulletScreenDiv, bulletScreenDivs[index]);
       bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8;
       bulletScreenOnScreen.div = bulletScreenDiv;
     };
@@ -5189,6 +5356,17 @@ var CSS3Renderer = function (_BaseRenderer) {
 
     _this.delete = function (bulletScreenOnScreen) {
       _div.removeChild(bulletScreenOnScreen.div);
+    };
+    /**
+     * 重新添加弹幕
+     * @override
+     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     */
+
+
+    _this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+      this.delete(bulletScreenOnScreen);
+      this.creatAndgetWidth(bulletScreenOnScreen);
     };
     /**
      * 添加Div
@@ -5229,17 +5407,27 @@ var CSS3Renderer = function (_BaseRenderer) {
 
     function registerEvent(element) {
       element.oncontextmenu = function (e) {
-        if (e.target != this) event.trigger('contextmenu', {
-          bulletScreen: _helper.Helper.clone(e.target.bulletScreen)
-        });
+        if (e.target != this) eventTrigger('contextmenu', e.target.bulletScreenOnScreen);
         return false;
       };
 
       element.onclick = function (e) {
-        if (e.target != this) event.trigger('click', {
-          bulletScreen: _helper.Helper.clone(e.target.bulletScreen)
-        });
+        if (e.target != this) eventTrigger('click', e.target.bulletScreenOnScreen);
         return false;
+      };
+
+      element.onmousemove = function (e) {
+        var bulletScreenOnScreen = e.target.bulletScreenOnScreen;
+        if (e.target === this || bulletScreenOnScreen.mousein) return;
+        bulletScreenOnScreen.mousein = true;
+        eventTrigger('mouseenter', bulletScreenOnScreen);
+      };
+
+      element.onmouseout = function (e) {
+        var bulletScreenOnScreen = e.target.bulletScreenOnScreen;
+        if (e.target === this || !bulletScreenOnScreen.mousein) return;
+        bulletScreenOnScreen.mousein = false;
+        eventTrigger('mouseleave', bulletScreenOnScreen);
       };
     }
 
@@ -5251,7 +5439,7 @@ var CSS3Renderer = function (_BaseRenderer) {
 
 exports.CSS3Renderer = CSS3Renderer;
 
-},{"../../browserNotSupportError":111,"../helper":116,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],122:[function(require,module,exports){
+},{"../../browserNotSupportError":111,"./baseRenderer":118,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],122:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -5307,10 +5495,9 @@ var RenderersFactory =
  * @param {object} element - Element 元素
  * @param {openBSE~Options} options - 全局选项
  * @param {object} elementSize - 元素大小
- * @param {Event} event - 事件对象
- * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+ * @param {Event} eventTrigger - 事件引发方法
  */
-function RenderersFactory(element, options, elementSize, event, bulletScreensOnScreen) {
+function RenderersFactory(element, options, elementSize, eventTrigger) {
   _classCallCheck(this, RenderersFactory);
 
   /**
@@ -5325,7 +5512,7 @@ function RenderersFactory(element, options, elementSize, event, bulletScreensOnS
     if (typeof renderer === 'undefined') throw new TypeError(_helper.Helper.signMix(_resources.Resources.RENDER_MODE_ERROR, {
       renderMode: renderMode
     }));
-    return new renderer(element, options, elementSize, event, bulletScreensOnScreen);
+    return new renderer(element, options, elementSize, eventTrigger);
   };
 };
 
@@ -5357,8 +5544,6 @@ var _baseRenderer = require("./baseRenderer");
 
 var _browserNotSupportError = require("../../browserNotSupportError");
 
-var _helper = require("../helper");
-
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5384,11 +5569,11 @@ var SVGRenderer = function (_BaseRenderer) {
    * @param {object} element - Element 元素
    * @param {openBSE~Options} options - 全局选项
    * @param {object} elementSize - 元素大小
-   * @param {Event} event - 事件对象
+   * @param {Event} eventTrigger - 事件引发方法
    * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
    * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
    */
-  function SVGRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
+  function SVGRenderer(element, options, elementSize, eventTrigger, bulletScreensOnScreen) {
     var _this;
 
     _classCallCheck(this, SVGRenderer);
@@ -5591,22 +5776,22 @@ var SVGRenderer = function (_BaseRenderer) {
 
     function registerEvent(element) {
       function getBulletScreenOnScreenByLocation(location) {
-        var bulletScreen = null;
+        var _bulletScreenOnScreen = null;
         bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-          if (_checkWhetherHide(bulletScreenOnScreen)) return null;
+          if (_checkWhetherHide(bulletScreenOnScreen)) return;
           var x1 = bulletScreenOnScreen.x - 4;
           var x2 = x1 + bulletScreenOnScreen.width + 8;
           var y1 = bulletScreenOnScreen.actualY - 4;
           var y2 = y1 + bulletScreenOnScreen.height + 8;
 
           if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-            bulletScreen = _helper.Helper.clone(bulletScreenOnScreen.bulletScreen);
+            _bulletScreenOnScreen = bulletScreenOnScreen;
             return {
               stop: true
             };
           }
         }, false);
-        return bulletScreen;
+        return _bulletScreenOnScreen;
       }
 
       function getLocation(e) {
@@ -5654,18 +5839,14 @@ var SVGRenderer = function (_BaseRenderer) {
       }
 
       element.oncontextmenu = function (e) {
-        var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreen) event.trigger('contextmenu', {
-          bulletScreen: bulletScreen
-        });
+        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        if (bulletScreenOnScreen) eventTrigger('contextmenu', bulletScreenOnScreen);
         return false;
       };
 
       element.onclick = function (e) {
-        var bulletScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreen) event.trigger('click', {
-          bulletScreen: bulletScreen
-        });
+        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        if (bulletScreenOnScreen) eventTrigger('click', bulletScreenOnScreen);
         return false;
       };
     }
@@ -5689,7 +5870,7 @@ var SVGRenderer = function (_BaseRenderer) {
 
 exports.SVGRenderer = SVGRenderer;
 
-},{"../../browserNotSupportError":111,"../helper":116,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],124:[function(require,module,exports){
+},{"../../browserNotSupportError":111,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],124:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -5742,21 +5923,27 @@ var WebGLRenderer = function (_CanvasBaseRenderer) {
    * @param {object} element - Element 元素
    * @param {openBSE~Options} options - 全局选项
    * @param {object} elementSize - 元素大小
-   * @param {Event} event - 事件对象
-   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
+   * @param {Event} eventTrigger - 事件引发方法
    * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
    */
-  function WebGLRenderer(element, options, elementSize, event, bulletScreensOnScreen) {
+  function WebGLRenderer(element, options, elementSize, eventTrigger) {
     var _this;
 
     _classCallCheck(this, WebGLRenderer);
 
     supportCheck();
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(WebGLRenderer).call(this, element, options, elementSize, event, bulletScreensOnScreen));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(WebGLRenderer).call(this, element, options, elementSize, eventTrigger));
+    /**
+     * 屏幕上的弹幕
+     * @private @type {LinkedList}
+     */
+
+    var _bulletScreensOnScreen = _this.getBulletScreensOnScreen();
     /**
      * WebGL 上下文对象
      * @private @type {object}
      */
+
 
     var _webglContext;
 
@@ -5793,7 +5980,7 @@ var WebGLRenderer = function (_CanvasBaseRenderer) {
 
       _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
 
-      bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+      _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
         if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
         var x1 = (bulletScreenOnScreen.x - 4) * devicePixelRatio;
         var x2 = x1 + (bulletScreenOnScreen.width + 8) * devicePixelRatio;
