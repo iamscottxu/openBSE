@@ -475,7 +475,7 @@ class BulletScreenEngine {
                 },
                 getPlayState: () => !bulletScreenOnScreen.pause,
                 setPlayState: (play) => {
-                    if (typeof pause != 'boolean') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
+                    if (typeof play != 'boolean') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
                     bulletScreenOnScreen.pause = !play;
                 },
                 screenX: e.screenX, screenY: e.screenY,
