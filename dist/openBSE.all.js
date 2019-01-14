@@ -719,7 +719,7 @@ module.exports = function (KEY, length, exec) {
   }
 };
 
-},{"./_defined":19,"./_fails":25,"./_hide":31,"./_redefine":62,"./_regexp-exec":64,"./_wks":87,"./es6.regexp.exec":101}],27:[function(require,module,exports){
+},{"./_defined":19,"./_fails":25,"./_hide":31,"./_redefine":62,"./_regexp-exec":64,"./_wks":87,"./es6.regexp.exec":100}],27:[function(require,module,exports){
 'use strict';
 // 21.2.5.3 get RegExp.prototype.flags
 var anObject = require('./_an-object');
@@ -2466,24 +2466,6 @@ var $export = require('./_export');
 $export($export.P, 'Function', { bind: require('./_bind') });
 
 },{"./_bind":12,"./_export":24}],94:[function(require,module,exports){
-var dP = require('./_object-dp').f;
-var FProto = Function.prototype;
-var nameRE = /^\s*function ([^ (]*)/;
-var NAME = 'name';
-
-// 19.2.4.2 name
-NAME in FProto || require('./_descriptors') && dP(FProto, NAME, {
-  configurable: true,
-  get: function () {
-    try {
-      return ('' + this).match(nameRE)[1];
-    } catch (e) {
-      return '';
-    }
-  }
-});
-
-},{"./_descriptors":20,"./_object-dp":50}],95:[function(require,module,exports){
 'use strict';
 var strong = require('./_collection-strong');
 var validate = require('./_validate-collection');
@@ -2504,22 +2486,22 @@ module.exports = require('./_collection')(MAP, function (get) {
   }
 }, strong, true);
 
-},{"./_collection":16,"./_collection-strong":15,"./_validate-collection":84}],96:[function(require,module,exports){
+},{"./_collection":16,"./_collection-strong":15,"./_validate-collection":84}],95:[function(require,module,exports){
 var $export = require('./_export');
 // 19.1.2.2 / 15.2.3.5 Object.create(O [, Properties])
 $export($export.S, 'Object', { create: require('./_object-create') });
 
-},{"./_export":24,"./_object-create":49}],97:[function(require,module,exports){
+},{"./_export":24,"./_object-create":49}],96:[function(require,module,exports){
 var $export = require('./_export');
 // 19.1.2.4 / 15.2.3.6 Object.defineProperty(O, P, Attributes)
 $export($export.S + $export.F * !require('./_descriptors'), 'Object', { defineProperty: require('./_object-dp').f });
 
-},{"./_descriptors":20,"./_export":24,"./_object-dp":50}],98:[function(require,module,exports){
+},{"./_descriptors":20,"./_export":24,"./_object-dp":50}],97:[function(require,module,exports){
 // 19.1.3.19 Object.setPrototypeOf(O, proto)
 var $export = require('./_export');
 $export($export.S, 'Object', { setPrototypeOf: require('./_set-proto').set });
 
-},{"./_export":24,"./_set-proto":65}],99:[function(require,module,exports){
+},{"./_export":24,"./_set-proto":65}],98:[function(require,module,exports){
 // 26.1.2 Reflect.construct(target, argumentsList [, newTarget])
 var $export = require('./_export');
 var create = require('./_object-create');
@@ -2568,7 +2550,7 @@ $export($export.S + $export.F * (NEW_TARGET_BUG || ARGS_BUG), 'Reflect', {
   }
 });
 
-},{"./_a-function":1,"./_an-object":5,"./_bind":12,"./_export":24,"./_fails":25,"./_global":29,"./_is-object":39,"./_object-create":49}],100:[function(require,module,exports){
+},{"./_a-function":1,"./_an-object":5,"./_bind":12,"./_export":24,"./_fails":25,"./_global":29,"./_is-object":39,"./_object-create":49}],99:[function(require,module,exports){
 var global = require('./_global');
 var inheritIfRequired = require('./_inherit-if-required');
 var dP = require('./_object-dp').f;
@@ -2613,7 +2595,7 @@ if (require('./_descriptors') && (!CORRECT_NEW || require('./_fails')(function (
 
 require('./_set-species')('RegExp');
 
-},{"./_descriptors":20,"./_fails":25,"./_flags":27,"./_global":29,"./_inherit-if-required":34,"./_is-regexp":40,"./_object-dp":50,"./_object-gopn":54,"./_redefine":62,"./_set-species":66,"./_wks":87}],101:[function(require,module,exports){
+},{"./_descriptors":20,"./_fails":25,"./_flags":27,"./_global":29,"./_inherit-if-required":34,"./_is-regexp":40,"./_object-dp":50,"./_object-gopn":54,"./_redefine":62,"./_set-species":66,"./_wks":87}],100:[function(require,module,exports){
 'use strict';
 var regexpExec = require('./_regexp-exec');
 require('./_export')({
@@ -2624,14 +2606,14 @@ require('./_export')({
   exec: regexpExec
 });
 
-},{"./_export":24,"./_regexp-exec":64}],102:[function(require,module,exports){
+},{"./_export":24,"./_regexp-exec":64}],101:[function(require,module,exports){
 // 21.2.5.3 get RegExp.prototype.flags()
 if (require('./_descriptors') && /./g.flags != 'g') require('./_object-dp').f(RegExp.prototype, 'flags', {
   configurable: true,
   get: require('./_flags')
 });
 
-},{"./_descriptors":20,"./_flags":27,"./_object-dp":50}],103:[function(require,module,exports){
+},{"./_descriptors":20,"./_flags":27,"./_object-dp":50}],102:[function(require,module,exports){
 'use strict';
 
 var anObject = require('./_an-object');
@@ -2751,7 +2733,7 @@ require('./_fix-re-wks')('replace', 2, function (defined, REPLACE, $replace, may
   }
 });
 
-},{"./_advance-string-index":3,"./_an-object":5,"./_fix-re-wks":26,"./_regexp-exec-abstract":63,"./_to-integer":75,"./_to-length":77,"./_to-object":78}],104:[function(require,module,exports){
+},{"./_advance-string-index":3,"./_an-object":5,"./_fix-re-wks":26,"./_regexp-exec-abstract":63,"./_to-integer":75,"./_to-length":77,"./_to-object":78}],103:[function(require,module,exports){
 'use strict';
 require('./es6.regexp.flags');
 var anObject = require('./_an-object');
@@ -2778,7 +2760,7 @@ if (require('./_fails')(function () { return $toString.call({ source: 'a', flags
   });
 }
 
-},{"./_an-object":5,"./_descriptors":20,"./_fails":25,"./_flags":27,"./_redefine":62,"./es6.regexp.flags":102}],105:[function(require,module,exports){
+},{"./_an-object":5,"./_descriptors":20,"./_fails":25,"./_flags":27,"./_redefine":62,"./es6.regexp.flags":101}],104:[function(require,module,exports){
 'use strict';
 var $at = require('./_string-at')(true);
 
@@ -2797,7 +2779,7 @@ require('./_iter-define')(String, 'String', function (iterated) {
   return { value: point, done: false };
 });
 
-},{"./_iter-define":43,"./_string-at":72}],106:[function(require,module,exports){
+},{"./_iter-define":43,"./_string-at":72}],105:[function(require,module,exports){
 'use strict';
 // ECMAScript 6 symbols shim
 var global = require('./_global');
@@ -3033,17 +3015,17 @@ setToStringTag(Math, 'Math', true);
 // 24.3.3 JSON[@@toStringTag]
 setToStringTag(global.JSON, 'JSON', true);
 
-},{"./_an-object":5,"./_descriptors":20,"./_enum-keys":23,"./_export":24,"./_fails":25,"./_global":29,"./_has":30,"./_hide":31,"./_is-array":38,"./_is-object":39,"./_library":47,"./_meta":48,"./_object-create":49,"./_object-dp":50,"./_object-gopd":52,"./_object-gopn":54,"./_object-gopn-ext":53,"./_object-gops":55,"./_object-keys":58,"./_object-pie":59,"./_property-desc":60,"./_redefine":62,"./_set-to-string-tag":67,"./_shared":69,"./_to-iobject":76,"./_to-primitive":79,"./_uid":83,"./_wks":87,"./_wks-define":85,"./_wks-ext":86}],107:[function(require,module,exports){
+},{"./_an-object":5,"./_descriptors":20,"./_enum-keys":23,"./_export":24,"./_fails":25,"./_global":29,"./_has":30,"./_hide":31,"./_is-array":38,"./_is-object":39,"./_library":47,"./_meta":48,"./_object-create":49,"./_object-dp":50,"./_object-gopd":52,"./_object-gopn":54,"./_object-gopn-ext":53,"./_object-gops":55,"./_object-keys":58,"./_object-pie":59,"./_property-desc":60,"./_redefine":62,"./_set-to-string-tag":67,"./_shared":69,"./_to-iobject":76,"./_to-primitive":79,"./_uid":83,"./_wks":87,"./_wks-define":85,"./_wks-ext":86}],106:[function(require,module,exports){
 require('./_typed-array')('Float32', 4, function (init) {
   return function Float32Array(data, byteOffset, length) {
     return init(this, data, byteOffset, length);
   };
 });
 
-},{"./_typed-array":80}],108:[function(require,module,exports){
+},{"./_typed-array":80}],107:[function(require,module,exports){
 require('./_wks-define')('asyncIterator');
 
-},{"./_wks-define":85}],109:[function(require,module,exports){
+},{"./_wks-define":85}],108:[function(require,module,exports){
 var $iterators = require('./es6.array.iterator');
 var getKeys = require('./_object-keys');
 var redefine = require('./_redefine');
@@ -3103,7 +3085,7 @@ for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++
   }
 }
 
-},{"./_global":29,"./_hide":31,"./_iterators":46,"./_object-keys":58,"./_redefine":62,"./_wks":87,"./es6.array.iterator":91}],110:[function(require,module,exports){
+},{"./_global":29,"./_hide":31,"./_iterators":46,"./_object-keys":58,"./_redefine":62,"./_wks":87,"./es6.array.iterator":91}],109:[function(require,module,exports){
 "use strict";
 
 /**
@@ -3114,7 +3096,7 @@ var openBSE = require('./openBSE');
 
 window.openBSE = openBSE;
 
-},{"./openBSE":"openbse"}],111:[function(require,module,exports){
+},{"./openBSE":"openbse"}],110:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -3151,8 +3133,6 @@ require("core-js/modules/es6.array.index-of");
 require("core-js/modules/es6.object.set-prototype-of");
 
 var _resources = require("./lib/resources");
-
-var _helper = require("./lib/helper");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -3194,7 +3174,7 @@ var BrowserNotSupportError = function (_Error) {
 
     _classCallCheck(this, BrowserNotSupportError);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(BrowserNotSupportError).call(this, _helper.Helper.signMix(_resources.Resources.BROWSER_NOT_SUPPORT_ERROR, {
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(BrowserNotSupportError).call(this, _resources.Resources.BROWSER_NOT_SUPPORT_ERROR.fillData({
       message: message
     })));
     _this.name = "BrowserNotSupportError";
@@ -3206,10 +3186,10 @@ var BrowserNotSupportError = function (_Error) {
 
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
-},{"./lib/helper":116,"./lib/resources":125,"core-js/modules/es6.array.index-of":90,"core-js/modules/es6.array.iterator":91,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.map":95,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.reflect.construct":99,"core-js/modules/es6.regexp.to-string":104,"core-js/modules/es6.string.iterator":105,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],112:[function(require,module,exports){
-module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Sun, 13 Jan 2019 13:24:31 GMT"}
+},{"./lib/resources":126,"core-js/modules/es6.array.index-of":90,"core-js/modules/es6.array.iterator":91,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.map":94,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.reflect.construct":98,"core-js/modules/es6.regexp.to-string":103,"core-js/modules/es6.string.iterator":104,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],111:[function(require,module,exports){
+module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Mon, 14 Jan 2019 14:06:34 GMT"}
 
-},{}],113:[function(require,module,exports){
+},{}],112:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -3219,7 +3199,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BulletScreenEngine = void 0;
 
-require("core-js/modules/es6.function.name");
+require("core-js/modules/es6.array.index-of");
 
 require("core-js/modules/web.dom.iterable");
 
@@ -3256,7 +3236,7 @@ var BulletScreenEngine =
  * 创建一个弹幕引擎对象。
  * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
  * @param {openBSE~Options} [_options] - 全局选项：一个 {@link openBSE~Options} 结构。
- * @param {string} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。
+ * @param {string} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。一般建议使用“canvas”（特别是 FireFox 浏览器 CSS3 渲染效率较低）。在一些版本较老的浏览器中“window.devicePixelRatio”变量不被支持或支持不完整，这会导致在高DPI和页面被缩放的情况下“canvas”和“webgl”渲染模式弹幕显示不正常的情况（弹幕模糊），此时建议使用“css3”渲染模式。
  */
 function BulletScreenEngine(element, options) {
   var renderMode = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'canvas';
@@ -3357,6 +3337,9 @@ function BulletScreenEngine(element, options) {
     /** 弹幕不透明度 */
     opacity: 1,
 
+    /** 鼠标经过样式 */
+    cursorOnMouseOver: 'pointer',
+
     /** 默认弹幕样式 */
     defaultStyle: {
       /** 阴影的模糊级别，0为不显示阴影 */
@@ -3400,6 +3383,7 @@ function BulletScreenEngine(element, options) {
     timeOutDiscard: 'boolean',
     hiddenTypes: 'number',
     opacity: 'number',
+    cursorOnMouseOver: 'string',
     defaultStyle: {
       shadowBlur: 'number',
       fontWeight: ['string', 'number'],
@@ -3465,9 +3449,16 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕单击事件。当单击弹幕时触发。
    * @event openBSE.BulletScreenEngine#click
-   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
    * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true ，否则修改无法生效。
-   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
+   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+   * @param {string} e.type - 事件类型（事件名称）
+   * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+   * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+   * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+   * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
    */
 
 
@@ -3475,9 +3466,16 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
    * @event openBSE.BulletScreenEngine#contextmenu
-   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
    * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
+   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+   * @param {string} e.type - 事件类型（事件名称）
+   * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+   * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+   * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+   * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
    */
 
 
@@ -3485,9 +3483,16 @@ function BulletScreenEngine(element, options) {
   /**
   * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
   * @event openBSE.BulletScreenEngine#mouseleave
-  * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+  * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
   * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-  * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
+  * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+  * @param {string} e.type - 事件类型（事件名称）
+  * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+  * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+  * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+  * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+  * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+  * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
   */
 
 
@@ -3495,9 +3500,16 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
    * @event openBSE.BulletScreenEngine#mouseenter
-   * @param {openBSE~BulletScreen} e.bulletScreen - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+   * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
    * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于状态暂停，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
+   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+   * @param {string} e.type - 事件类型（事件名称）
+   * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+   * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+   * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+   * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
    */
 
 
@@ -3614,6 +3626,16 @@ function BulletScreenEngine(element, options) {
     }
   };
   /**
+   * 继续所有在事件响应中设置了 e.pause = true; 弹幕的播放。
+   */
+
+
+  this.playAllBulletScreens = function () {
+    return _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+      return bulletScreenOnScreen.pause = false;
+    });
+  };
+  /**
    * 暂停播放弹幕。
    * @description 暂停播放弹幕。暂停播放弹幕是指弹幕播放暂停，所有未出现的弹幕将停止出现，已出现的弹幕停止运动，停止消失。
    */
@@ -3647,7 +3669,7 @@ function BulletScreenEngine(element, options) {
   };
   /**
    * 停止播放弹幕。
-   * @description 停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认[时间基准（options.clock）]{@link openBSE~BulletScreenStyle}归零，并[清空弹幕列表]{@link openBSE.BulletScreenEngine#cleanBulletScreenList}、[清空屏幕弹幕]{@link openBSE.BulletScreenEngine#cleanBulletScreenListOnScreen}。
+   * @description 停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认[时间基准（options.clock）]{@link openBSE~BulletScreenStyle}归零，并[清空弹幕列表]{@link openBSE.BulletScreenEngine#cleanBulletScreenList}、[清空屏幕内容]{@link openBSE.BulletScreenEngine#cleanScreen}。
    */
 
 
@@ -3657,7 +3679,7 @@ function BulletScreenEngine(element, options) {
     }
 
     this.cleanBulletScreenList();
-    this.cleanBulletScreenListOnScreen();
+    this.cleanScreen();
     _pauseTime = 0;
     _startTime = null;
   };
@@ -3719,29 +3741,47 @@ function BulletScreenEngine(element, options) {
    * 弹幕事件响应
    * @param {string} name - 事件名称
    * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+   * @param {object} e - 事件信息
    */
 
 
-  function bulletScreenEventTrigger(name, bulletScreenOnScreen) {
-    var e = {
-      bulletScreen: _helper.Helper.clone(bulletScreenOnScreen.bulletScreen),
-      redraw: false,
-      pause: bulletScreenOnScreen.pause
-    };
-
-    _event.trigger(name, e);
-
-    if (e.redraw === true) {
-      var bulletScreenType = _helper.Helper.clone(_bulletScreenType);
-
-      bulletScreenType.style = _optionsType.defaultStyle;
-      bulletScreenOnScreen.bulletScreen = _helper.Helper.setValues(e.bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType, false);
-
-      _renderer.reCreatAndgetWidth(bulletScreenOnScreen);
+  function bulletScreenEventTrigger(name, bulletScreenOnScreen, e) {
+    if (typeof e.pageX === 'undefined' || e.pageX === null) {
+      var doc = document.documentElement,
+          body = document.body;
+      e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+      e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
     }
 
-    if (typeof e.pause === 'boolean') bulletScreenOnScreen.pause = e.pause;
-    if (!_playing && (e.redraw || e.bringToTop)) _renderer.draw();
+    _event.trigger(name, {
+      getBulletScreen: function getBulletScreen() {
+        return _helper.Helper.clone(bulletScreenOnScreen.bulletScreen);
+      },
+      setBulletScreen: function setBulletScreen(bulletScreen) {
+        var redraw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+        if (typeof redraw != 'boolean') new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
+
+        var bulletScreenType = _helper.Helper.clone(_bulletScreenType);
+
+        bulletScreenType.style = _optionsType.defaultStyle;
+        bulletScreenOnScreen.bulletScreen = _helper.Helper.setValues(bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType);
+        if (redraw === true) _renderer.reCreatAndgetWidth(bulletScreenOnScreen);
+        if (!_playing && (_e.redraw || _e.bringToTop)) _renderer.draw();
+      },
+      getPlayState: function getPlayState() {
+        return !bulletScreenOnScreen.pause;
+      },
+      setPlayState: function setPlayState(play) {
+        if (typeof pause != 'boolean') new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
+        bulletScreenOnScreen.pause = !play;
+      },
+      screenX: e.screenX,
+      screenY: e.screenY,
+      pageX: e.pageX,
+      pageY: e.pageY,
+      clientX: e.clientX,
+      clientY: e.clientY
+    });
   }
   /**
    * 刷新弹幕函数
@@ -3976,12 +4016,12 @@ function BulletScreenEngine(element, options) {
     }
   }
 
-  if (!!window.ActiveXObject || "ActiveXObject" in window) console.info(_resources.Resources.LOADED_INFO_IE, build.name, build.version, build.buildDate, build.description, build.home);else console.info(_resources.Resources.LOADED_INFO, 'font-weight:bold; color:#0099FF;', build.name, '', 'font-style:italic;', build.version, build.buildDate, '', build.description, build.home);
+  if (!!window.ActiveXObject || "ActiveXObject" in window || navigator.userAgent.indexOf("Trident") > -1 || navigator.userAgent.indexOf("MSIE") > -1 || navigator.userAgent.indexOf("Edge") > -1) console.info(_resources.Resources.LOADED_INFO_IE.fillData(build));else console.info(_resources.Resources.LOADED_INFO.fillData(build), 'font-weight:bold; color:#0099FF;', '', 'font-style:italic;', '');
 };
 
 exports.BulletScreenEngine = BulletScreenEngine;
 
-},{"./build.json":112,"./bulletScreenType":114,"./lib/event":115,"./lib/helper":116,"./lib/linkedList":117,"./lib/renderers/renderersFactory":122,"./lib/resources":125,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.function.name":94,"core-js/modules/es6.object.define-property":97,"core-js/modules/web.dom.iterable":109}],114:[function(require,module,exports){
+},{"./build.json":111,"./bulletScreenType":113,"./lib/event":115,"./lib/helper":116,"./lib/linkedList":117,"./lib/renderers/renderersFactory":122,"./lib/resources":126,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.array.index-of":90,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.object.define-property":96,"core-js/modules/web.dom.iterable":108}],113:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -4024,7 +4064,98 @@ var BulletScreenType = {
 };
 exports.BulletScreenType = BulletScreenType;
 
-},{"core-js/modules/es6.object.define-property":97}],115:[function(require,module,exports){
+},{"core-js/modules/es6.object.define-property":96}],114:[function(require,module,exports){
+"use strict";
+
+require("core-js/modules/es6.object.define-property");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Contextmenu = void 0;
+
+require("core-js/modules/es7.symbol.async-iterator");
+
+require("core-js/modules/es6.symbol");
+
+require("core-js/modules/es6.function.bind");
+
+var _resources = require("./lib/resources");
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Contextmenu = function Contextmenu(bulletScreenEngine, element) {
+  var layer = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
+  var pause = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
+
+  _classCallCheck(this, Contextmenu);
+
+  if (_typeof(bulletScreenEngine) != 'object' || _typeof(element) != 'object' || typeof pause != 'boolean' || typeof layer != 'number' && layer != null) throw new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
+  element.bulletScreenEvent = null;
+
+  var _getContextmenuState = function _getContextmenuState() {
+    return contextmenu.style.display != 'none';
+  };
+
+  this.getContextmenuState = _getContextmenuState;
+
+  this.getBulletScreenEvent = function () {
+    return element.bulletScreenEvent;
+  };
+
+  element.style.position = 'fixed';
+  element.style.display = 'none';
+
+  element.oncontextmenu = function () {
+    return false;
+  };
+
+  var closeContextmenu = function closeContextmenu(e) {
+    if (_getContextmenuState() && e.target != element) {
+      element.style.display = 'none';
+      if (pause) element.bulletScreenEvent.setPlayState(true);
+      element.bulletScreenEvent.setBulletScreen({
+        _contextmenu: false
+      }, false);
+      element.bulletScreenEvent = null;
+      if (e.type === 'click') e.stopPropagation();
+    }
+  };
+
+  window.addEventListener('click', closeContextmenu, true);
+  window.addEventListener('contextmenu', closeContextmenu, true);
+  window.addEventListener('scroll', closeContextmenu, true);
+  bulletScreenEngine.bind('contextmenu', function (e) {
+    e.setBulletScreen({
+      layer: layer,
+      _contextmenu: true
+    }, layer != null);
+    if (pause) e.setPlayState(false);
+    element.style.display = '';
+    var top = e.clientY,
+        left = e.clientX;
+    if (top + element.clientHeight > document.documentElement.clientHeight) top -= element.clientHeight;
+    if (left + element.clientWidth > document.documentElement.clientWidth) left -= element.clientWidth;
+    element.style.top = "".concat(top, "px");
+    element.style.left = "".concat(left, "px");
+    element.bulletScreenEvent = e;
+  });
+  bulletScreenEngine.bind('mouseenter', function (e) {
+    if (layer != null) e.setBulletScreen({
+      layer: layer
+    }, true);
+    if (pause) e.setPlayState(false);
+  });
+  bulletScreenEngine.bind('mouseleave', function (e) {
+    if (!e.getBulletScreen()._contextmenu && pause) e.setPlayState(true);
+  });
+};
+
+exports.Contextmenu = Contextmenu;
+
+},{"./lib/resources":126,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107}],115:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -4041,6 +4172,8 @@ require("core-js/modules/es6.symbol");
 require("core-js/modules/web.dom.iterable");
 
 var _resources = require("./resources");
+
+var _helper = require("./helper");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -4103,7 +4236,7 @@ function Event() {
       if (event[index] === fun) return false;
     }
 
-    return event.push(fun);
+    return event.unshift(fun);
   };
   /**
    * 解绑事件处理程序（fun为空解绑所有事件处理程序）
@@ -4136,9 +4269,10 @@ function Event() {
 
 
   this.trigger = function (name, e) {
-    if (typeof name != 'string') throw new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
+    if (typeof name != 'string' || _helper.Helper._typeof(e) != 'object') throw new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
     var event = eventList[name];
     if (typeof event === 'undefined') throw new TypeError(_resources.Resources.EVENT_NAME_NOT_FOUND);
+    e.type = name;
     var _iteratorNormalCompletion = true;
     var _didIteratorError = false;
     var _iteratorError = undefined;
@@ -4169,7 +4303,7 @@ function Event() {
 
 exports.Event = Event;
 
-},{"./resources":125,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],116:[function(require,module,exports){
+},{"./helper":116,"./resources":126,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],116:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -4178,10 +4312,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Helper = void 0;
-
-require("core-js/modules/es6.regexp.constructor");
-
-require("core-js/modules/es6.regexp.replace");
 
 require("core-js/modules/es6.regexp.to-string");
 
@@ -4194,8 +4324,6 @@ require("core-js/modules/es6.symbol");
 require("core-js/modules/web.dom.iterable");
 
 var _resources = require("./resources");
-
-function _typeof2(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof2 = function _typeof2(obj) { return typeof obj; }; } else { _typeof2 = function _typeof2(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof2(obj); }
 
 /**
  * 设置值
@@ -4337,31 +4465,6 @@ function clone(object) {
   return result;
 }
 /**
- * 占位符拼接
- * @param {object|...string} sign - 一组字符串或一个对象
- */
-
-
-function signMix() {
-  if (arguments.length === 0) return this;
-  var param = arguments[0],
-      str = this;
-
-  if (_typeof2(param) === 'object') {
-    for (var key in param) {
-      str = str.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
-    }
-
-    return str;
-  } else {
-    for (var i = 0; i < arguments.length; i++) {
-      str = str.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
-    }
-
-    return str;
-  }
-}
-/**
  * 帮助对象
  * @namespace
  */
@@ -4374,12 +4477,11 @@ var Helper = {
   checkTypes: checkTypes,
   isEmpty: isEmpty,
   _typeof: _typeof,
-  clone: clone,
-  signMix: signMix
+  clone: clone
 };
 exports.Helper = Helper;
 
-},{"./resources":125,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.regexp.constructor":100,"core-js/modules/es6.regexp.replace":103,"core-js/modules/es6.regexp.to-string":104,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],117:[function(require,module,exports){
+},{"./resources":126,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.regexp.to-string":103,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],117:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -4539,7 +4641,7 @@ function LinkedList() {
 
 exports.LinkedList = LinkedList;
 
-},{"core-js/modules/es6.object.define-property":97}],118:[function(require,module,exports){
+},{"core-js/modules/es6.object.define-property":96}],118:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -4605,7 +4707,7 @@ function BaseRenderer(element, options, elementSize) {
 
   this.show = function () {
     _hide = false;
-    element.style.visibility = 'visible';
+    element.style.visibility = '';
   };
   /**
    * 设置弹幕不透明度。
@@ -4727,7 +4829,7 @@ function BaseRenderer(element, options, elementSize) {
 
 exports.BaseRenderer = BaseRenderer;
 
-},{"core-js/modules/es6.object.define-property":97}],119:[function(require,module,exports){
+},{"core-js/modules/es6.object.define-property":96}],119:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -4752,6 +4854,8 @@ require("core-js/modules/es6.array.for-each");
 var _baseRenderer = require("./baseRenderer");
 
 var _linkedList = require("../linkedList");
+
+var _resources = require("../resources");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -4801,8 +4905,9 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
      */
 
 
-    var _devicePixelRatio = typeof window.devicePixelRatio === 'undefined' ? 1 : window.devicePixelRatio;
+    var _devicePixelRatio = typeof window.devicePixelRatio != 'number' ? 1 : window.devicePixelRatio;
 
+    if (typeof window.devicePixelRatio != 'number') console.warn(_resources.Resources.DEVICEPIXELRATIO_NOT_SUPPORT_WARN);
     _devicePixelRatio *= options.scaling;
     /**
      * 画布元素
@@ -5030,13 +5135,13 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
 
       element.oncontextmenu = function (e) {
         var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreenOnScreen) eventTrigger('contextmenu', bulletScreenOnScreen);
+        if (bulletScreenOnScreen) eventTrigger('contextmenu', bulletScreenOnScreen, e);
         return false;
       };
 
       element.onclick = function (e) {
         var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreenOnScreen) eventTrigger('click', bulletScreenOnScreen);
+        if (bulletScreenOnScreen) eventTrigger('click', bulletScreenOnScreen, e);
         return false;
       };
 
@@ -5046,13 +5151,15 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
         _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
           if (bulletScreenOnScreen != _bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
             _bulletScreenOnScreen.mousein = false;
-            eventTrigger('mouseleave', _bulletScreenOnScreen);
+            element.style.cursor = '';
+            eventTrigger('mouseleave', _bulletScreenOnScreen, e);
           }
         }, true);
 
         if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
         bulletScreenOnScreen.mousein = true;
-        eventTrigger('mouseenter', bulletScreenOnScreen);
+        element.style.cursor = options.cursorOnMouseOver;
+        eventTrigger('mouseenter', bulletScreenOnScreen, e);
         return false;
       };
 
@@ -5060,7 +5167,8 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
         _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
           if (_bulletScreenOnScreen.mousein) {
             _bulletScreenOnScreen.mousein = false;
-            eventTrigger('mouseleave', _bulletScreenOnScreen);
+            element.style.cursor = '';
+            eventTrigger('mouseleave', _bulletScreenOnScreen, e);
           }
         }, true);
       };
@@ -5074,7 +5182,7 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
 
 exports.CanvasBaseRenderer = CanvasBaseRenderer;
 
-},{"../linkedList":117,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],120:[function(require,module,exports){
+},{"../linkedList":117,"../resources":126,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],120:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -5199,7 +5307,7 @@ var CanvasRenderer = function (_CanvasBaseRenderer) {
 
 exports.CanvasRenderer = CanvasRenderer;
 
-},{"../../browserNotSupportError":111,"./canvasBaseRenderer":119,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],121:[function(require,module,exports){
+},{"../../browserNotSupportError":110,"./canvasBaseRenderer":119,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],121:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -5418,12 +5526,12 @@ var CSS3Renderer = function (_BaseRenderer) {
 
     function registerEvent(element) {
       element.oncontextmenu = function (e) {
-        if (e.target != this) eventTrigger('contextmenu', e.target.bulletScreenOnScreen);
+        if (e.target != this) eventTrigger('contextmenu', e.target.bulletScreenOnScreen, e);
         return false;
       };
 
       element.onclick = function (e) {
-        if (e.target != this) eventTrigger('click', e.target.bulletScreenOnScreen);
+        if (e.target != this) eventTrigger('click', e.target.bulletScreenOnScreen, e);
         return false;
       };
 
@@ -5431,14 +5539,16 @@ var CSS3Renderer = function (_BaseRenderer) {
         var bulletScreenOnScreen = e.target.bulletScreenOnScreen;
         if (e.target === this || bulletScreenOnScreen.mousein) return;
         bulletScreenOnScreen.mousein = true;
-        eventTrigger('mouseenter', bulletScreenOnScreen);
+        e.target.style.cursor = options.cursorOnMouseOver;
+        eventTrigger('mouseenter', bulletScreenOnScreen, e);
       };
 
       element.onmouseout = function (e) {
         var bulletScreenOnScreen = e.target.bulletScreenOnScreen;
         if (e.target === this || !bulletScreenOnScreen.mousein) return;
         bulletScreenOnScreen.mousein = false;
-        eventTrigger('mouseleave', bulletScreenOnScreen);
+        e.target.style.cursor = '';
+        eventTrigger('mouseleave', bulletScreenOnScreen, e);
       };
     }
 
@@ -5450,7 +5560,7 @@ var CSS3Renderer = function (_BaseRenderer) {
 
 exports.CSS3Renderer = CSS3Renderer;
 
-},{"../../browserNotSupportError":111,"./baseRenderer":118,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],122:[function(require,module,exports){
+},{"../../browserNotSupportError":110,"./baseRenderer":118,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],122:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -5461,8 +5571,6 @@ Object.defineProperty(exports, "__esModule", {
 exports.RenderersFactory = void 0;
 
 var _resources = require("../resources");
-
-var _helper = require("../helper");
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -5520,7 +5628,7 @@ function RenderersFactory(element, options, elementSize, eventTrigger) {
    */
   this.getRenderer = function (renderMode) {
     var renderer = RENDERERS[renderMode];
-    if (typeof renderer === 'undefined') throw new TypeError(_helper.Helper.signMix(_resources.Resources.RENDER_MODE_ERROR, {
+    if (typeof renderer === 'undefined') throw new TypeError(_resources.Resources.RENDER_MODE_ERROR.fillData({
       renderMode: renderMode
     }));
     return new renderer(element, options, elementSize, eventTrigger);
@@ -5529,7 +5637,7 @@ function RenderersFactory(element, options, elementSize, eventTrigger) {
 
 exports.RenderersFactory = RenderersFactory;
 
-},{"../helper":116,"../resources":125,"./canvasRenderer":120,"./css3Renderer":121,"./svgRenderer":123,"./webglRenderer":124,"core-js/modules/es6.object.define-property":97}],123:[function(require,module,exports){
+},{"../resources":126,"./canvasRenderer":120,"./css3Renderer":121,"./svgRenderer":123,"./webglRenderer":124,"core-js/modules/es6.object.define-property":96}],123:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -5881,7 +5989,7 @@ var SVGRenderer = function (_BaseRenderer) {
 
 exports.SVGRenderer = SVGRenderer;
 
-},{"../../browserNotSupportError":111,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],124:[function(require,module,exports){
+},{"../../browserNotSupportError":110,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],124:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -6163,7 +6271,19 @@ var WebGLRenderer = function (_CanvasBaseRenderer) {
 
 exports.WebGLRenderer = WebGLRenderer;
 
-},{"../../browserNotSupportError":111,"./canvasBaseRenderer":119,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":96,"core-js/modules/es6.object.define-property":97,"core-js/modules/es6.object.set-prototype-of":98,"core-js/modules/es6.symbol":106,"core-js/modules/es6.typed.float32-array":107,"core-js/modules/es7.symbol.async-iterator":108,"core-js/modules/web.dom.iterable":109}],125:[function(require,module,exports){
+},{"../../browserNotSupportError":110,"./canvasBaseRenderer":119,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es6.typed.float32-array":106,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],125:[function(require,module,exports){
+module.exports={
+    "EVENT_NAME_NOT_FOUND_ERROR": "Event name not found.",
+    "EVENT_ALREADY_EXISTS_ERROR": "Event already exists.",
+    "PARAMETERS_TYPE_ERROR": "Parameters type error.",
+    "RENDER_MODE_ERROR": "The render mode \"{renderMode}\" is undefined.",
+    "BROWSER_NOT_SUPPORT_ERROR": "This browser does not support \"{message}\".",
+    "REQUESTANIMATIONFRAME_NOT_SUPPORT_WARN": "Your browser does not support method \"requestAnimationFrame\" and will switch to method \"setTimeout\", which may affect performance.",
+    "DEVICEPIXELRATIO_NOT_SUPPORT_WARN": "Your browser does not support variable \"devicePixelRatio\", which may cause canvas unable to display properly in high DPI mode. It is recommended to use CSS3 render mode.",
+    "LOADED_INFO": "%c{name}%c now loaded.\n\n%cVersion: {version}\nBuild Date: {buildDate}\n\n%c{description}\nHome: {home}",
+    "LOADED_INFO_IE": "{name} now loaded.\n\nVersion: {version}\nBuild Date: {buildDate}\n\n{description}\nHome: {home}"
+}
+},{}],126:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -6173,38 +6293,54 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Resources = void 0;
 
-/**
- * 资源
- * @readonly
- */
-var Resources = {
-  /** Event name not found. */
-  EVENT_NAME_NOT_FOUND_ERROR: 'Event name not found.',
+require("core-js/modules/es7.symbol.async-iterator");
 
-  /** Event already exists. */
-  EVENT_ALREADY_EXISTS_ERROR: 'Event already exists.',
+require("core-js/modules/es6.symbol");
 
-  /** Parameters type error. */
-  PARAMETERS_TYPE_ERROR: 'Parameters type error.',
+require("core-js/modules/es6.regexp.constructor");
 
-  /** The render mode "{renderMode}" is undefined. */
-  RENDER_MODE_ERROR: 'The render mode "{renderMode}" is undefined.',
+require("core-js/modules/es6.regexp.replace");
 
-  /** This browser does not support "{message}". */
-  BROWSER_NOT_SUPPORT_ERROR: 'This browser does not support "{message}".',
+var Resources = _interopRequireWildcard(require("./resources.json"));
 
-  /** Your browser does not support method "requestAnimationFrame" and will switch to method "setTimeout", which may affect performance. */
-  REQUESTANIMATIONFRAME_NOT_SUPPORT_WARN: 'Your browser does not support method "requestAnimationFrame" and will switch to method "setTimeout", which may affect performance.',
-
-  /** %c%s%c now loaded.\n\n%cVersion: %s\nBuild Date: %s\n\n%c%s\nHome: %s */
-  LOADED_INFO: '%c%s%c now loaded.\n\n%cVersion: %s\nBuild Date: %s\n\n%c%s\nHome: %s',
-
-  /** %s now loaded.\n\nVersion: %s\nBuild Date: %s\n\n%s\nHome: %s */
-  LOADED_INFO_IE: '%s now loaded.\n\nVersion: %s\nBuild Date: %s\n\n%s\nHome: %s'
-};
 exports.Resources = Resources;
 
-},{"core-js/modules/es6.object.define-property":97}],"openbse":[function(require,module,exports){
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = Object.defineProperty && Object.getOwnPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : {}; if (desc.get || desc.set) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } } newObj.default = obj; return newObj; } }
+
+function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
+/**
+ * 数据填充（占位符拼接）
+ * @param {object|...string} sign - 一组字符串或一个对象
+ */
+function fillData() {
+  if (arguments.length === 0) return this;
+  var param = arguments[0],
+      str = this;
+
+  if (_typeof(param) === 'object') {
+    for (var key in param) {
+      str = str.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+    }
+
+    return str;
+  } else {
+    for (var i = 0; i < arguments.length; i++) {
+      str = str.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+    }
+
+    return str;
+  }
+}
+
+for (var key in Resources) {
+  if (typeof Resources[key] === 'string') {
+    Resources[key] = new String(Resources[key]);
+    Resources[key].fillData = fillData;
+  }
+}
+
+},{"./resources.json":125,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.regexp.constructor":99,"core-js/modules/es6.regexp.replace":102,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107}],"openbse":[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -6231,6 +6367,12 @@ Object.defineProperty(exports, "BulletScreenType", {
     return _bulletScreenType.BulletScreenType;
   }
 });
+Object.defineProperty(exports, "Contextmenu", {
+  enumerable: true,
+  get: function get() {
+    return _contextmenu.Contextmenu;
+  }
+});
 
 var _helper = require("./lib/helper");
 
@@ -6239,6 +6381,8 @@ var _bulletScreenEngine = require("./bulletScreenEngine");
 var _browserNotSupportError = require("./browserNotSupportError");
 
 var _bulletScreenType = require("./bulletScreenType");
+
+var _contextmenu = require("./contextmenu");
 
 var build = _interopRequireWildcard(require("./build.json"));
 
@@ -6263,6 +6407,7 @@ function getVersion() {
  * @property {openBSE~BulletScreenStyle} [defaultStyle] 默认弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。
  * @property {openBSE.BulletScreenType} [hiddenTypes=0] 隐藏的弹幕类型：一个 {@link openBSE.BulletScreenType} 枚举。将要隐藏的弹幕类型相加，0为不隐藏任何类型的弹幕。
  * @property {number} [opacity=1.0] 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
+ * @property {string} [cursorOnMouseOver='pointer'] 鼠标经过样式：当鼠标经过弹幕时的样式，可设置的值可参考 MDN [cursor] {@link https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor} 。
  */
 
 /**
@@ -6282,7 +6427,7 @@ function getVersion() {
  * @property {openBSE.BulletScreenType} [type=openBSE.BulletScreenType.rightToLeft] 弹幕类型：（此参数在事件中修改无效）一个类型为 {@link openBSE.BulletScreenType} 的枚举。
  * @property {openBSE~BulletScreenStyle} style 弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。设置此选项中的任何一个值，将覆盖对应的全局设置。
  * @property {number} [layer=0] 弹幕层级：此参数越大，弹幕越靠前。一条弹幕在比它层级小的弹幕前面，在比它层级大的弹幕后面。如果层级相同按照进入时间确定层级顺序。
- * @property {any} more... 其他自定义字段：例如 uuid 、 id 等。（注意：因为在事件响应方法中返回的弹幕对象是原对象克隆的，所以无法直接比较，必须使用自定义字段唯一标识一条弹幕。）
+ * @property {any} more... 其他自定义字段：（在事件中修改修改此参数无需将 e.redraw 设置为 true）例如 uuid 、 id 等。（注意：因为在事件响应方法中返回的弹幕对象是原对象克隆的，所以无法直接比较，必须使用自定义字段唯一标识一条弹幕。）
  */
 
 /**
@@ -6296,8 +6441,8 @@ function getVersion() {
  * @property {string} [boxColor] 外框颜色：参照CSS颜色设置方法，为 null 不显示外框。
  * @property {string} [color="white"] 弹幕颜色：参照CSS颜色设置方法，为 null 不显示此弹幕。
  * @property {string} [borderColor] 描边颜色：参照CSS颜色设置方法，为 null 没有描边。
- * @property {number} [speed=0.15] 弹幕速度：单位：像素/毫秒，仅弹幕类型为0、1时有效。
- * @property {number} [residenceTime=5000] 弹幕停留时间：单位：毫秒，仅弹幕类型2、3时有效。
+ * @property {number} [speed=0.15] 弹幕速度：（在事件中修改修改此参数无需将 e.redraw 设置为 true）单位：像素/毫秒，仅弹幕类型为0、1时有效。
+ * @property {number} [residenceTime=5000] 弹幕停留时间：（此参数在事件中修改无效）单位：毫秒，仅弹幕类型2、3时有效。
  */
 
 /**
@@ -6323,7 +6468,7 @@ function getVersion() {
  * @property {string} home 主页
  */
 
-},{"./browserNotSupportError":111,"./build.json":112,"./bulletScreenEngine":113,"./bulletScreenType":114,"./lib/helper":116,"core-js/modules/es6.object.define-property":97}]},{},[110])
+},{"./browserNotSupportError":110,"./build.json":111,"./bulletScreenEngine":112,"./bulletScreenType":113,"./contextmenu":114,"./lib/helper":116,"core-js/modules/es6.object.define-property":96}]},{},[109])
 
 
 //# sourceMappingURL=openBSE.all.js.map
