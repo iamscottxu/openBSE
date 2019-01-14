@@ -256,7 +256,7 @@
                 </td>
             
 
-            <td class="description last">渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。</td>
+            <td class="description last">渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。一般建议使用“canvas”（特别是 FireFox 浏览器 CSS3 渲染效率较低）。在一些版本较老的浏览器中“window.devicePixelRatio”变量不被支持或支持不完整，这会导致在高DPI和页面被缩放的情况下“canvas”和“webgl”渲染模式弹幕显示不正常的情况（弹幕模糊），此时建议使用“css3”渲染模式。</td>
         </tr>
 
     
@@ -1643,6 +1643,84 @@
             
 <hr>
 <dt>
+    <h4 class="name" id="playAllBulletScreens"><span class="type-signature"></span>playAllBulletScreens()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        继续所有在事件响应中设置了 e.pause = true; 弹幕的播放。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
     <h4 class="name" id="setOptions"><span class="type-signature"></span>setOptions(options)</h4>
     
     
@@ -1885,7 +1963,7 @@
 
     
     <div class="description">
-        停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认<a href="openBSE.html#~BulletScreenStyle">时间基准（options.clock）</a>归零，并<a href="openBSE.BulletScreenEngine.html#cleanBulletScreenList">清空弹幕列表</a>、清空屏幕弹幕。
+        停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认<a href="openBSE.html#~BulletScreenStyle">时间基准（options.clock）</a>归零，并<a href="openBSE.BulletScreenEngine.html#cleanBulletScreenList">清空弹幕列表</a>、<a href="openBSE.BulletScreenEngine.html#cleanScreen">清空屏幕内容</a>。
     </div>
     
 
@@ -2301,7 +2379,259 @@
                 </td>
             
 
-            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。</td>
+            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">事件类型（事件名称）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.screenX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.screenY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.clientX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
         </tr>
 
     
@@ -2532,7 +2862,259 @@
                 </td>
             
 
-            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。</td>
+            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">事件类型（事件名称）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.screenX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.screenY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.clientX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
         </tr>
 
     
@@ -2763,7 +3345,259 @@
                 </td>
             
 
-            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。</td>
+            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">事件类型（事件名称）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.screenX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.screenY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.clientX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
         </tr>
 
     
@@ -2994,7 +3828,259 @@
                 </td>
             
 
-            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。</td>
+            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">事件类型（事件名称）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.screenX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.screenY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.clientX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>e.pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
         </tr>
 
     
@@ -3109,7 +4195,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
-		on 2019-01-13T21:30:45+08:00
+		on 2019-01-14T22:06:48+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

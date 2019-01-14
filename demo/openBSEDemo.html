@@ -10,26 +10,23 @@
             var versionInfo = openBSE.getVersion();
             document.getElementById("version").innerText = versionInfo.version;
             document.getElementById("buildDate").innerText = versionInfo.buildDate;
-            bulletScreenEngine = new openBSE.BulletScreenEngine(document.getElementById('BulletScreensDiv'), {
+            window.bulletScreenEngine = new openBSE.BulletScreenEngine(document.getElementById('BulletScreensDiv'), {
                 defaultStyle: {
                     fontFamily: 'Microsoft Yahei UI, Microsoft Yahei, SimHei, Heiti SC, sans-serif',
                     fontWeight: '600'
                 }
             }, 'canvas');
+
+            var contextmenu = new openBSE.Contextmenu(bulletScreenEngine, document.getElementById('contextmenu'));
+
             bulletScreenEngine.bind('click', function (e) {
-                document.getElementById("clickText").innerText = e.bulletScreen.text;
-                e.bulletScreen.style.color = 'red';
-                e.bulletScreen.layer = 2;
-                e.redraw = true;
+                document.getElementById("clickText").innerText = e.getBulletScreen().text;
+                e.setBulletScreen({
+                    style: { color: 'red' },
+                    layer: 2
+                }, true);
             });
-            bulletScreenEngine.bind('mouseenter', function (e) {
-                e.bulletScreen.layer = 2;
-                e.redraw = true;
-                e.pause = true;
-            });
-            bulletScreenEngine.bind('mouseleave', function (e) {
-                e.pause = false;
-            });
+
             loadData(bulletScreenEngine);
             setInterval(showDebugInfo, 500);
         }
@@ -132,6 +129,7 @@
     <a href="#" onclick="set('opacity', 0);">100%透明</a>&nbsp;<a href="#" onclick="set('opacity', 0.25);">75%透明</a>&nbsp;
     <a href="#" onclick="set('opacity', 0.5);">50%透明</a>&nbsp;<a href="#" onclick="set('opacity', 0.75);">25%透明</a>&nbsp;
     <a href="#" onclick="set('opacity', 1);">不透明</a>
+    <div id="contextmenu" style="padding:3px;width:120px;height:19px;position:fixed;border:1px solid black;background:rgba(255, 255, 255, 0.9);font-size: 13px;display:none;cursor: default;">上下文菜单</div>
 </body>
 
 </html>
