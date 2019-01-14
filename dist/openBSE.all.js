@@ -3187,7 +3187,7 @@ var BrowserNotSupportError = function (_Error) {
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
 },{"./lib/resources":126,"core-js/modules/es6.array.index-of":90,"core-js/modules/es6.array.iterator":91,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.map":94,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.reflect.construct":98,"core-js/modules/es6.regexp.to-string":103,"core-js/modules/es6.string.iterator":104,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],111:[function(require,module,exports){
-module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Mon, 14 Jan 2019 14:38:48 GMT"}
+module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Mon, 14 Jan 2019 15:04:53 GMT"}
 
 },{}],112:[function(require,module,exports){
 "use strict";
@@ -3759,7 +3759,7 @@ function BulletScreenEngine(element, options) {
       },
       setBulletScreen: function setBulletScreen(bulletScreen) {
         var redraw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
-        if (typeof redraw != 'boolean') new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
+        if (typeof redraw != 'boolean') throw new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
 
         var bulletScreenType = _helper.Helper.clone(_bulletScreenType);
 
@@ -3772,7 +3772,7 @@ function BulletScreenEngine(element, options) {
         return !bulletScreenOnScreen.pause;
       },
       setPlayState: function setPlayState(play) {
-        if (typeof pause != 'boolean') new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
+        if (typeof pause != 'boolean') throw new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
         bulletScreenOnScreen.pause = !play;
       },
       screenX: e.screenX,
