@@ -2,6 +2,7 @@ import { Helper } from './lib/helper'
 import { BulletScreenEngine } from './bulletScreenEngine'
 import { BrowserNotSupportError } from './browserNotSupportError'
 import { BulletScreenType } from './bulletScreenType'
+import { Contextmenu } from './contextmenu'
 import * as build from './build.json'
 
 /**
@@ -13,7 +14,7 @@ function getVersion() {
     return Helper.clone(build);
 }
 
-export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, getVersion }
+export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, Contextmenu, getVersion }
 
 /**
  * 全局选项
@@ -26,6 +27,7 @@ export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, getVersio
  * @property {openBSE~BulletScreenStyle} [defaultStyle] 默认弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。
  * @property {openBSE.BulletScreenType} [hiddenTypes=0] 隐藏的弹幕类型：一个 {@link openBSE.BulletScreenType} 枚举。将要隐藏的弹幕类型相加，0为不隐藏任何类型的弹幕。
  * @property {number} [opacity=1.0] 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
+ * @property {string} [cursorOnMouseOver='pointer'] 鼠标经过样式：当鼠标经过弹幕时的样式，可设置的值可参考 MDN [cursor] {@link https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor} 。
  */
 
 /**
@@ -45,7 +47,7 @@ export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, getVersio
  * @property {openBSE.BulletScreenType} [type=openBSE.BulletScreenType.rightToLeft] 弹幕类型：（此参数在事件中修改无效）一个类型为 {@link openBSE.BulletScreenType} 的枚举。
  * @property {openBSE~BulletScreenStyle} style 弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。设置此选项中的任何一个值，将覆盖对应的全局设置。
  * @property {number} [layer=0] 弹幕层级：此参数越大，弹幕越靠前。一条弹幕在比它层级小的弹幕前面，在比它层级大的弹幕后面。如果层级相同按照进入时间确定层级顺序。
- * @property {any} more... 其他自定义字段：例如 uuid 、 id 等。（注意：因为在事件响应方法中返回的弹幕对象是原对象克隆的，所以无法直接比较，必须使用自定义字段唯一标识一条弹幕。）
+ * @property {any} more... 其他自定义字段：（在事件中修改修改此参数无需将 e.redraw 设置为 true）例如 uuid 、 id 等。（注意：因为在事件响应方法中返回的弹幕对象是原对象克隆的，所以无法直接比较，必须使用自定义字段唯一标识一条弹幕。）
  */
 
 /**
@@ -59,8 +61,8 @@ export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, getVersio
  * @property {string} [boxColor] 外框颜色：参照CSS颜色设置方法，为 null 不显示外框。
  * @property {string} [color="white"] 弹幕颜色：参照CSS颜色设置方法，为 null 不显示此弹幕。
  * @property {string} [borderColor] 描边颜色：参照CSS颜色设置方法，为 null 没有描边。
- * @property {number} [speed=0.15] 弹幕速度：单位：像素/毫秒，仅弹幕类型为0、1时有效。
- * @property {number} [residenceTime=5000] 弹幕停留时间：单位：毫秒，仅弹幕类型2、3时有效。
+ * @property {number} [speed=0.15] 弹幕速度：（在事件中修改修改此参数无需将 e.redraw 设置为 true）单位：像素/毫秒，仅弹幕类型为0、1时有效。
+ * @property {number} [residenceTime=5000] 弹幕停留时间：（此参数在事件中修改无效）单位：毫秒，仅弹幕类型2、3时有效。
  */
 
 /**

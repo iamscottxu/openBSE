@@ -1,5 +1,4 @@
 import { Resources } from './lib/resources'
-import { Helper } from './lib/helper'
 
 /** 
  * 浏览器不支持所引发的错误
@@ -13,7 +12,7 @@ class BrowserNotSupportError extends Error {
      * @param {string} message - 消息
      */
     constructor(message) {
-        super(Helper.signMix(Resources.BROWSER_NOT_SUPPORT_ERROR, { message: message }));
+        super(Resources.BROWSER_NOT_SUPPORT_ERROR.fillData({ message: message }));
         this.name = "BrowserNotSupportError";
     }
 }

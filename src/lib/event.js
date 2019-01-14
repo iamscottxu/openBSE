@@ -1,4 +1,5 @@
 import { Resources } from './resources'
+import { Helper } from './helper';
 
 /**
  * 事件模型类
@@ -51,7 +52,7 @@ class Event {
                 if (event[index] === fun)
                     return false;
             }
-            return event.push(fun);
+            return event.unshift(fun);
         };
         /**
          * 解绑事件处理程序（fun为空解绑所有事件处理程序）
@@ -80,9 +81,10 @@ class Event {
          * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
          */
         this.trigger = function (name, e) {
-            if (typeof name != 'string') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
+            if (typeof name != 'string' || Helper._typeof(e) != 'object') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
             let event = eventList[name];
             if (typeof event === 'undefined') throw new TypeError(Resources.EVENT_NAME_NOT_FOUND);
+            e.type = name;
             for (let fun of event) {
                 if (!fun(e))
                     return;

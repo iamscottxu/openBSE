@@ -1,5 +1,6 @@
 import { BaseRenderer } from './baseRenderer'
 import { LinkedList } from '../linkedList'
+import { Resources } from '../resources'
 
 /**
  * Canvas 渲染器抽象类
@@ -25,7 +26,9 @@ class CanvasBaseRenderer extends BaseRenderer {
          * DPI 缩放比例（倍数）
          * @private @type {number}
          */
-        let _devicePixelRatio = typeof window.devicePixelRatio === 'undefined' ? 1 : window.devicePixelRatio;
+        let _devicePixelRatio = typeof window.devicePixelRatio != 'number' ? 1 : window.devicePixelRatio;
+        //不支持 devicePixelRatio 的警告
+        if (typeof window.devicePixelRatio != 'number') console.warn(Resources.DEVICEPIXELRATIO_NOT_SUPPORT_WARN);
         _devicePixelRatio *= options.scaling;
         /**
          * 画布元素
@@ -212,14 +215,14 @@ class CanvasBaseRenderer extends BaseRenderer {
             element.oncontextmenu = function (e) {
                 let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
                 if (bulletScreenOnScreen)
-                    eventTrigger('contextmenu', bulletScreenOnScreen);
+                    eventTrigger('contextmenu', bulletScreenOnScreen, e);
                 return false;
             };
             //单击
             element.onclick = function (e) {
                 let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
                 if (bulletScreenOnScreen)
-                    eventTrigger('click', bulletScreenOnScreen);
+                    eventTrigger('click', bulletScreenOnScreen, e);
                 return false;
             };
             //鼠标移动
@@ -228,12 +231,14 @@ class CanvasBaseRenderer extends BaseRenderer {
                 _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
                     if (bulletScreenOnScreen != _bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
                         _bulletScreenOnScreen.mousein = false;
-                        eventTrigger('mouseleave', _bulletScreenOnScreen);
+                        element.style.cursor = '';
+                        eventTrigger('mouseleave', _bulletScreenOnScreen, e);
                     }
                 }, true);
                 if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
                 bulletScreenOnScreen.mousein = true;
-                eventTrigger('mouseenter', bulletScreenOnScreen);
+                element.style.cursor = options.cursorOnMouseOver;
+                eventTrigger('mouseenter', bulletScreenOnScreen, e);
                 return false;
             }
             //鼠标离开
@@ -241,7 +246,8 @@ class CanvasBaseRenderer extends BaseRenderer {
                 _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
                     if (_bulletScreenOnScreen.mousein) {
                         _bulletScreenOnScreen.mousein = false;
-                        eventTrigger('mouseleave', _bulletScreenOnScreen);
+                        element.style.cursor = '';
+                        eventTrigger('mouseleave', _bulletScreenOnScreen, e);
                     }
                 }, true);
             }

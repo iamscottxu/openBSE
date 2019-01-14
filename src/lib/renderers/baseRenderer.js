@@ -48,7 +48,7 @@ class BaseRenderer {
          */
         this.show = function () {
             _hide = false;
-            element.style.visibility = 'visible';
+            element.style.visibility = '';
         }
 
         /**

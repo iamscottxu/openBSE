@@ -155,13 +155,13 @@ class CSS3Renderer extends BaseRenderer {
             //上下文菜单
             element.oncontextmenu = function (e) {
                 if (e.target != this)
-                    eventTrigger('contextmenu', e.target.bulletScreenOnScreen);
+                    eventTrigger('contextmenu', e.target.bulletScreenOnScreen, e);
                 return false;
             };
             //单击
             element.onclick = function (e) {
                 if (e.target != this)
-                    eventTrigger('click', e.target.bulletScreenOnScreen);
+                    eventTrigger('click', e.target.bulletScreenOnScreen, e);
                 return false;
             };
             //鼠标移动
@@ -169,14 +169,16 @@ class CSS3Renderer extends BaseRenderer {
                 let bulletScreenOnScreen = e.target.bulletScreenOnScreen;
                 if (e.target === this || bulletScreenOnScreen.mousein) return;
                 bulletScreenOnScreen.mousein = true;
-                eventTrigger('mouseenter', bulletScreenOnScreen);
+                e.target.style.cursor = options.cursorOnMouseOver;
+                eventTrigger('mouseenter', bulletScreenOnScreen, e);
             }
             //鼠标离开
             element.onmouseout = function (e) {
                 let bulletScreenOnScreen = e.target.bulletScreenOnScreen;
                 if (e.target === this || !bulletScreenOnScreen.mousein) return;
                 bulletScreenOnScreen.mousein = false;
-                eventTrigger('mouseleave', bulletScreenOnScreen);
+                e.target.style.cursor = '';
+                eventTrigger('mouseleave', bulletScreenOnScreen, e);
             }
         }
     }

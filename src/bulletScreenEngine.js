@@ -17,7 +17,7 @@ class BulletScreenEngine {
      * 创建一个弹幕引擎对象。
      * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
      * @param {openBSE~Options} [_options] - 全局选项：一个 {@link openBSE~Options} 结构。
-     * @param {string} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。
+     * @param {string} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。一般建议使用“canvas”（特别是 FireFox 浏览器 CSS3 渲染效率较低）。在一些版本较老的浏览器中“window.devicePixelRatio”变量不被支持或支持不完整，这会导致在高DPI和页面被缩放的情况下“canvas”和“webgl”渲染模式弹幕显示不正常的情况（弹幕模糊），此时建议使用“css3”渲染模式。
      */
     constructor(element, options, renderMode = 'canvas') {
         //变量初始化
@@ -90,6 +90,8 @@ class BulletScreenEngine {
             hiddenTypes: 0,
             /** 弹幕不透明度 */
             opacity: 1,
+            /** 鼠标经过样式 */
+            cursorOnMouseOver: 'pointer',
             /** 默认弹幕样式 */
             defaultStyle: {
                 /** 阴影的模糊级别，0为不显示阴影 */
@@ -125,6 +127,7 @@ class BulletScreenEngine {
             timeOutDiscard: 'boolean',
             hiddenTypes: 'number',
             opacity: 'number',
+            cursorOnMouseOver: 'string',
             defaultStyle: {
                 shadowBlur: 'number',
                 fontWeight: ['string', 'number'],
@@ -179,7 +182,6 @@ class BulletScreenEngine {
             requestAnimationFrame = (fun) => window.setTimeout(fun, 17); //60fps
         }
 
-
         _options = Helper.setValues(options, _defaultOptions, _optionsType); //设置默认值
 
         //事件初始化
@@ -189,7 +191,14 @@ class BulletScreenEngine {
          * @event openBSE.BulletScreenEngine#click
          * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
          * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true ，否则修改无法生效。
-         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
+         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+         * @param {string} e.type - 事件类型（事件名称）
+         * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+         * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+         * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+         * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
          */
         _event.add('click');
         /**
@@ -197,23 +206,44 @@ class BulletScreenEngine {
          * @event openBSE.BulletScreenEngine#contextmenu
          * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
          * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
+         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+         * @param {string} e.type - 事件类型（事件名称）
+         * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+         * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+         * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+         * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
          */
         _event.add('contextmenu');
-         /**
-         * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
-         * @event openBSE.BulletScreenEngine#mouseleave
-         * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-         * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
-         */
+        /**
+        * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
+        * @event openBSE.BulletScreenEngine#mouseleave
+        * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+        * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
+        * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+        * @param {string} e.type - 事件类型（事件名称）
+        * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+        * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+        * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+        * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+        * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+        * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+        */
         _event.add('mouseleave');
         /**
          * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
          * @event openBSE.BulletScreenEngine#mouseenter
          * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
          * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 。
+         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+         * @param {string} e.type - 事件类型（事件名称）
+         * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+         * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+         * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+         * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
          */
         _event.add('mouseenter');
         /**
@@ -326,6 +356,12 @@ class BulletScreenEngine {
         };
 
         /**
+         * 继续所有在事件响应中设置了 e.pause = true; 弹幕的播放。
+         */
+        this.playAllBulletScreens = () =>
+            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => bulletScreenOnScreen.pause = false);
+
+        /**
          * 暂停播放弹幕。
          * @description 暂停播放弹幕。暂停播放弹幕是指弹幕播放暂停，所有未出现的弹幕将停止出现，已出现的弹幕停止运动，停止消失。
          */
@@ -355,14 +391,14 @@ class BulletScreenEngine {
 
         /**
          * 停止播放弹幕。
-         * @description 停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认[时间基准（options.clock）]{@link openBSE~BulletScreenStyle}归零，并[清空弹幕列表]{@link openBSE.BulletScreenEngine#cleanBulletScreenList}、[清空屏幕弹幕]{@link openBSE.BulletScreenEngine#cleanBulletScreenListOnScreen}。
+         * @description 停止播放弹幕。停止播放弹幕是指停止播放弹幕，默认[时间基准（options.clock）]{@link openBSE~BulletScreenStyle}归零，并[清空弹幕列表]{@link openBSE.BulletScreenEngine#cleanBulletScreenList}、[清空屏幕内容]{@link openBSE.BulletScreenEngine#cleanScreen}。
          */
         this.stop = function () {
             if (_playing) {
                 this.pause();
             }
             this.cleanBulletScreenList();
-            this.cleanBulletScreenListOnScreen();
+            this.cleanScreen();
             _pauseTime = 0;
             _startTime = null;
         };
@@ -419,23 +455,33 @@ class BulletScreenEngine {
          * 弹幕事件响应
          * @param {string} name - 事件名称
          * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} e - 事件信息
          */
-        function bulletScreenEventTrigger(name, bulletScreenOnScreen) {
-            let e = {
-                bulletScreen: Helper.clone(bulletScreenOnScreen.bulletScreen),
-                redraw: false,
-                pause: bulletScreenOnScreen.pause
+        function bulletScreenEventTrigger(name, bulletScreenOnScreen, e) {
+            if (typeof e.pageX === 'undefined' || e.pageX === null) {
+                let doc = document.documentElement, body = document.body;
+                e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
+                e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
             }
-            _event.trigger(name, e);
-            //重新创建弹幕
-            if (e.redraw === true) {
-                let bulletScreenType = Helper.clone(_bulletScreenType);
-                bulletScreenType.style = _optionsType.defaultStyle;
-                bulletScreenOnScreen.bulletScreen = Helper.setValues(e.bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType, false); //设置值
-                _renderer.reCreatAndgetWidth(bulletScreenOnScreen);
-            }
-            if (typeof e.pause === 'boolean') bulletScreenOnScreen.pause = e.pause; //设置暂停移动
-            if (!_playing && (e.redraw || e.bringToTop)) _renderer.draw(); //非播放状态则重绘
+            _event.trigger(name, {
+                getBulletScreen: () => Helper.clone(bulletScreenOnScreen.bulletScreen),
+                setBulletScreen: (bulletScreen, redraw = false) => {
+                    if (typeof redraw != 'boolean') new TypeError(Resources.PARAMETERS_TYPE_ERROR);
+                    let bulletScreenType = Helper.clone(_bulletScreenType);
+                    bulletScreenType.style = _optionsType.defaultStyle;
+                    bulletScreenOnScreen.bulletScreen = Helper.setValues(bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType); //设置值
+                    if (redraw === true) _renderer.reCreatAndgetWidth(bulletScreenOnScreen); //重新创建并绘制弹幕
+                    if (!_playing && (_e.redraw || _e.bringToTop)) _renderer.draw(); //非播放状态则重绘
+                },
+                getPlayState: () => !bulletScreenOnScreen.pause,
+                setPlayState: (play) => {
+                    if (typeof pause != 'boolean') new TypeError(Resources.PARAMETERS_TYPE_ERROR);
+                    bulletScreenOnScreen.pause = !play;
+                },
+                screenX: e.screenX, screenY: e.screenY,
+                pageX: e.pageX, pageY: e.pageY,
+                clientX: e.clientX, clientY: e.clientY
+            });
         }
 
         /**
@@ -647,16 +693,15 @@ class BulletScreenEngine {
             }
         }
 
-        //IE IE 浏览器不支持 %c
-        if (!!window.ActiveXObject || "ActiveXObject" in window) console.info(
-            Resources.LOADED_INFO_IE,
-            build.name, build.version, build.buildDate, build.description, build.home
-        );
+        //IE Edge 浏览器不支持 %c
+        if (!!window.ActiveXObject || "ActiveXObject" in window || navigator.userAgent.indexOf("Trident") > -1 ||
+            navigator.userAgent.indexOf("MSIE") > -1 || navigator.userAgent.indexOf("Edge") > -1) console.info(
+                Resources.LOADED_INFO_IE.fillData(build)
+            );
         //Other
         else console.info(
-            Resources.LOADED_INFO,
-            'font-weight:bold; color:#0099FF;', build.name, '', 'font-style:italic;',
-            build.version, build.buildDate, '', build.description, build.home
+            Resources.LOADED_INFO.fillData(build),
+            'font-weight:bold; color:#0099FF;', '', 'font-style:italic;', ''
         );
     }
 }

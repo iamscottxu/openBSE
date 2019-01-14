@@ -1,24 +1,28 @@
+import * as Resources from './resources.json'
+
 /**
- * 资源
- * @readonly
+ * 数据填充（占位符拼接）
+ * @param {object|...string} sign - 一组字符串或一个对象
  */
-let Resources = {
-    /** Event name not found. */
-    EVENT_NAME_NOT_FOUND_ERROR: 'Event name not found.',
-    /** Event already exists. */
-    EVENT_ALREADY_EXISTS_ERROR: 'Event already exists.',
-    /** Parameters type error. */
-    PARAMETERS_TYPE_ERROR: 'Parameters type error.',
-    /** The render mode "{renderMode}" is undefined. */
-    RENDER_MODE_ERROR: 'The render mode "{renderMode}" is undefined.',
-    /** This browser does not support "{message}". */
-    BROWSER_NOT_SUPPORT_ERROR: 'This browser does not support "{message}".',
-    /** Your browser does not support method "requestAnimationFrame" and will switch to method "setTimeout", which may affect performance. */
-    REQUESTANIMATIONFRAME_NOT_SUPPORT_WARN: 'Your browser does not support method "requestAnimationFrame" and will switch to method "setTimeout", which may affect performance.',
-    /** %c%s%c now loaded.\n\n%cVersion: %s\nBuild Date: %s\n\n%c%s\nHome: %s */
-    LOADED_INFO: '%c%s%c now loaded.\n\n%cVersion: %s\nBuild Date: %s\n\n%c%s\nHome: %s',
-    /** %s now loaded.\n\nVersion: %s\nBuild Date: %s\n\n%s\nHome: %s */
-    LOADED_INFO_IE: '%s now loaded.\n\nVersion: %s\nBuild Date: %s\n\n%s\nHome: %s'
+function fillData() {
+    if (arguments.length === 0) return this;
+    var param = arguments[0], str = this;
+    if (typeof (param) === 'object') {
+        for (var key in param)
+            str = str.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
+        return str;
+    } else {
+        for (var i = 0; i < arguments.length; i++)
+            str = str.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
+        return str;
+    }
+}
+
+for (let key in Resources) {
+    if (typeof Resources[key] === 'string') {
+        Resources[key] = new String(Resources[key]);
+        Resources[key].fillData = fillData;
+    }
 }
 
 export { Resources }

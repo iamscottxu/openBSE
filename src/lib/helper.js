@@ -29,7 +29,7 @@ function setValues(values, defaultValues, types, clone = true) {
     let returnValues = clone ? setValue(values, {}) : defaultValues;
     let _values = clone ? returnValues : setValue(values, {});
     for (let key in defaultValues) {
-        if (_typeof(defaultValues[key]) === 'object') 
+        if (_typeof(defaultValues[key]) === 'object')
             returnValues[key] = setValues(_values[key], defaultValues[key], types[key]);
         else
             returnValues[key] = setValue(_values[key], defaultValues[key], types[key]);
@@ -70,7 +70,7 @@ function checkType(value, type, canBeNull = true) {
 function checkTypes(values, types, canBeNull = true) {
     if (canBeNull && isEmpty(values)) return;
     for (let key in types) {
-        if (_typeof(types[key]) === 'object') 
+        if (_typeof(types[key]) === 'object')
             checkTypes(values[key], types[key]);
         else
             checkType(values[key], types[key], canBeNull);
@@ -115,24 +115,6 @@ function clone(object) {
 }
 
 /**
- * 占位符拼接
- * @param {object|...string} sign - 一组字符串或一个对象
- */
-function signMix() {
-    if(arguments.length === 0) return this;
-    var param = arguments[0], str= this;
-    if(typeof(param) === 'object') {
-        for(var key in param)
-            str = str.replace(new RegExp("\\{" + key + "\\}", "g"), param[key]);
-        return str;
-    } else {
-        for(var i = 0; i < arguments.length; i++)
-            str = str.replace(new RegExp("\\{" + i + "\\}", "g"), arguments[i]);
-        return str;
-    }
-}
-
-/**
  * 帮助对象
  * @namespace
  */
@@ -143,8 +125,7 @@ const Helper = {
     checkTypes: checkTypes,
     isEmpty: isEmpty,
     _typeof: _typeof,
-    clone: clone,
-    signMix: signMix
+    clone: clone
 }
 
 export { Helper }
