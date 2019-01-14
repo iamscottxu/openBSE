@@ -471,7 +471,7 @@ class BulletScreenEngine {
                     bulletScreenType.style = _optionsType.defaultStyle;
                     bulletScreenOnScreen.bulletScreen = Helper.setValues(bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType); //设置值
                     if (redraw === true) _renderer.reCreatAndgetWidth(bulletScreenOnScreen); //重新创建并绘制弹幕
-                    if (!_playing && (_e.redraw || _e.bringToTop)) _renderer.draw(); //非播放状态则重绘
+                    if (!_playing && redraw) _renderer.draw(); //非播放状态则重绘
                 },
                 getPlayState: () => !bulletScreenOnScreen.pause,
                 setPlayState: (play) => {
