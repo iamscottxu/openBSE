@@ -466,7 +466,7 @@ class BulletScreenEngine {
             _event.trigger(name, {
                 getBulletScreen: () => Helper.clone(bulletScreenOnScreen.bulletScreen),
                 setBulletScreen: (bulletScreen, redraw = false) => {
-                    if (typeof redraw != 'boolean') new TypeError(Resources.PARAMETERS_TYPE_ERROR);
+                    if (typeof redraw != 'boolean') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
                     let bulletScreenType = Helper.clone(_bulletScreenType);
                     bulletScreenType.style = _optionsType.defaultStyle;
                     bulletScreenOnScreen.bulletScreen = Helper.setValues(bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType); //设置值
@@ -475,7 +475,7 @@ class BulletScreenEngine {
                 },
                 getPlayState: () => !bulletScreenOnScreen.pause,
                 setPlayState: (play) => {
-                    if (typeof pause != 'boolean') new TypeError(Resources.PARAMETERS_TYPE_ERROR);
+                    if (typeof pause != 'boolean') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
                     bulletScreenOnScreen.pause = !play;
                 },
                 screenX: e.screenX, screenY: e.screenY,
