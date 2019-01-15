@@ -3187,7 +3187,7 @@ var BrowserNotSupportError = function (_Error) {
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
 },{"./lib/resources":126,"core-js/modules/es6.array.index-of":90,"core-js/modules/es6.array.iterator":91,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.map":94,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.reflect.construct":98,"core-js/modules/es6.regexp.to-string":103,"core-js/modules/es6.string.iterator":104,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],111:[function(require,module,exports){
-module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Mon, 14 Jan 2019 15:10:11 GMT"}
+module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Tue, 15 Jan 2019 09:20:03 GMT"}
 
 },{}],112:[function(require,module,exports){
 "use strict";
@@ -3352,7 +3352,7 @@ function BulletScreenEngine(element, options) {
       fontFamily: 'sans-serif',
 
       /** 字体大小（单位：像素） */
-      size: 19,
+      size: 25,
 
       /** 外框颜色 */
       boxColor: null,
@@ -3542,7 +3542,9 @@ function BulletScreenEngine(element, options) {
     width: element.clientWidth / _options.scaling,
     height: element.clientHeight / _options.scaling
   };
-  var _oldDevicePixelRatio = window.devicePixelRatio;
+
+  var _oldDevicePixelRatio = _helper.Helper.getDevicePixelRatio();
+
   var _oldScaling = _options.scaling;
   var _oldClientWidth = element.clientWidth;
   var _oldClientHeight = element.clientHeight;
@@ -4002,13 +4004,15 @@ function BulletScreenEngine(element, options) {
 
 
   function setSize() {
-    if (_oldDevicePixelRatio != window.devicePixelRatio || _oldClientWidth != element.clientWidth || _oldClientHeight != element.clientHeight || _oldScaling != _options.scaling) {
+    var devicePixelRatio = _helper.Helper.getDevicePixelRatio();
+
+    if (_oldDevicePixelRatio != devicePixelRatio || _oldClientWidth != element.clientWidth || _oldClientHeight != element.clientHeight || _oldScaling != _options.scaling) {
       _oldScaling = _options.scaling;
       _elementSize.width = element.clientWidth / _options.scaling;
       _elementSize.height = element.clientHeight / _options.scaling;
       _oldClientWidth = element.clientWidth;
       _oldClientHeight = element.clientHeight;
-      _oldDevicePixelRatio = window.devicePixelRatio;
+      _oldDevicePixelRatio = devicePixelRatio;
 
       _renderer.setSize();
 
@@ -4465,6 +4469,32 @@ function clone(object) {
   return result;
 }
 /**
+ * 清空元素
+ * @param {Element} element 
+ */
+
+
+function cleanElement(element) {
+  var lastChild;
+
+  while ((lastChild = element.lastChild) != null) {
+    element.removeChild(lastChild);
+  }
+}
+/**
+ * 获取屏幕的设备像素比
+ * @param {boolean} showWarn - 显示警告
+ */
+
+
+function getDevicePixelRatio() {
+  var showWarn = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+  if (typeof window.devicePixelRatio === 'number') return window.devicePixelRatio;
+  if (typeof window.screen.deviceXDPI === 'number' && typeof window.screen.logicalXDPI === 'number') return screen.deviceXDPI / screen.logicalXDPI;
+  if (showWarn) console.warn(_resources.Resources.DEVICEPIXELRATIO_NOT_SUPPORT_WARN);
+  return 1;
+}
+/**
  * 帮助对象
  * @namespace
  */
@@ -4477,7 +4507,9 @@ var Helper = {
   checkTypes: checkTypes,
   isEmpty: isEmpty,
   _typeof: _typeof,
-  clone: clone
+  clone: clone,
+  cleanElement: cleanElement,
+  getDevicePixelRatio: getDevicePixelRatio
 };
 exports.Helper = Helper;
 
@@ -4855,7 +4887,7 @@ var _baseRenderer = require("./baseRenderer");
 
 var _linkedList = require("../linkedList");
 
-var _resources = require("../resources");
+var _helper = require("../helper");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -4905,9 +4937,8 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
      */
 
 
-    var _devicePixelRatio = typeof window.devicePixelRatio != 'number' ? 1 : window.devicePixelRatio;
+    var _devicePixelRatio = _helper.Helper.getDevicePixelRatio(true);
 
-    if (typeof window.devicePixelRatio != 'number') console.warn(_resources.Resources.DEVICEPIXELRATIO_NOT_SUPPORT_WARN);
     _devicePixelRatio *= options.scaling;
     /**
      * 画布元素
@@ -4917,6 +4948,13 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
     var _canvas = init();
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(CanvasBaseRenderer).call(this, _canvas, options, elementSize));
+    /**
+     * 清除屏幕内容
+     * @function
+     * @override
+     */
+
+    _this.cleanScreen = _bulletScreensOnScreen.clean;
     /**
      * 创建弹幕元素
      * @override
@@ -4988,7 +5026,7 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
           remove: true,
           stop: true
         } : null;
-      });
+      }, true);
     };
     /**
      * 重新添加弹幕
@@ -5011,7 +5049,7 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
     _this.setSize = function () {
       _setSize();
 
-      _devicePixelRatio = typeof window.devicePixelRatio === 'undefined' ? 1 : window.devicePixelRatio;
+      _devicePixelRatio = _helper.Helper.getDevicePixelRatio();
       _devicePixelRatio *= options.scaling;
       _canvas.width = elementSize.width * _devicePixelRatio;
       _canvas.height = elementSize.height * _devicePixelRatio;
@@ -5052,7 +5090,9 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
 
     function init() {
       var canvas = document.createElement('canvas');
-      element.innerHTML = '';
+
+      _helper.Helper.cleanElement(element);
+
       element.appendChild(canvas);
       canvas.width = elementSize.width * _devicePixelRatio;
       canvas.height = elementSize.height * _devicePixelRatio;
@@ -5182,7 +5222,7 @@ var CanvasBaseRenderer = function (_BaseRenderer) {
 
 exports.CanvasBaseRenderer = CanvasBaseRenderer;
 
-},{"../linkedList":117,"../resources":126,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],120:[function(require,module,exports){
+},{"../helper":116,"../linkedList":117,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],120:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -5249,13 +5289,16 @@ var CanvasRenderer = function (_CanvasBaseRenderer) {
      */
 
     var _bulletScreensOnScreen = _this.getBulletScreensOnScreen();
+
+    var _cleanScreen = _this.cleanScreen;
     /**
      * 清除屏幕内容
      * @override
      */
 
-
     _this.cleanScreen = function () {
+      _cleanScreen();
+
       var canvas = this.getCanvas();
       canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
     };
@@ -5331,6 +5374,8 @@ var _baseRenderer = require("./baseRenderer");
 
 var _browserNotSupportError = require("../../browserNotSupportError");
 
+var _helper = require("../helper");
+
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -5375,7 +5420,7 @@ var CSS3Renderer = function (_BaseRenderer) {
      */
 
     _this.cleanScreen = function () {
-      _div.innerHTML = '';
+      _helper.Helper.cleanElement(_div);
     };
     /**
      * 绘制函数
@@ -5436,8 +5481,8 @@ var CSS3Renderer = function (_BaseRenderer) {
       if (bulletScreen.style.shadowBlur != null) bulletScreenDiv.style.textShadow = "0 0 ".concat(bulletScreen.style.shadowBlur, "px black");
 
       if (bulletScreen.style.borderColor != null) {
-        bulletScreenDiv.style.textStroke = bulletScreenDiv.style.webkitTextStroke = '0.5px';
-        bulletScreenDiv.style.textStrokeColor = bulletScreenDiv.style.webkitTextStrokeColor = bulletScreen.borderColor;
+        bulletScreenDiv.style.textStroke = bulletScreenDiv.style.webkitTextStroke = "0.5px";
+        bulletScreenDiv.style.textStrokeColor = bulletScreenDiv.style.webkitTextStrokeColor = bulletScreen.style.borderColor;
       }
 
       if (bulletScreen.style.boxColor != null) {
@@ -5448,21 +5493,11 @@ var CSS3Renderer = function (_BaseRenderer) {
         bulletScreenDiv.style.padding = '4px';
       }
 
-      bulletScreenDiv.innerHTML = '';
+      _helper.Helper.cleanElement(bulletScreenDiv);
+
       bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
       bulletScreenDiv.bulletScreenOnScreen = bulletScreenOnScreen;
-
-      var bulletScreenDivs = _div.getElementsByTagName('div');
-
-      if (bulletScreenDivs.length === 0) _div.appendChild(bulletScreenDiv);
-      var index;
-
-      for (index = bulletScreenDivs.length - 1; index > 0; index--) {
-        var _layer = bulletScreenDivs[index].bulletScreenOnScreen.bulletScreen.layer;
-        if (_layer <= bulletScreen.layer) break;
-      }
-
-      if (++index === bulletScreenDivs.length) _div.appendChild(bulletScreenDiv);else _div.insertBefore(bulletScreenDiv, bulletScreenDivs[index]);
+      insertElement(bulletScreenDiv);
       bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8;
       bulletScreenOnScreen.div = bulletScreenDiv;
     };
@@ -5496,7 +5531,9 @@ var CSS3Renderer = function (_BaseRenderer) {
 
     function init() {
       var div = document.createElement('div');
-      element.innerHTML = '';
+
+      _helper.Helper.cleanElement(element);
+
       element.appendChild(div);
       div.style.overflow = 'hidden';
       div.style.padding = '0';
@@ -5551,6 +5588,25 @@ var CSS3Renderer = function (_BaseRenderer) {
         eventTrigger('mouseleave', bulletScreenOnScreen, e);
       };
     }
+    /**
+     * 按 layer 插入元素
+     * @param {Element} element - 元素
+     */
+
+
+    function insertElement(element) {
+      var elements = _div.getElementsByTagName(element.tagName);
+
+      if (elements.length === 0) _div.appendChild(element);
+      var index;
+
+      for (index = elements.length - 1; index > 0; index--) {
+        var _layer = elements[index].bulletScreenOnScreen.bulletScreen.layer;
+        if (_layer <= element.bulletScreenOnScreen.bulletScreen.layer) break;
+      }
+
+      if (++index === elements.length) _div.appendChild(element);else _div.insertBefore(element, elements[index]);
+    }
 
     return _this;
   }
@@ -5560,7 +5616,7 @@ var CSS3Renderer = function (_BaseRenderer) {
 
 exports.CSS3Renderer = CSS3Renderer;
 
-},{"../../browserNotSupportError":110,"./baseRenderer":118,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],122:[function(require,module,exports){
+},{"../../browserNotSupportError":110,"../helper":116,"./baseRenderer":118,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],122:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -5647,21 +5703,21 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.SVGRenderer = void 0;
 
-require("core-js/modules/es7.symbol.async-iterator");
-
-require("core-js/modules/es6.symbol");
-
 require("core-js/modules/es6.object.create");
 
 require("core-js/modules/es6.object.set-prototype-of");
 
-require("core-js/modules/web.dom.iterable");
+require("core-js/modules/es7.symbol.async-iterator");
 
-require("core-js/modules/es6.array.for-each");
+require("core-js/modules/es6.symbol");
+
+require("core-js/modules/web.dom.iterable");
 
 var _baseRenderer = require("./baseRenderer");
 
 var _browserNotSupportError = require("../../browserNotSupportError");
+
+var _helper = require("../helper");
 
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
@@ -5689,30 +5745,28 @@ var SVGRenderer = function (_BaseRenderer) {
    * @param {openBSE~Options} options - 全局选项
    * @param {object} elementSize - 元素大小
    * @param {Event} eventTrigger - 事件引发方法
-   * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
    * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
    */
-  function SVGRenderer(element, options, elementSize, eventTrigger, bulletScreensOnScreen) {
+  function SVGRenderer(element, options, elementSize, eventTrigger) {
     var _this;
 
     _classCallCheck(this, SVGRenderer);
 
     supportCheck();
 
-    var _div = init();
-
     var _svg;
 
     var _defsSvg;
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(SVGRenderer).call(this, _div, options, elementSize));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SVGRenderer).call(this, init(), options, elementSize));
     /**
      * 清除屏幕内容
      * @override
      */
 
     _this.cleanScreen = function () {
-      _svg.innerHTML = '';
+      _helper.Helper.cleanElement(_svg);
+
       _defsSvg = createElementSVG('defs');
 
       _svg.appendChild(_defsSvg);
@@ -5724,15 +5778,35 @@ var SVGRenderer = function (_BaseRenderer) {
 
 
     _this.draw = function () {
-      var _this2 = this;
+      var _iteratorNormalCompletion = true;
+      var _didIteratorError = false;
+      var _iteratorError = undefined;
 
-      bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-        for (var index in bulletScreenOnScreen.svg) {
-          var item = bulletScreenOnScreen.svg[index];
-          if (_this2.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');else item.setAttribute('opacity', '1');
-          item.setAttribute('transform', "translate(".concat(bulletScreenOnScreen.x - 4, ",").concat(bulletScreenOnScreen.actualY - 4, ")"));
+      try {
+        for (var _iterator = _svg.getElementsByTagName('text')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+          var textSvg = _step.value;
+          var bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+
+          for (var key in bulletScreenOnScreen.svg) {
+            var item = bulletScreenOnScreen.svg[key];
+            if (this.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');else item.setAttribute('opacity', '1');
+            item.setAttribute('transform', "translate(".concat(bulletScreenOnScreen.x - 4, ",").concat(bulletScreenOnScreen.actualY - 4, ")"));
+          }
         }
-      }, true);
+      } catch (err) {
+        _didIteratorError = true;
+        _iteratorError = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion && _iterator.return != null) {
+            _iterator.return();
+          }
+        } finally {
+          if (_didIteratorError) {
+            throw _iteratorError;
+          }
+        }
+      }
     };
     /**
      * 创建弹幕元素
@@ -5743,14 +5817,17 @@ var SVGRenderer = function (_BaseRenderer) {
 
     _this.creatAndgetWidth = function (bulletScreenOnScreen) {
       var bulletScreen = bulletScreenOnScreen.bulletScreen;
-      bulletScreenOnScreen.svg = {};
-      var textSvg = createElementSVG('text');
+      bulletScreenOnScreen.svg = _typeof(bulletScreenOnScreen.svg) === 'object' ? bulletScreenOnScreen.svg : {};
+      var textSvg = _typeof(bulletScreenOnScreen.svg.text) === 'object' ? bulletScreenOnScreen.svg.text : createElementSVG('text');
       textSvg.setAttribute('x', 0);
       textSvg.setAttribute('y', bulletScreenOnScreen.size * 0.8);
       textSvg.setAttribute('font-family', bulletScreen.style.fontFamily);
       textSvg.setAttribute('font-size', bulletScreenOnScreen.size);
       textSvg.setAttribute('font-weight', bulletScreen.style.fontWeight);
       textSvg.setAttribute('fill', bulletScreen.style.color);
+
+      _helper.Helper.cleanElement(textSvg);
+
       textSvg.appendChild(document.createTextNode(bulletScreen.text));
 
       if (bulletScreen.style.borderColor != null) {
@@ -5793,13 +5870,13 @@ var SVGRenderer = function (_BaseRenderer) {
         bulletScreenOnScreen.filterId = filterId;
       }
 
-      _svg.appendChild(textSvg);
-
       bulletScreenOnScreen.svg.text = textSvg;
+      textSvg.bulletScreenOnScreen = bulletScreenOnScreen;
+      insertElement(textSvg);
       bulletScreenOnScreen.width = textSvg.getComputedTextLength();
 
       if (bulletScreen.style.boxColor != null) {
-        var rectSvg = createElementSVG('rect');
+        var rectSvg = _typeof(bulletScreenOnScreen.svg.rect) === 'object' ? bulletScreenOnScreen.svg.rect : createElementSVG('rect');
         rectSvg.setAttribute('x', -3);
         rectSvg.setAttribute('y', -3);
         rectSvg.setAttribute('fill', 'none');
@@ -5807,10 +5884,10 @@ var SVGRenderer = function (_BaseRenderer) {
         rectSvg.setAttribute('width', bulletScreenOnScreen.width + 7);
         rectSvg.setAttribute('stroke', bulletScreen.style.boxColor);
         rectSvg.setAttribute('stroke-width', 1);
-
-        _svg.appendChild(rectSvg);
-
         bulletScreenOnScreen.svg.rect = rectSvg;
+        rectSvg.bulletScreenOnScreen = bulletScreenOnScreen;
+
+        _svg.insertBefore(rectSvg, textSvg);
       }
     };
     /**
@@ -5829,6 +5906,17 @@ var SVGRenderer = function (_BaseRenderer) {
       for (var index in bulletScreenOnScreen.svg) {
         _svg.removeChild(bulletScreenOnScreen.svg[index]);
       }
+    };
+    /**
+     * 重新添加弹幕
+     * @override
+     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     */
+
+
+    _this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+      this.delete(bulletScreenOnScreen);
+      this.creatAndgetWidth(bulletScreenOnScreen);
     };
 
     var _setSize = _this.setSize;
@@ -5853,7 +5941,9 @@ var SVGRenderer = function (_BaseRenderer) {
 
     function init() {
       var div = document.createElement('div');
-      element.innerHTML = '';
+
+      _helper.Helper.cleanElement(element);
+
       element.appendChild(div);
       div.style.padding = '0';
       div.style.margin = '0';
@@ -5895,22 +5985,19 @@ var SVGRenderer = function (_BaseRenderer) {
 
     function registerEvent(element) {
       function getBulletScreenOnScreenByLocation(location) {
-        var _bulletScreenOnScreen = null;
-        bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+        var textSvgs = _svg.getElementsByTagName('text');
+
+        for (var index = textSvgs.length - 1; index > 0; index--) {
+          var bulletScreenOnScreen = textSvgs[index].bulletScreenOnScreen;
           if (_checkWhetherHide(bulletScreenOnScreen)) return;
           var x1 = bulletScreenOnScreen.x - 4;
           var x2 = x1 + bulletScreenOnScreen.width + 8;
           var y1 = bulletScreenOnScreen.actualY - 4;
           var y2 = y1 + bulletScreenOnScreen.height + 8;
+          if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) return bulletScreenOnScreen;
+        }
 
-          if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-            _bulletScreenOnScreen = bulletScreenOnScreen;
-            return {
-              stop: true
-            };
-          }
-        }, false);
-        return _bulletScreenOnScreen;
+        return null;
       }
 
       function getLocation(e) {
@@ -5959,14 +6046,85 @@ var SVGRenderer = function (_BaseRenderer) {
 
       element.oncontextmenu = function (e) {
         var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreenOnScreen) eventTrigger('contextmenu', bulletScreenOnScreen);
+        if (bulletScreenOnScreen) eventTrigger('contextmenu', bulletScreenOnScreen, e);
         return false;
       };
 
       element.onclick = function (e) {
         var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreenOnScreen) eventTrigger('click', bulletScreenOnScreen);
+        if (bulletScreenOnScreen) eventTrigger('click', bulletScreenOnScreen, e);
         return false;
+      };
+
+      element.onmousemove = function (e) {
+        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        var _iteratorNormalCompletion2 = true;
+        var _didIteratorError2 = false;
+        var _iteratorError2 = undefined;
+
+        try {
+          for (var _iterator2 = _svg.getElementsByTagName('text')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+            var textSvg = _step2.value;
+            var _bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+
+            if (_bulletScreenOnScreen != bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
+              _bulletScreenOnScreen.mousein = false;
+              element.style.cursor = '';
+              eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+            }
+          }
+        } catch (err) {
+          _didIteratorError2 = true;
+          _iteratorError2 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
+              _iterator2.return();
+            }
+          } finally {
+            if (_didIteratorError2) {
+              throw _iteratorError2;
+            }
+          }
+        }
+
+        if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
+        bulletScreenOnScreen.mousein = true;
+        element.style.cursor = options.cursorOnMouseOver;
+        eventTrigger('mouseenter', bulletScreenOnScreen, e);
+        return false;
+      };
+
+      element.onmouseout = function (e) {
+        var _iteratorNormalCompletion3 = true;
+        var _didIteratorError3 = false;
+        var _iteratorError3 = undefined;
+
+        try {
+          for (var _iterator3 = _svg.getElementsByTagName('text')[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+            var textSvg = _step3.value;
+            var _bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+
+            if (_bulletScreenOnScreen.mousein) {
+              _bulletScreenOnScreen.mousein = false;
+              element.style.cursor = '';
+              eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+            }
+          }
+        } catch (err) {
+          _didIteratorError3 = true;
+          _iteratorError3 = err;
+        } finally {
+          try {
+            if (!_iteratorNormalCompletion3 && _iterator3.return != null) {
+              _iterator3.return();
+            }
+          } finally {
+            if (_didIteratorError3) {
+              throw _iteratorError3;
+            }
+          }
+        }
       };
     }
     /**
@@ -5980,6 +6138,25 @@ var SVGRenderer = function (_BaseRenderer) {
     function createElementSVG(qualifiedName, options) {
       return document.createElementNS('http://www.w3.org/2000/svg', qualifiedName, options);
     }
+    /**
+     * 按 layer 插入元素
+     * @param {Element} element - 元素
+     */
+
+
+    function insertElement(element) {
+      var elements = _svg.getElementsByTagName(element.tagName);
+
+      if (elements.length === 0) _svg.appendChild(element);
+      var index;
+
+      for (index = elements.length - 1; index > 0; index--) {
+        var _layer = elements[index].bulletScreenOnScreen.bulletScreen.layer;
+        if (_layer <= element.bulletScreenOnScreen.bulletScreen.layer) break;
+      }
+
+      if (++index === elements.length) _svg.appendChild(element);else _svg.insertBefore(element, elements[index]);
+    }
 
     return _this;
   }
@@ -5989,7 +6166,7 @@ var SVGRenderer = function (_BaseRenderer) {
 
 exports.SVGRenderer = SVGRenderer;
 
-},{"../../browserNotSupportError":110,"./baseRenderer":118,"core-js/modules/es6.array.for-each":89,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],124:[function(require,module,exports){
+},{"../../browserNotSupportError":110,"../helper":116,"./baseRenderer":118,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],124:[function(require,module,exports){
 "use strict";
 
 require("core-js/modules/es6.object.define-property");
@@ -6078,12 +6255,15 @@ var WebGLRenderer = function (_CanvasBaseRenderer) {
     var _canvas = _this.getCanvas();
 
     init();
+    var _cleanScreen = _this.cleanScreen;
     /**
      * 清除屏幕内容
      * @override
      */
 
     _this.cleanScreen = function () {
+      _cleanScreen();
+
       _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
     };
     /**
