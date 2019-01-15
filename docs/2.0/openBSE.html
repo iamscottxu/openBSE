@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="openBSE.BrowserNotSupportError.html">openBSE.BrowserNotSupportError</a></li><li><a href="openBSE.BulletScreenEngine.html">openBSE.BulletScreenEngine</a></li>
+					<li><a href="openBSE.BrowserNotSupportError.html">openBSE.BrowserNotSupportError</a></li><li><a href="openBSE.BulletScreenEngine.html">openBSE.BulletScreenEngine</a></li><li><a href="openBSE.Contextmenu.html">openBSE.Contextmenu</a></li>
 				</ul>
 			</li>
 			
@@ -155,6 +155,9 @@
             <dd></dd>
         
             <dt><a href="openBSE.BulletScreenEngine.html">BulletScreenEngine</a></dt>
+            <dd></dd>
+        
+            <dt><a href="openBSE.Contextmenu.html">Contextmenu</a></dt>
             <dd></dd>
         </dl>
     
@@ -812,6 +815,370 @@
             
 
             <td class="description last">其他自定义字段：（在事件中修改修改此参数无需将 e.redraw 设置为 true）例如 uuid 、 id 等。（注意：因为在事件响应方法中返回的弹幕对象是原对象克隆的，所以无法直接比较，必须使用自定义字段唯一标识一条弹幕。）</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id="~BulletScreenEvent">
+    <h4 id="~BulletScreenEvent">BulletScreenEvent</h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        弹幕事件
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">object</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>getBulletScreen()</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">获取引发事件的弹幕弹幕的数据：retun: <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 引发事件的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>setBulletScreen(bulletScreen,redraw)</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">设置引发事件的弹幕弹幕的数据：params: <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> bulletScreen - 引发事件的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。 boolean [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>getPlayState()</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">获取引发事件的弹幕的播放状态：retun: boolean 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>setPlayState(play)</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">设置引发事件的弹幕的播放状态：params: boolean paly - 是否继续播放/移动引发事件的弹幕：读取此参数可判断这条弹幕是否处于暂停状态。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">事件类型（事件名称）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>screenX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>screenY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>clientX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pageX</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pageY</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
         </tr>
 
     
@@ -2322,7 +2689,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
-		on 2019-01-15T17:20:13+08:00
+		on 2019-01-15T23:53:16+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>

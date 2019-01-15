@@ -4,7 +4,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width">
-	<title>Documentation Classes</title>
+	<title>Documentation Class: Contextmenu</title>
 
 	<!--[if lt IE 9]>
 	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -79,14 +79,18 @@
 		<div id="main">
 			
 
-	<h1 class="page-title">Classes</h1>
+	<h1 class="page-title">Class: Contextmenu</h1>
 <section>
 
 <header>
     
         <h2>
+            <span class="ancestors"><a href="openBSE.html">openBSE</a>.</span>
         
+        Contextmenu
         </h2>
+        
+            <div class="class-description">上下文菜单类</div>
         
     
 </header>
@@ -96,8 +100,210 @@
     <div class="container-overview">
     
         
+<hr>
+<dt>
+    <h4 class="name" id="Contextmenu"><span class="type-signature"></span>new Contextmenu(bulletScreenEngine, element [, layer] [, pause])</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        上下文菜单对象。用于实现一个弹幕上下文菜单。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+        <h5>Parameters:</h5>
+        
+
+<table class="params table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
 
         
+        <th>Argument</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>bulletScreenEngine</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type"><a href="openBSE.BulletScreenEngine.html">openBSE.BulletScreenEngine</a></span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">弹幕引擎对象：一个弹幕 <a href="openBSE.BulletScreenEngine.html">openBSE.BulletScreenEngine</a> 对象。要添加上下文菜单的</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>element</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Element</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">上下文菜单元素：当显示上下文菜单时要显示的 div 。有关 Element 接口的信息请参阅MDN <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Element">Element</a> 。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>layer</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    10
+                
+                </td>
+            
+
+            <td class="description last">弹幕层级：当显示上下文菜单或鼠标指向弹幕时弹幕要移动到的层级。有关弹幕层级的详细说明请参阅 openBSE~options 结构。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>pause</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    true
+                
+                </td>
+            
+
+            <td class="description last">是否暂停：当鼠标指向弹幕或单开上下文菜单时弹幕是否暂停移动/播放。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+    
+
+    
 <dl class="details">
     
 
@@ -137,7 +343,21 @@
 </dl>
 
 
-        
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
     
     </div>
 
@@ -146,585 +366,303 @@
     
 
     
-        <h3 class="subsection-title">Classes</h3>
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
 
         <dl>
-            <dt><a href="openBSE.BrowserNotSupportError.html">BrowserNotSupportError</a></dt>
-            <dd></dd>
+            
+<hr>
+<dt>
+    <h4 class="name" id="closeContextmenu"><span class="type-signature"></span>closeContextmenu()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        关闭上下文菜单：如果当前上下文菜单正处于激活/显示状态则立即关闭。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dd>
+
         
-            <dt><a href="openBSE.BulletScreenEngine.html">BulletScreenEngine</a></dt>
-            <dd></dd>
+            
+<hr>
+<dt>
+    <h4 class="name" id="getBulletScreenEvent"><span class="type-signature"></span>getBulletScreenEvent()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        获取激活上下文菜单的弹幕的弹幕事件结构
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    弹幕事件结构：一个 <a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a> 结构。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
         
-            <dt><a href="openBSE.Contextmenu.html">Contextmenu</a></dt>
-            <dd></dd>
+<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+        
+            
+<hr>
+<dt>
+    <h4 class="name" id="getContextmenuState"><span class="type-signature"></span>getContextmenuState()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        获取上下文菜单的状态
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    指示上下文菜单是否正处于激活/显示状态。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
         </dl>
     
 
     
 
-    
-        <h3 class="subsection-title">Namespaces</h3>
-
-        <dl>
-            <dt><a href="namespaces.html#openBSE"><a href="openBSE.html">openBSE</a></a></dt>
-            <dd></dd>
-        </dl>
-    
-
-    
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Events</h3>
-
-        <dl>
-            
-<hr>
-<dt>
-    <h4 class="name" id="event:click">click</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        弹幕单击事件。当单击弹幕时触发。
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>e</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">弹幕事件结构</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-    <h5>Listeners of This Event:</h5>
-    <ul>
-        <li><a href="openBSE.BulletScreenEngine.html#bind">openBSE.BulletScreenEngine#bind</a></li>
-    </ul>
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="event:contextmenu">contextmenu</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>e</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">弹幕事件结构</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-    <h5>Listeners of This Event:</h5>
-    <ul>
-        <li><a href="openBSE.BulletScreenEngine.html#bind">openBSE.BulletScreenEngine#bind</a></li>
-    </ul>
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="event:mouseenter">mouseenter</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        弹幕鼠标进入事件。当鼠标进入弹幕时触发。
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>e</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">弹幕事件结构</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-    <h5>Listeners of This Event:</h5>
-    <ul>
-        <li><a href="openBSE.BulletScreenEngine.html#bind">openBSE.BulletScreenEngine#bind</a></li>
-    </ul>
-    
-
-    
-
-    
-
-    
-</dd>
-
-        
-            
-<hr>
-<dt>
-    <h4 class="name" id="event:mouseleave">mouseleave</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        弹幕鼠标离开事件。当鼠标离开弹幕时触发。
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>e</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">弹幕事件结构</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-    <h5>Listeners of This Event:</h5>
-    <ul>
-        <li><a href="openBSE.BulletScreenEngine.html#bind">openBSE.BulletScreenEngine#bind</a></li>
-    </ul>
-    
-
-    
-
-    
-
-    
-</dd>
-
-        </dl>
     
 </article>
 

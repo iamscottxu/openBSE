@@ -40,7 +40,7 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="openBSE.BrowserNotSupportError.html">openBSE.BrowserNotSupportError</a></li><li><a href="openBSE.BulletScreenEngine.html">openBSE.BulletScreenEngine</a></li>
+					<li><a href="openBSE.BrowserNotSupportError.html">openBSE.BrowserNotSupportError</a></li><li><a href="openBSE.BulletScreenEngine.html">openBSE.BulletScreenEngine</a></li><li><a href="openBSE.Contextmenu.html">openBSE.Contextmenu</a></li>
 				</ul>
 			</li>
 			
@@ -2239,10 +2239,16 @@
 
     
     
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -2252,11 +2258,7 @@
         <th>Type</th>
 
         
-        <th>Argument</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -2268,13 +2270,13 @@
 
         <tr>
             
-                <td class="name"><code>e.bulletScreen</code></td>
+                <td class="name"><code>e</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a></span>
+<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
 
 
 
@@ -2282,366 +2284,17 @@
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.redraw</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true ，否则修改无法生效。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pause</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">事件类型（事件名称）</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.screenX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.screenY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.clientX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
-            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+            <td class="description last">弹幕事件结构</td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -2722,10 +2375,16 @@
 
     
     
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -2735,11 +2394,7 @@
         <th>Type</th>
 
         
-        <th>Argument</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -2751,13 +2406,13 @@
 
         <tr>
             
-                <td class="name"><code>e.bulletScreen</code></td>
+                <td class="name"><code>e</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a></span>
+<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
 
 
 
@@ -2765,366 +2420,17 @@
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.redraw</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pause</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">事件类型（事件名称）</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.screenX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.screenY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.clientX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
-            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+            <td class="description last">弹幕事件结构</td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -3205,10 +2511,16 @@
 
     
     
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -3218,11 +2530,7 @@
         <th>Type</th>
 
         
-        <th>Argument</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -3234,13 +2542,13 @@
 
         <tr>
             
-                <td class="name"><code>e.bulletScreen</code></td>
+                <td class="name"><code>e</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a></span>
+<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
 
 
 
@@ -3248,366 +2556,17 @@
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.redraw</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pause</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">事件类型（事件名称）</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.screenX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.screenY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.clientX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
-            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+            <td class="description last">弹幕事件结构</td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -3688,10 +2647,16 @@
 
     
     
-        <h5>Parameters:</h5>
-        
 
-<table class="params table table-striped">
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
     <thead>
     <tr>
         
@@ -3701,11 +2666,7 @@
         <th>Type</th>
 
         
-        <th>Argument</th>
-        
 
-        
-        <th>Default</th>
         
 
         <th class="last">Description</th>
@@ -3717,13 +2678,13 @@
 
         <tr>
             
-                <td class="name"><code>e.bulletScreen</code></td>
+                <td class="name"><code>e</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type"><a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a></span>
+<span class="param-type"><a href="openBSE.html#~BulletScreenEvent">openBSE~BulletScreenEvent</a></span>
 
 
 
@@ -3731,366 +2692,17 @@
             </td>
 
             
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
 
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">被单击的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与<a href="openBSE.BulletScreenEngine.html#addBulletScreen">添加弹幕</a>时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.redraw</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pause</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 <a href="openBSE.BulletScreenEngine.html#playAllBulletScreens">openBSE.BulletScreenEngine#playAllBulletScreens</a> 方法。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.type</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">事件类型（事件名称）</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.screenX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于显示器屏的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.screenY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于显示器屏的 Y 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.clientX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageX</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于页面的 X 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>e.pageY</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
             
 
-            <td class="description last">当事件发生时，鼠标相对于页面的 Y 坐标。</td>
+            <td class="description last">弹幕事件结构</td>
         </tr>
 
     
     </tbody>
 </table>
+</dl>
 
-    
-
-    
-<dl class="details">
     
 
 	
@@ -4195,7 +2807,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
 	
-		on 2019-01-15T17:20:13+08:00
+		on 2019-01-15T23:53:16+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
