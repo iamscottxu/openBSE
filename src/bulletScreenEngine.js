@@ -189,61 +189,25 @@ class BulletScreenEngine {
         /**
          * 弹幕单击事件。当单击弹幕时触发。
          * @event openBSE.BulletScreenEngine#click
-         * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-         * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true ，否则修改无法生效。
-         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
-         * @param {string} e.type - 事件类型（事件名称）
-         * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
-         * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
-         * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
-         * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
-         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
-         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+         * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
          */
         _event.add('click');
         /**
          * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
          * @event openBSE.BulletScreenEngine#contextmenu
-         * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-         * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
-         * @param {string} e.type - 事件类型（事件名称）
-         * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
-         * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
-         * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
-         * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
-         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
-         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+         * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
          */
         _event.add('contextmenu');
         /**
         * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
         * @event openBSE.BulletScreenEngine#mouseleave
-        * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-        * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-        * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
-        * @param {string} e.type - 事件类型（事件名称）
-        * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
-        * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
-        * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
-        * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
-        * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
-        * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+        * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
         */
         _event.add('mouseleave');
         /**
          * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
          * @event openBSE.BulletScreenEngine#mouseenter
-         * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-         * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-         * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
-         * @param {string} e.type - 事件类型（事件名称）
-         * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
-         * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
-         * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
-         * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
-         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
-         * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+         * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
          */
         _event.add('mouseenter');
         /**
@@ -464,7 +428,18 @@ class BulletScreenEngine {
                 e.pageY = e.clientY + (doc && doc.scrollTop || body && body.scrollTop || 0) - (doc && doc.clientTop || body && body.clientTop || 0);
             }
             _event.trigger(name, {
+                /**
+                 * 获取引发事件的弹幕弹幕的数据
+                 * @private
+                 * @returns {openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+                 */
                 getBulletScreen: () => Helper.clone(bulletScreenOnScreen.bulletScreen),
+                /**
+                 * 设置引发事件的弹幕弹幕的数据
+                 * @private
+                 * @param {openBSE~BulletScreen} bulletScreen - 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。
+                 * @param {boolean} [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。
+                 */
                 setBulletScreen: (bulletScreen, redraw = false) => {
                     if (typeof redraw != 'boolean') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
                     let bulletScreenType = Helper.clone(_bulletScreenType);
@@ -473,7 +448,17 @@ class BulletScreenEngine {
                     if (redraw === true) _renderer.reCreatAndgetWidth(bulletScreenOnScreen); //重新创建并绘制弹幕
                     if (!_playing && redraw) _renderer.draw(); //非播放状态则重绘
                 },
+                /**
+                 * 获取引发事件的弹幕的播放状态
+                 * @private
+                 * @returns {boolean} 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+                 */
                 getPlayState: () => !bulletScreenOnScreen.pause,
+                /**
+                 * 设置引发事件的弹幕的播放状态
+                 * @private
+                 * @param {boolean} paly - 是否继续播放/移动引发事件的弹幕：读取此参数可判断这条弹幕是否处于暂停状态。
+                 */
                 setPlayState: (play) => {
                     if (typeof play != 'boolean') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
                     bulletScreenOnScreen.pause = !play;

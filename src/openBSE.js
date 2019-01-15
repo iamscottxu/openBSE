@@ -66,6 +66,22 @@ export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, Contextme
  */
 
 /**
+ * 弹幕事件
+ * @typedef {object} openBSE~BulletScreenEvent
+ * @property {function} getBulletScreen() - 获取引发事件的弹幕弹幕的数据：retun: {@link openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+ * @property {function} setBulletScreen(bulletScreen,redraw) - 设置引发事件的弹幕弹幕的数据：params: {@link openBSE~BulletScreen} bulletScreen - 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。 boolean [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。
+ * @property {function} getPlayState() - 获取引发事件的弹幕的播放状态：retun: boolean 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+ * @property {function} setPlayState(play) - 设置引发事件的弹幕的播放状态：params: boolean paly - 是否继续播放/移动引发事件的弹幕：读取此参数可判断这条弹幕是否处于暂停状态。
+ * @property {string} type - 事件类型（事件名称）
+ * @property {number} screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+ * @property {number} screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+ * @property {number} clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+ * @property {number} pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+ * @property {number} pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+ * @property {number} pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+ */
+
+/**
  * 调试信息
  * @typedef {object} openBSE~DebugInfo
  * @description DebugInfo 结构用于存放调试信息。
