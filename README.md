@@ -1,5 +1,5 @@
 # openBSE
-[![Version 2.0](https://img.shields.io/badge/version-2.0-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v2.0-beta.3)
+[![Version 2.0](https://img.shields.io/badge/version-2.0-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v2.0)
 [![NPM](https://img.shields.io/npm/v/openbse.svg?style=flat-square)](https://www.npmjs.com/package/openbse)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)
@@ -7,7 +7,7 @@
 [English Version](https://github.com/iamscottxu/openBSE/blob/master/README.en.md) |
 [wiki](https://github.com/iamscottxu/openBSE/wiki) |
 [Demo](https://iamscottxu.github.io/openBSE/demo/openBSEDemo.html) |
-[Docs](https://iamscottxu.github.io/openBSE/docs/2.0-Beta/index.html)
+[Docs](https://iamscottxu.github.io/openBSE/docs/2.0/index.html)
 
 高性能 JavaScript 弹幕引擎。同屏弹幕1000+
 
@@ -16,7 +16,7 @@
 
 ## 安装和使用
 ### 安装
-你可以直接点击[这里](https://github.com/iamscottxu/openBSE/releases/tag/v2.0-beta.3)下载最新发行版本，也可以用以下命令安装NPM包。
+你可以直接点击[这里](https://github.com/iamscottxu/openBSE/releases/tag/v2.0)下载最新发行版本，也可以用以下命令安装NPM包。
 ```Bash
 > npm install openbse
 ```
