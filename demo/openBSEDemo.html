@@ -13,9 +13,9 @@
             window.bulletScreenEngine = new openBSE.BulletScreenEngine(document.getElementById('BulletScreensDiv'), {
                 defaultStyle: {
                     fontFamily: 'Microsoft Yahei UI, Microsoft Yahei, SimHei, Heiti SC, sans-serif',
-                    fontWeight: '600'
+                    borderColor: 'rgba(0,0,0,0.4)'
                 }
-            }, 'canvas');
+            });
 
             var contextmenu = new openBSE.Contextmenu(bulletScreenEngine, document.getElementById('contextmenu'));
 
@@ -40,8 +40,8 @@
                         type: openBSE.BulletScreenType.rightToLeft,
                         style: {
                             speed: 0.15 + Math.random() / 90,
-                            size: 19,
-                            color: 'white',
+                            size: 23,
+                            color: 'white'
                         }
                     });
                 else
@@ -51,11 +51,10 @@
                         type: (Math.random() > 0.4) ? openBSE.BulletScreenType.rightToLeft : openBSE.BulletScreenType.top,
                         style: {
                             speed: 0.1 + Math.random() / 90,
-                            size: 20,
-                            color: '#FFCC66',
+                            color: '#FFCC66'
                         }
                     });
-                _startTime += parseInt(Math.random() * 500);
+                _startTime += parseInt(Math.random() * 300);
             }
         }
         var showDebugInfo = function () {
@@ -73,7 +72,6 @@
             bulletScreenEngine.addBulletScreen({
                 text: bulletScreenText,
                 style: {
-                    size: 20,
                     boxColor: 'white'
                 },
                 layer: 1,
@@ -99,7 +97,7 @@
 
 <body>
     <p style="font-size: 70%">引擎版本：<b id="version"></b>&nbsp;构建时间：<b id="buildDate"></b></p>
-    <div style="width:720px;height:405px;position:relative;">
+    <div style="width:936px;height:526.5px;position:relative;">
         <div style="left:0;top:0;right:0;bottom:0;position:absolute;background:url(./images/background.jpg);background-size: 100%;"></div>
         <div id="BulletScreensDiv" style="left:0;top:0;right:0;bottom:0;position:absolute;"></div>
     </div>
