@@ -35,11 +35,13 @@ class WebGLRenderer extends CanvasBaseRenderer {
         let _canvas = this.getCanvas();
         init();
 
+        let _cleanScreen = this.cleanScreen;
         /**
          * 清除屏幕内容
          * @override
          */
         this.cleanScreen = function () {
+            _cleanScreen();
             _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
         }
 

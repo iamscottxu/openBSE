@@ -1,5 +1,6 @@
 import { BaseRenderer } from './baseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
+import { Helper } from '../helper'
 
 /**
  * SVG 渲染器类
@@ -11,22 +12,20 @@ class SVGRenderer extends BaseRenderer {
      * @param {openBSE~Options} options - 全局选项
      * @param {object} elementSize - 元素大小
      * @param {Event} eventTrigger - 事件引发方法
-     * @param {object} bulletScreensOnScreen - 屏幕弹幕列表对象
      * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误
      */
-    constructor(element, options, elementSize, eventTrigger, bulletScreensOnScreen) {
+    constructor(element, options, elementSize, eventTrigger) {
         supportCheck(); //浏览器支持检测
-        let _div = init();
         let _svg;
         let _defsSvg;
-        super(_div, options, elementSize);
+        super(init(), options, elementSize);
 
         /**
          * 清除屏幕内容
          * @override
          */
         this.cleanScreen = function () {
-            _svg.innerHTML = '';
+            Helper.cleanElement(_svg);
             _defsSvg = createElementSVG('defs'); //defs
             _svg.appendChild(_defsSvg);
         }
@@ -36,14 +35,15 @@ class SVGRenderer extends BaseRenderer {
          * @override
          */
         this.draw = function () {
-            bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                for (let index in bulletScreenOnScreen.svg) {
-                    let item = bulletScreenOnScreen.svg[index];
+            for (let textSvg of _svg.getElementsByTagName('text')) {
+                let bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+                for (let key in bulletScreenOnScreen.svg) {
+                    let item = bulletScreenOnScreen.svg[key];
                     if (this.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');
                     else item.setAttribute('opacity', '1');
                     item.setAttribute('transform', `translate(${(bulletScreenOnScreen.x - 4)},${(bulletScreenOnScreen.actualY - 4)})`);
                 }
-            }, true);
+            }
         }
 
         /**
@@ -53,15 +53,16 @@ class SVGRenderer extends BaseRenderer {
          */
         this.creatAndgetWidth = function (bulletScreenOnScreen) {
             let bulletScreen = bulletScreenOnScreen.bulletScreen;
-            bulletScreenOnScreen.svg = {};
+            bulletScreenOnScreen.svg = typeof bulletScreenOnScreen.svg === 'object' ? bulletScreenOnScreen.svg : {};
 
-            let textSvg = createElementSVG('text');
+            let textSvg = typeof bulletScreenOnScreen.svg.text === 'object' ? bulletScreenOnScreen.svg.text : createElementSVG('text');
             textSvg.setAttribute('x', 0);
             textSvg.setAttribute('y', bulletScreenOnScreen.size * 0.8);
             textSvg.setAttribute('font-family', bulletScreen.style.fontFamily);
             textSvg.setAttribute('font-size', bulletScreenOnScreen.size);
             textSvg.setAttribute('font-weight', bulletScreen.style.fontWeight);
             textSvg.setAttribute('fill', bulletScreen.style.color);
+            Helper.cleanElement(textSvg);
             textSvg.appendChild(document.createTextNode(bulletScreen.text));
             if (bulletScreen.style.borderColor != null) {
                 textSvg.setAttribute('stroke', bulletScreen.borderColor);
@@ -100,12 +101,13 @@ class SVGRenderer extends BaseRenderer {
                 bulletScreenOnScreen.filterId = filterId;
             }
 
-            _svg.appendChild(textSvg);
             bulletScreenOnScreen.svg.text = textSvg;
+            textSvg.bulletScreenOnScreen = bulletScreenOnScreen;
+            insertElement(textSvg);
             bulletScreenOnScreen.width = textSvg.getComputedTextLength(); //弹幕的宽度：像素
 
             if (bulletScreen.style.boxColor != null) {
-                let rectSvg = createElementSVG('rect');
+                let rectSvg = typeof bulletScreenOnScreen.svg.rect === 'object' ? bulletScreenOnScreen.svg.rect : createElementSVG('rect');
                 rectSvg.setAttribute('x', -3);
                 rectSvg.setAttribute('y', -3);
                 rectSvg.setAttribute('fill', 'none');
@@ -113,8 +115,9 @@ class SVGRenderer extends BaseRenderer {
                 rectSvg.setAttribute('width', bulletScreenOnScreen.width + 7);
                 rectSvg.setAttribute('stroke', bulletScreen.style.boxColor);
                 rectSvg.setAttribute('stroke-width', 1);
-                _svg.appendChild(rectSvg);
                 bulletScreenOnScreen.svg.rect = rectSvg;
+                rectSvg.bulletScreenOnScreen = bulletScreenOnScreen;
+                _svg.insertBefore(rectSvg, textSvg);
             }
         }
 
@@ -132,6 +135,16 @@ class SVGRenderer extends BaseRenderer {
             for (let index in bulletScreenOnScreen.svg) {
                 _svg.removeChild(bulletScreenOnScreen.svg[index]);
             }
+        }
+
+        /**
+         * 重新添加弹幕
+         * @override
+         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         */
+        this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+            this.delete(bulletScreenOnScreen);
+            this.creatAndgetWidth(bulletScreenOnScreen);
         }
 
         let _setSize = this.setSize;
@@ -152,7 +165,7 @@ class SVGRenderer extends BaseRenderer {
          */
         function init() {
             let div = document.createElement('div'); //DIV
-            element.innerHTML = '';
+            Helper.cleanElement(element);
             element.appendChild(div);
             div.style.padding = '0';
             div.style.margin = '0';
@@ -191,19 +204,18 @@ class SVGRenderer extends BaseRenderer {
          */
         function registerEvent(element) {
             function getBulletScreenOnScreenByLocation(location) {
-                let _bulletScreenOnScreen = null;
-                bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
+                let textSvgs = _svg.getElementsByTagName('text');
+                for (let index = textSvgs.length - 1; index > 0; index--) {
+                    let bulletScreenOnScreen = textSvgs[index].bulletScreenOnScreen;
                     if (_checkWhetherHide(bulletScreenOnScreen)) return;
                     let x1 = bulletScreenOnScreen.x - 4;
                     let x2 = x1 + bulletScreenOnScreen.width + 8;
                     let y1 = bulletScreenOnScreen.actualY - 4;
                     let y2 = y1 + bulletScreenOnScreen.height + 8;
-                    if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-                        _bulletScreenOnScreen = bulletScreenOnScreen;
-                        return { stop: true };
-                    }
-                }, false);
-                return _bulletScreenOnScreen;
+                    if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2)
+                        return bulletScreenOnScreen;
+                }
+                return null;
             }
             function getLocation(e) {
                 function getOffsetTop(element) {
@@ -243,16 +255,44 @@ class SVGRenderer extends BaseRenderer {
             element.oncontextmenu = function (e) {
                 let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
                 if (bulletScreenOnScreen)
-                    eventTrigger('contextmenu', bulletScreenOnScreen);
+                    eventTrigger('contextmenu', bulletScreenOnScreen, e);
                 return false;
             };
             //单击
             element.onclick = function (e) {
                 let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
                 if (bulletScreenOnScreen)
-                    eventTrigger('click', bulletScreenOnScreen);
+                    eventTrigger('click', bulletScreenOnScreen, e);
                 return false;
             };
+            //鼠标移动
+            element.onmousemove = function (e) {
+                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+                for (let textSvg of _svg.getElementsByTagName('text')) {
+                    let _bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+                    if (_bulletScreenOnScreen != bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
+                        _bulletScreenOnScreen.mousein = false;
+                        element.style.cursor = '';
+                        eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+                    }
+                }
+                if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
+                bulletScreenOnScreen.mousein = true;
+                element.style.cursor = options.cursorOnMouseOver;
+                eventTrigger('mouseenter', bulletScreenOnScreen, e);
+                return false;
+            }
+            //鼠标离开
+            element.onmouseout = function (e) {
+                for (let textSvg of _svg.getElementsByTagName('text')) {
+                    let _bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+                    if (_bulletScreenOnScreen.mousein) {
+                        _bulletScreenOnScreen.mousein = false;
+                        element.style.cursor = '';
+                        eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+                    }
+                }
+            }
         }
 
         /**
@@ -263,6 +303,22 @@ class SVGRenderer extends BaseRenderer {
          */
         function createElementSVG(qualifiedName, options) {
             return document.createElementNS('http://www.w3.org/2000/svg', qualifiedName, options);
+        }
+
+        /**
+         * 按 layer 插入元素
+         * @param {Element} element - 元素
+         */
+        function insertElement(element) {
+            let elements = _svg.getElementsByTagName(element.tagName);
+            if (elements.length === 0) _svg.appendChild(element);
+            let index;
+            for (index = elements.length - 1; index > 0; index--) {
+                let _layer = elements[index].bulletScreenOnScreen.bulletScreen.layer;
+                if (_layer <= element.bulletScreenOnScreen.bulletScreen.layer) break;
+            }
+            if (++index === elements.length) _svg.appendChild(element);
+            else _svg.insertBefore(element, elements[index]);
         }
     }
 }

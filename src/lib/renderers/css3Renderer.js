@@ -1,5 +1,6 @@
 import { BaseRenderer } from './baseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
+import { Helper } from '../helper';
 
 /**
  * CSS3 渲染器类
@@ -23,7 +24,7 @@ class CSS3Renderer extends BaseRenderer {
          * @override
          */
         this.cleanScreen = function () {
-            _div.innerHTML = '';
+            Helper.cleanElement(_div);
         }
 
         /**
@@ -63,8 +64,8 @@ class CSS3Renderer extends BaseRenderer {
             if (bulletScreen.style.shadowBlur != null)
                 bulletScreenDiv.style.textShadow = `0 0 ${bulletScreen.style.shadowBlur}px black`;
             if (bulletScreen.style.borderColor != null) {
-                bulletScreenDiv.style.textStroke = bulletScreenDiv.style.webkitTextStroke = '0.5px';
-                bulletScreenDiv.style.textStrokeColor = bulletScreenDiv.style.webkitTextStrokeColor = bulletScreen.borderColor;
+                bulletScreenDiv.style.textStroke = bulletScreenDiv.style.webkitTextStroke = `0.5px`;
+                bulletScreenDiv.style.textStrokeColor = bulletScreenDiv.style.webkitTextStrokeColor = bulletScreen.style.borderColor;
             }
             if (bulletScreen.style.boxColor != null) {
                 bulletScreenDiv.style.padding = '3px';
@@ -74,21 +75,10 @@ class CSS3Renderer extends BaseRenderer {
             else {
                 bulletScreenDiv.style.padding = '4px';
             }
-            bulletScreenDiv.innerHTML = '';
+            Helper.cleanElement(bulletScreenDiv);
             bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
             bulletScreenDiv.bulletScreenOnScreen = bulletScreenOnScreen;
-
-            //insert
-            let bulletScreenDivs = _div.getElementsByTagName('div');
-            if (bulletScreenDivs.length === 0) _div.appendChild(bulletScreenDiv);
-            let index;
-            for (index = bulletScreenDivs.length - 1; index > 0; index--) {
-                let _layer = bulletScreenDivs[index].bulletScreenOnScreen.bulletScreen.layer;
-                if (_layer <= bulletScreen.layer) break;
-            }
-            if (++index === bulletScreenDivs.length) _div.appendChild(bulletScreenDiv);
-            else _div.insertBefore(bulletScreenDiv, bulletScreenDivs[index]);
-
+            insertElement(bulletScreenDiv); //insert
             bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8; //弹幕的宽度：像素
             bulletScreenOnScreen.div = bulletScreenDiv;
         }
@@ -119,7 +109,7 @@ class CSS3Renderer extends BaseRenderer {
          */
         function init() {
             let div = document.createElement('div'); //DIV
-            element.innerHTML = '';
+            Helper.cleanElement(element);
             element.appendChild(div);
             div.style.overflow = 'hidden';
             div.style.padding = '0';
@@ -180,6 +170,22 @@ class CSS3Renderer extends BaseRenderer {
                 e.target.style.cursor = '';
                 eventTrigger('mouseleave', bulletScreenOnScreen, e);
             }
+        }
+
+        /**
+         * 按 layer 插入元素
+         * @param {Element} element - 元素
+         */
+        function insertElement(element) {
+            let elements = _div.getElementsByTagName(element.tagName);
+            if (elements.length === 0) _div.appendChild(element);
+            let index;
+            for (index = elements.length - 1; index > 0; index--) {
+                let _layer = elements[index].bulletScreenOnScreen.bulletScreen.layer;
+                if (_layer <= element.bulletScreenOnScreen.bulletScreen.layer) break;
+            }
+            if (++index === elements.length) _div.appendChild(element);
+            else _div.insertBefore(element, elements[index]);
         }
     }
 }

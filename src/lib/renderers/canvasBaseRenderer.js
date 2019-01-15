@@ -1,6 +1,6 @@
 import { BaseRenderer } from './baseRenderer'
 import { LinkedList } from '../linkedList'
-import { Resources } from '../resources'
+import { Helper } from '../helper'
 
 /**
  * Canvas 渲染器抽象类
@@ -26,9 +26,7 @@ class CanvasBaseRenderer extends BaseRenderer {
          * DPI 缩放比例（倍数）
          * @private @type {number}
          */
-        let _devicePixelRatio = typeof window.devicePixelRatio != 'number' ? 1 : window.devicePixelRatio;
-        //不支持 devicePixelRatio 的警告
-        if (typeof window.devicePixelRatio != 'number') console.warn(Resources.DEVICEPIXELRATIO_NOT_SUPPORT_WARN);
+        let _devicePixelRatio = Helper.getDevicePixelRatio(true);
         _devicePixelRatio *= options.scaling;
         /**
          * 画布元素
@@ -36,6 +34,13 @@ class CanvasBaseRenderer extends BaseRenderer {
          */
         let _canvas = init();
         super(_canvas, options, elementSize);
+
+        /**
+         * 清除屏幕内容
+         * @function
+         * @override
+         */
+        this.cleanScreen = _bulletScreensOnScreen.clean;
 
         /**
          * 创建弹幕元素
@@ -96,8 +101,7 @@ class CanvasBaseRenderer extends BaseRenderer {
          * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
          */
         this.delete = (bulletScreenOnScreen) => _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) =>
-            _bulletScreenOnScreen === bulletScreenOnScreen ? { remove: true, stop: true } : null
-        );
+            _bulletScreenOnScreen === bulletScreenOnScreen ? { remove: true, stop: true } : null, true);
 
         /**
          * 重新添加弹幕
@@ -116,7 +120,7 @@ class CanvasBaseRenderer extends BaseRenderer {
          */
         this.setSize = function () {
             _setSize();
-            _devicePixelRatio = typeof window.devicePixelRatio === 'undefined' ? 1 : window.devicePixelRatio;
+            _devicePixelRatio = Helper.getDevicePixelRatio();
             _devicePixelRatio *= options.scaling;
             _canvas.width = elementSize.width * _devicePixelRatio;
             _canvas.height = elementSize.height * _devicePixelRatio;
@@ -147,7 +151,7 @@ class CanvasBaseRenderer extends BaseRenderer {
          */
         function init() {
             let canvas = document.createElement('canvas'); //canvas对象
-            element.innerHTML = '';
+            Helper.cleanElement(element);
             element.appendChild(canvas);
             canvas.width = elementSize.width * _devicePixelRatio;
             canvas.height = elementSize.height * _devicePixelRatio;

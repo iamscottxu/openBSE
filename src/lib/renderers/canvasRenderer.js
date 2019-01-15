@@ -23,11 +23,13 @@ class CanvasRenderer extends CanvasBaseRenderer {
          */
         let _bulletScreensOnScreen = this.getBulletScreensOnScreen();
 
+        let _cleanScreen = this.cleanScreen;
         /**
          * 清除屏幕内容
          * @override
          */
         this.cleanScreen = function () {
+            _cleanScreen();
             let canvas = this.getCanvas();
             canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
         }

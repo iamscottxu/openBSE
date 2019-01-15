@@ -101,7 +101,7 @@ class BulletScreenEngine {
                 /** 字体系列 */
                 fontFamily: 'sans-serif',
                 /** 字体大小（单位：像素） */
-                size: 19,
+                size: 25,
                 /** 外框颜色 */
                 boxColor: null,
                 /** 字体颜色 */
@@ -272,7 +272,7 @@ class BulletScreenEngine {
             width: element.clientWidth / _options.scaling,
             height: element.clientHeight / _options.scaling
         }
-        let _oldDevicePixelRatio = window.devicePixelRatio;
+        let _oldDevicePixelRatio = Helper.getDevicePixelRatio();
         let _oldScaling = _options.scaling;
         let _oldClientWidth = element.clientWidth;
         let _oldClientHeight = element.clientHeight;
@@ -678,7 +678,8 @@ class BulletScreenEngine {
          * @private
          */
         function setSize() {
-            if (_oldDevicePixelRatio != window.devicePixelRatio ||
+            let devicePixelRatio = Helper.getDevicePixelRatio();
+            if (_oldDevicePixelRatio != devicePixelRatio ||
                 _oldClientWidth != element.clientWidth ||
                 _oldClientHeight != element.clientHeight ||
                 _oldScaling != _options.scaling) {
@@ -687,7 +688,7 @@ class BulletScreenEngine {
                 _elementSize.height = element.clientHeight / _options.scaling;
                 _oldClientWidth = element.clientWidth;
                 _oldClientHeight = element.clientHeight;
-                _oldDevicePixelRatio = window.devicePixelRatio;
+                _oldDevicePixelRatio = devicePixelRatio;
                 _renderer.setSize();
                 if (!_playing) _renderer.draw(); //非播放状态则重绘
             }

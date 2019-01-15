@@ -115,6 +115,27 @@ function clone(object) {
 }
 
 /**
+ * 清空元素
+ * @param {Element} element 
+ */
+function cleanElement(element) {
+    let lastChild;
+    while ((lastChild = element.lastChild) != null) element.removeChild(lastChild);
+}
+
+/**
+ * 获取屏幕的设备像素比
+ * @param {boolean} showWarn - 显示警告
+ */
+function getDevicePixelRatio(showWarn = false) {
+    if (typeof window.devicePixelRatio === 'number') return window.devicePixelRatio;
+    if (typeof window.screen.deviceXDPI === 'number' && typeof window.screen.logicalXDPI === 'number') return screen.deviceXDPI / screen.logicalXDPI;
+    //不支持 devicePixelRatio 的警告
+    if(showWarn) console.warn(Resources.DEVICEPIXELRATIO_NOT_SUPPORT_WARN);
+    return 1;
+}
+
+/**
  * 帮助对象
  * @namespace
  */
@@ -125,7 +146,9 @@ const Helper = {
     checkTypes: checkTypes,
     isEmpty: isEmpty,
     _typeof: _typeof,
-    clone: clone
+    clone: clone,
+    cleanElement: cleanElement,
+    getDevicePixelRatio: getDevicePixelRatio
 }
 
 export { Helper }
