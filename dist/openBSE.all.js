@@ -3187,7 +3187,7 @@ var BrowserNotSupportError = function (_Error) {
 exports.BrowserNotSupportError = BrowserNotSupportError;
 
 },{"./lib/resources":126,"core-js/modules/es6.array.index-of":90,"core-js/modules/es6.array.iterator":91,"core-js/modules/es6.date.to-string":92,"core-js/modules/es6.function.bind":93,"core-js/modules/es6.map":94,"core-js/modules/es6.object.create":95,"core-js/modules/es6.object.define-property":96,"core-js/modules/es6.object.set-prototype-of":97,"core-js/modules/es6.reflect.construct":98,"core-js/modules/es6.regexp.to-string":103,"core-js/modules/es6.string.iterator":104,"core-js/modules/es6.symbol":105,"core-js/modules/es7.symbol.async-iterator":107,"core-js/modules/web.dom.iterable":108}],111:[function(require,module,exports){
-module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Tue, 15 Jan 2019 09:20:03 GMT"}
+module.exports={"version":"2.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Tue, 15 Jan 2019 15:53:06 GMT"}
 
 },{}],112:[function(require,module,exports){
 "use strict";
@@ -3449,16 +3449,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕单击事件。当单击弹幕时触发。
    * @event openBSE.BulletScreenEngine#click
-   * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-   * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true ，否则修改无法生效。
-   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
-   * @param {string} e.type - 事件类型（事件名称）
-   * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
-   * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
-   * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
-   * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
-   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
-   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+   * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
    */
 
 
@@ -3466,16 +3457,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
    * @event openBSE.BulletScreenEngine#contextmenu
-   * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-   * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
-   * @param {string} e.type - 事件类型（事件名称）
-   * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
-   * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
-   * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
-   * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
-   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
-   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+   * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
    */
 
 
@@ -3483,16 +3465,7 @@ function BulletScreenEngine(element, options) {
   /**
   * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
   * @event openBSE.BulletScreenEngine#mouseleave
-  * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-  * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-  * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
-  * @param {string} e.type - 事件类型（事件名称）
-  * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
-  * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
-  * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
-  * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
-  * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
-  * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+  * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
   */
 
 
@@ -3500,16 +3473,7 @@ function BulletScreenEngine(element, options) {
   /**
    * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
    * @event openBSE.BulletScreenEngine#mouseenter
-   * @param {openBSE~BulletScreen} [e.bulletScreen] - 被单击的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。可修改其中的参数，以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
-   * @param {boolean} [e.redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 e.bulletScreen 中的值，此参数必须设为 true 。
-   * @param {boolean} [e.pause=false] - 是否暂停：读取此参数可判断这条弹幕是否处于暂停状态，也可以设置此参数。如果设置为 true 则该弹幕暂停，直到下次引发任意弹幕事件时将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
-   * @param {string} e.type - 事件类型（事件名称）
-   * @param {number} e.screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
-   * @param {number} e.screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
-   * @param {number} e.clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
-   * @param {number} e.pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
-   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
-   * @param {number} e.pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+   * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
    */
 
 
@@ -3756,9 +3720,21 @@ function BulletScreenEngine(element, options) {
     }
 
     _event.trigger(name, {
+      /**
+       * 获取引发事件的弹幕弹幕的数据
+       * @private
+       * @returns {openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+       */
       getBulletScreen: function getBulletScreen() {
         return _helper.Helper.clone(bulletScreenOnScreen.bulletScreen);
       },
+
+      /**
+       * 设置引发事件的弹幕弹幕的数据
+       * @private
+       * @param {openBSE~BulletScreen} bulletScreen - 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。
+       * @param {boolean} [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。
+       */
       setBulletScreen: function setBulletScreen(bulletScreen) {
         var redraw = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
         if (typeof redraw != 'boolean') throw new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
@@ -3770,9 +3746,21 @@ function BulletScreenEngine(element, options) {
         if (redraw === true) _renderer.reCreatAndgetWidth(bulletScreenOnScreen);
         if (!_playing && redraw) _renderer.draw();
       },
+
+      /**
+       * 获取引发事件的弹幕的播放状态
+       * @private
+       * @returns {boolean} 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+       */
       getPlayState: function getPlayState() {
         return !bulletScreenOnScreen.pause;
       },
+
+      /**
+       * 设置引发事件的弹幕的播放状态
+       * @private
+       * @param {boolean} paly - 是否继续播放/移动引发事件的弹幕：读取此参数可判断这条弹幕是否处于暂停状态。
+       */
       setPlayState: function setPlayState(play) {
         if (typeof play != 'boolean') throw new TypeError(_resources.Resources.PARAMETERS_TYPE_ERROR);
         bulletScreenOnScreen.pause = !play;
@@ -4090,7 +4078,20 @@ function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterat
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-var Contextmenu = function Contextmenu(bulletScreenEngine, element) {
+/**
+ * 上下文菜单类
+ * @alias openBSE.Contextmenu
+ * @description 上下文菜单对象。用于实现一个弹幕上下文菜单。
+ */
+var Contextmenu =
+/**
+ * 创建弹幕引擎对象的上下文菜单。
+ * @param {openBSE.BulletScreenEngine} bulletScreenEngine - 弹幕引擎对象：一个弹幕 {@link openBSE.BulletScreenEngine} 对象。要添加上下文菜单的
+ * @param {Element} element - 上下文菜单元素：当显示上下文菜单时要显示的 div 。有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
+ * @param {number} [layer=10] - 弹幕层级：当显示上下文菜单或鼠标指向弹幕时弹幕要移动到的层级。有关弹幕层级的详细说明请参阅 {@link openBSE~options} 结构。
+ * @param {boolean} [pause=true] - 是否暂停：当鼠标指向弹幕或单开上下文菜单时弹幕是否暂停移动/播放。
+ */
+function Contextmenu(bulletScreenEngine, element) {
   var layer = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 10;
   var pause = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : true;
 
@@ -4102,11 +4103,36 @@ var Contextmenu = function Contextmenu(bulletScreenEngine, element) {
   var _getContextmenuState = function _getContextmenuState() {
     return contextmenu.style.display != 'none';
   };
+  /**
+   * 获取上下文菜单的状态
+   * @function
+   * @returns {boolean} 指示上下文菜单是否正处于激活/显示状态。
+   */
+
 
   this.getContextmenuState = _getContextmenuState;
+  /**
+   * 获取激活上下文菜单的弹幕的弹幕事件结构
+   * @returns {openBSE~BulletScreenEvent} 弹幕事件结构：一个 {@link openBSE~BulletScreenEvent} 结构。
+   */
 
   this.getBulletScreenEvent = function () {
     return element.bulletScreenEvent;
+  };
+  /**
+   * 关闭上下文菜单：如果当前上下文菜单正处于激活/显示状态则立即关闭。
+   */
+
+
+  this.closeContextmenu = function () {
+    if (_getContextmenuState()) {
+      element.style.display = 'none';
+      if (pause) element.bulletScreenEvent.setPlayState(true);
+      element.bulletScreenEvent.setBulletScreen({
+        _contextmenu: false
+      }, false);
+      element.bulletScreenEvent = null;
+    }
   };
 
   element.style.position = 'fixed';
@@ -4116,7 +4142,7 @@ var Contextmenu = function Contextmenu(bulletScreenEngine, element) {
     return false;
   };
 
-  var closeContextmenu = function closeContextmenu(e) {
+  var _closeContextmenu = function _closeContextmenu(e) {
     if (_getContextmenuState() && e.target != element) {
       element.style.display = 'none';
       if (pause) element.bulletScreenEvent.setPlayState(true);
@@ -4128,9 +4154,9 @@ var Contextmenu = function Contextmenu(bulletScreenEngine, element) {
     }
   };
 
-  window.addEventListener('click', closeContextmenu, true);
-  window.addEventListener('contextmenu', closeContextmenu, true);
-  window.addEventListener('scroll', closeContextmenu, true);
+  window.addEventListener('click', _closeContextmenu, true);
+  window.addEventListener('contextmenu', _closeContextmenu, true);
+  window.addEventListener('scroll', _closeContextmenu, true);
   bulletScreenEngine.bind('contextmenu', function (e) {
     e.setBulletScreen({
       layer: layer,
@@ -6623,6 +6649,22 @@ function getVersion() {
  * @property {string} [borderColor] 描边颜色：参照CSS颜色设置方法，为 null 没有描边。
  * @property {number} [speed=0.15] 弹幕速度：（在事件中修改修改此参数无需将 e.redraw 设置为 true）单位：像素/毫秒，仅弹幕类型为0、1时有效。
  * @property {number} [residenceTime=5000] 弹幕停留时间：（此参数在事件中修改无效）单位：毫秒，仅弹幕类型2、3时有效。
+ */
+
+/**
+ * 弹幕事件
+ * @typedef {object} openBSE~BulletScreenEvent
+ * @property {function} getBulletScreen() - 获取引发事件的弹幕弹幕的数据：retun: {@link openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+ * @property {function} setBulletScreen(bulletScreen,redraw) - 设置引发事件的弹幕弹幕的数据：params: {@link openBSE~BulletScreen} bulletScreen - 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。 boolean [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。
+ * @property {function} getPlayState() - 获取引发事件的弹幕的播放状态：retun: boolean 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+ * @property {function} setPlayState(play) - 设置引发事件的弹幕的播放状态：params: boolean paly - 是否继续播放/移动引发事件的弹幕：读取此参数可判断这条弹幕是否处于暂停状态。
+ * @property {string} type - 事件类型（事件名称）
+ * @property {number} screenX - 当事件发生时，鼠标相对于显示器屏的 X 坐标。
+ * @property {number} screenY - 当事件发生时，鼠标相对于显示器屏的 Y 坐标。
+ * @property {number} clientX - 当事件发生时，鼠标相对于浏览器有效区域的 X 坐标。
+ * @property {number} pageX - 当事件发生时，鼠标相对于页面的 X 坐标。
+ * @property {number} pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
+ * @property {number} pageY - 当事件发生时，鼠标相对于页面的 Y 坐标。
  */
 
 /**
