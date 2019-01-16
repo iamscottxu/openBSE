@@ -1,0 +1,10 @@
+"use strict";
+
+/**
+ * openBSE 根命名空间
+ * @namespace
+ */
+var openBSE = require('./openBSE');
+
+window.openBSE = openBSE;
+//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwcC5qcyJdLCJuYW1lcyI6WyJvcGVuQlNFIiwicmVxdWlyZSIsIndpbmRvdyJdLCJtYXBwaW5ncyI6Ijs7QUFBQTs7OztBQUlBLElBQUlBLE9BQU8sR0FBR0MsT0FBTyxDQUFDLFdBQUQsQ0FBckI7O0FBQ0FDLE1BQU0sQ0FBQ0YsT0FBUCxHQUFpQkEsT0FBakIiLCJzb3VyY2VzQ29udGVudCI6WyIvKipcclxuICogb3BlbkJTRSDmoLnlkb3lkI3nqbrpl7RcclxuICogQG5hbWVzcGFjZVxyXG4gKi9cclxubGV0IG9wZW5CU0UgPSByZXF1aXJlKCcuL29wZW5CU0UnKTtcclxud2luZG93Lm9wZW5CU0UgPSBvcGVuQlNFOyJdLCJmaWxlIjoiYXBwLmpzIn0=

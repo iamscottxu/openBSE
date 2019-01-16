@@ -2,13 +2,13 @@ const gulp = require('gulp');
 const browserify = require('browserify');
 const uglify = require('gulp-uglify');
 const source = require('vinyl-source-stream');
-const babelify = require('babelify');
 const rename = require("gulp-rename");
 const header = require('gulp-header');
 const jsdoc = require('gulp-jsdoc3');
 const fs = require('fs-extra');
 const sourcemaps = require('gulp-sourcemaps');
 const buffer = require('vinyl-buffer');
+const babel = require("gulp-babel");
 const buildConfig = require('./build.json');
 
 gulp.task('doc', function (cb) {
@@ -18,18 +18,13 @@ gulp.task('doc', function (cb) {
         .pipe(jsdoc(config, cb));
 });
 
-gulp.task('build', () => {
+gulp.task('es6', () => {
     buildConfig.buildDate = new Date().toUTCString();
-    let license = fs.readFileSync('./LICENSE').toString();
-    
-    fs.writeJSONSync('src/build.json', buildConfig);
-
-    return browserify({
-        entries: 'src/app.js',
-        debug: true
-    })
-        .require('./src/openBSE.js', {expose: 'openbse'})
-        .transform(babelify, {
+    fs.writeJSONSync('dist/build.json', buildConfig);
+    fs.copyFileSync('src/lib/resources.json', 'dist/lib/resources.json');
+    return gulp.src('src/**/*.js')
+        .pipe(sourcemaps.init())
+        .pipe(babel({
             presets: [
                 [
                     '@babel/preset-env',
@@ -39,7 +34,18 @@ gulp.task('build', () => {
                 ]
             ],
             shouldPrintComment: (val) => /^\*/.test(val)
-        })
+        }))
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('dist'));
+});
+
+gulp.task('build', () => {
+    let license = fs.readFileSync('./LICENSE').toString();
+    return browserify({
+        entries: 'dist/app.js',
+        debug: true
+    })
+        .require('./dist/openBSE.js', { expose: 'openbse' })
         .bundle()
         .pipe(source(`${buildConfig.name}.all.js`))
         .pipe(buffer())
@@ -65,4 +71,4 @@ gulp.task('min', () => {
         .pipe(gulp.dest('dist'))
 });
 
-gulp.task('default', gulp.series('build', 'min', 'doc'));
+gulp.task('default', gulp.series('es6', 'build', 'min', 'doc'));

@@ -2,7 +2,7 @@
   "name": "openbse",
   "version": "2.0.8",
   "description": "openBSE 是一个高性能 JavaScript 弹幕引擎。同屏弹幕1000+ A high-performance JavaScript bullet screen (danmaku) engine. ",
-  "main": "./dist/openBSE.all.js",
+  "main": "./dist/openBSE.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "gulp"
@@ -29,17 +29,17 @@
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
-    "babelify": "^10.0.0",
     "browserify": "^16.2.3",
+    "fs-extra": "^7.0.1",
     "gulp": "^4.0.0",
+    "gulp-babel": "^8.0.0",
     "gulp-header": "^2.0.7",
     "gulp-jsdoc3": "^2.0.0",
     "gulp-rename": "^1.4.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
     "vinyl-buffer": "^1.0.1",
-    "vinyl-source-stream": "^2.0.0",
-    "fs-extra": "^7.0.1"
+    "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
     "@babel/polyfill": "^7.2.5"
