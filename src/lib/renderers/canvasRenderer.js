@@ -45,11 +45,11 @@ class CanvasRenderer extends CanvasBaseRenderer {
             canvasContext.clearRect(0, 0, canvas.width, canvas.height);
             _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
                 if (this.checkWhetherHide(bulletScreenOnScreen)) return;
-                canvasContext.drawImage(bulletScreenOnScreen.hideCanvas, (
+                canvasContext.drawImage(bulletScreenOnScreen.hideCanvas, 
                     Math.round((bulletScreenOnScreen.x - 4) * devicePixelRatio), 
                     Math.round((bulletScreenOnScreen.actualY - 4) * devicePixelRatio), 
                     Math.round((bulletScreenOnScreen.width + 8) * devicePixelRatio), 
-                    Math.round((bulletScreenOnScreen.height + 8) * devicePixelRatio))
+                    Math.round((bulletScreenOnScreen.height + 8) * devicePixelRatio)
                 );
             }, true);
         }
