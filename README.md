@@ -41,7 +41,7 @@ for (var i = 0; i < 10000; i++) {
         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
         startTime: _startTime
     });
-    _startTime += parseInt(Math.random() * 300);
+    _startTime += Math.round(Math.random() * 300);
 }
 bulletScreenEngine.play();
 ```
