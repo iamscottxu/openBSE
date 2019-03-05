@@ -41,18 +41,17 @@ class CanvasRenderer extends CanvasBaseRenderer {
         this.draw = function () {
             let canvas = this.getCanvas();
             let devicePixelRatio = this.getDevicePixelRatio();
-            //离屏渲染
-            let hideCanvas = document.createElement('canvas');
-            hideCanvas.width = canvas.width;
-            hideCanvas.height = canvas.height;
-            let hideCanvasContext = hideCanvas.getContext('2d');
-            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                if (this.checkWhetherHide(bulletScreenOnScreen)) return;
-                hideCanvasContext.drawImage(bulletScreenOnScreen.hideCanvas, (bulletScreenOnScreen.x - 4) * devicePixelRatio, (bulletScreenOnScreen.actualY - 4) * devicePixelRatio, (bulletScreenOnScreen.width + 8) * devicePixelRatio, (bulletScreenOnScreen.height + 8) * devicePixelRatio);
-            }, true);
             let canvasContext = canvas.getContext('2d');
             canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-            canvasContext.drawImage(hideCanvas, 0, 0);
+            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
+                if (this.checkWhetherHide(bulletScreenOnScreen)) return;
+                canvasContext.drawImage(bulletScreenOnScreen.hideCanvas, (
+                    Math.round((bulletScreenOnScreen.x - 4) * devicePixelRatio), 
+                    Math.round((bulletScreenOnScreen.actualY - 4) * devicePixelRatio), 
+                    Math.round((bulletScreenOnScreen.width + 8) * devicePixelRatio), 
+                    Math.round((bulletScreenOnScreen.height + 8) * devicePixelRatio))
+                );
+            }, true);
         }
 
         /**

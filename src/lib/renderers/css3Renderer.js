@@ -42,7 +42,7 @@ class CSS3Renderer extends BaseRenderer {
                 bulletScreenDiv.style.transform =
                     bulletScreenDiv.style.webkitTransform =
                     bulletScreenDiv.style.msTransform =
-                    `translate(${(bulletScreenDiv.bulletScreenOnScreen.x - 4)}px,${(bulletScreenDiv.bulletScreenOnScreen.actualY - 4)}px)`;
+                    `translate(${Math.round(bulletScreenDiv.bulletScreenOnScreen.x - 4)}px,${Math.round(bulletScreenDiv.bulletScreenOnScreen.actualY - 4)}px)`;
             }
         }
 

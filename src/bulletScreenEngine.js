@@ -564,23 +564,23 @@ class BulletScreenEngine {
             _renderer.creatAndgetWidth(bulletScreenOnScreen); //创建弹幕元素并计算宽度
             switch (bulletScreen.type) {
                 case BulletScreenType.rightToLeft:
-                    bulletScreenOnScreen.endTime = parseInt(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
+                    bulletScreenOnScreen.endTime = Math.round(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
                     bulletScreenOnScreen.x = _elementSize.width; //弹幕初始X坐标
                     bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case BulletScreenType.leftToRight:
-                    bulletScreenOnScreen.endTime = parseInt(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
+                    bulletScreenOnScreen.endTime = Math.round(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
                     bulletScreenOnScreen.x = -bulletScreenOnScreen.width; //弹幕初始X坐标
                     bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case BulletScreenType.top:
                     bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
-                    bulletScreenOnScreen.x = parseInt((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
+                    bulletScreenOnScreen.x = Math.round((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
                     bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case BulletScreenType.bottom:
                     bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
-                    bulletScreenOnScreen.x = parseInt((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
+                    bulletScreenOnScreen.x = Math.round((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
                     bulletScreenOnScreen.y = -_options.verticalInterval - bulletScreenOnScreen.height; //弹幕初始Y坐标
                     break;
             }

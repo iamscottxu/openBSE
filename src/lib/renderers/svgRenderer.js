@@ -41,7 +41,7 @@ class SVGRenderer extends BaseRenderer {
                     let item = bulletScreenOnScreen.svg[key];
                     if (this.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');
                     else item.setAttribute('opacity', '1');
-                    item.setAttribute('transform', `translate(${(bulletScreenOnScreen.x - 4)},${(bulletScreenOnScreen.actualY - 4)})`);
+                    item.setAttribute('transform', `translate(${Math.round(bulletScreenOnScreen.x - 4)},${Math.round(bulletScreenOnScreen.actualY - 4)})`);
                 }
             }
         }
