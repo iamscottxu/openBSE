@@ -1,5 +1,5 @@
 # openBSE
-[![Version 2.0](https://img.shields.io/badge/version-1.3-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v2.0)
+[![Version 2.1](https://img.shields.io/badge/version-2.1-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v2.1)
 [![NPM](https://img.shields.io/npm/v/openbse.svg?style=flat-square)](https://www.npmjs.com/package/openbse)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)
@@ -7,7 +7,7 @@
 [中文版本](https://github.com/iamscottxu/openBSE/blob/master/README.md) |
 [wiki](https://github.com/iamscottxu/openBSE/wiki) |
 [Demo](https://iamscottxu.github.io/openBSE/demo/openBSEDemo.html)
-[Docs](https://iamscottxu.github.io/openBSE/docs/2.0/index.html)
+[Docs](https://iamscottxu.github.io/openBSE/docs/2.1/index.html)
 
 A high-performance JavaScript bullet-screen (danmaku) engine. 1000+ at the same time
 
@@ -16,7 +16,7 @@ This is a high-performance JavaScript bullet-screen (danmaku) engine and it is v
 
 ## Installation and use
 ### Installation
-You can click [here](https://github.com/iamscottxu/openBSE/releases/tag/v2.0) to download latest release version. You also can install NPM package using following commands.
+You can click [here](https://github.com/iamscottxu/openBSE/releases/tag/v2.1) to download latest release version. You also can install NPM package using following commands.
 ```Bash
 > npm install openbse
 ```
