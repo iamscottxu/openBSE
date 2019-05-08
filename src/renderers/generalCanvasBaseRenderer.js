@@ -1,11 +1,11 @@
-import { BaseRenderer } from './baseRenderer'
+import { GeneralBaseRenderer } from './generalBaseRenderer'
 import { LinkedList } from '../linkedList'
 import { Helper } from '../helper'
 
 /**
  * Canvas 渲染器抽象类
  */
-class CanvasBaseRenderer extends BaseRenderer {
+class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 Canvas 渲染器抽象类
      * @param {object} element - Element 元素
@@ -14,7 +14,7 @@ class CanvasBaseRenderer extends BaseRenderer {
      * @param {function} eventTrigger - 事件引发方法
      */
     constructor(element, options, elementSize, eventTrigger) {
-        if (new.target === CanvasBaseRenderer) {
+        if (new.target === GeneralCanvasBaseRenderer) {
             throw new SyntaxError();
         }
         /**
@@ -259,4 +259,4 @@ class CanvasBaseRenderer extends BaseRenderer {
     }
 }
 
-export { CanvasBaseRenderer };
+export { GeneralCanvasBaseRenderer };
