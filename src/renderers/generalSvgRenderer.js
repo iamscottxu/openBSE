@@ -1,11 +1,11 @@
-import { BaseRenderer } from './baseRenderer'
+import { GeneralBaseRenderer } from './generalBaseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
 import { Helper } from '../helper'
 
 /**
  * SVG 渲染器类
  */
-class SVGRenderer extends BaseRenderer {
+class GeneralSvgRenderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 SVG 渲染器类
      * @param {object} element - Element 元素
@@ -323,4 +323,4 @@ class SVGRenderer extends BaseRenderer {
     }
 }
 
-export { SVGRenderer };
+export { GeneralSvgRenderer };
