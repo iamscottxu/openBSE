@@ -1,11 +1,11 @@
-import { BaseRenderer } from './baseRenderer'
+import { GeneralBaseRenderer } from './generalBaseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
 import { Helper } from '../helper';
 
 /**
  * CSS3 渲染器类
  */
-class CSS3Renderer extends BaseRenderer {
+class GeneralCss3Renderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 CSS3 渲染器类
      * @param {object} element - Element 元素
@@ -190,4 +190,4 @@ class CSS3Renderer extends BaseRenderer {
     }
 }
 
-export { CSS3Renderer };
+export { GeneralCss3Renderer };
