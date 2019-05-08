@@ -1,10 +1,10 @@
-import { CanvasBaseRenderer } from './canvasBaseRenderer'
+import { GeneralCanvasBaseRenderer } from './generalCanvasBaseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
 
 /**
  * Canvas 渲染器类
  */
-class CanvasRenderer extends CanvasBaseRenderer {
+class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
     /**
      * 实例化一个 Canvas 渲染器类
      * @param {object} element - Element 元素
@@ -69,4 +69,4 @@ class CanvasRenderer extends CanvasBaseRenderer {
     }
 }
 
-export { CanvasRenderer };
+export { GeneralCanvasRenderer };
