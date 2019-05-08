@@ -1,10 +1,10 @@
-import { CanvasBaseRenderer } from './canvasBaseRenderer'
+import { GeneralCanvasBaseRenderer } from './generalCanvasBaseRenderer'
 import { BrowserNotSupportError } from '../../browserNotSupportError'
 
 /**
  * WebGL 渲染器类
  */
-class WebGLRenderer extends CanvasBaseRenderer {
+class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
     /**
      * 实例化一个 WebGL 渲染器类
      * @param {object} element - Element 元素
@@ -222,4 +222,4 @@ class WebGLRenderer extends CanvasBaseRenderer {
     }
 }
 
-export { WebGLRenderer };
+export { GeneralWebglRenderer };
