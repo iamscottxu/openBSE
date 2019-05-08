@@ -15,7 +15,7 @@
                     fontFamily: 'Microsoft Yahei UI, Microsoft Yahei, SimHei, Heiti SC, sans-serif',
                     borderColor: 'rgba(0,0,0,0.4)'
                 }
-            });
+            }, 'canvas');
 
             var contextmenu = new openBSE.Contextmenu(bulletScreenEngine, document.getElementById('contextmenu'));
 
@@ -54,7 +54,7 @@
                             color: '#FFCC66'
                         }
                     });
-                _startTime += Math.round(Math.random() * 300);
+                _startTime += Math.round(Math.random() * 500);
             }
         }
         var showDebugInfo = function () {
