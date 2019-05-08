@@ -1,7 +1,7 @@
 /**
  * 渲染器抽象类
  */
-class BaseRenderer {
+class GeneralBaseEngine {
     /**
      * 实例化一个渲染器抽象类
      * @param {object} element - Element 元素
@@ -9,7 +9,7 @@ class BaseRenderer {
      * @param {object} elementSize - 元素大小
      */
     constructor(element, options, elementSize) {
-        if (new.target === BaseRenderer) {
+        if (new.target === GeneralBaseEngine) {
             throw new SyntaxError();
         }
 
@@ -160,4 +160,4 @@ class BaseRenderer {
     }
 }
 
-export { BaseRenderer };
+export { GeneralBaseEngine };
