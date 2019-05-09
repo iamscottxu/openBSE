@@ -12,9 +12,10 @@
             document.getElementById("buildDate").innerText = versionInfo.buildDate;
             window.generalEngine = new openBSE.GeneralEngine(document.getElementById('BulletScreensDiv'), {
                 defaultStyle: {
-                    fontFamily: '"Microsoft YaHei Bold","PingFang SC",SimHei,"Heiti SC",sans-serif',
+                    fontFamily: '"Microsoft YaHei","PingFang SC",SimHei,"Heiti SC",sans-serif',
                     borderColor: 'rgba(0,0,0,0.4)',
-                    fontWeight: 400
+                    fontWeight: 'normal',
+                    shadowBlur: 4
                 }
             }, 'canvas');
 
