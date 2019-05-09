@@ -81,7 +81,6 @@ export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
             }
             bulletScreenOnScreen.hideCanvas = hideCanvas;
 
-            if (_bulletScreensOnScreen.getLength() === 0) _bulletScreensOnScreen.push(bulletScreenOnScreen, true);
             let flag = false;
             _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
                 if (_bulletScreenOnScreen.bulletScreen.layer <= bulletScreen.layer) {
