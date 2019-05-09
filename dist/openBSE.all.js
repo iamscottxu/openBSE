@@ -36,7 +36,7 @@ window.openBSE = openBSE;
 
 
 },{"./openBSE":"openbse"}],2:[function(require,module,exports){
-module.exports={"version":"3.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Thu, 09 May 2019 13:14:14 GMT"}
+module.exports={"version":"3.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Thu, 09 May 2019 14:08:48 GMT"}
 
 },{}],3:[function(require,module,exports){
 "use strict";
@@ -2135,7 +2135,6 @@ var GeneralCanvasBaseRenderer = function (_GeneralBaseRenderer) {
       }
 
       bulletScreenOnScreen.hideCanvas = hideCanvas;
-      if (_bulletScreensOnScreen.getLength() === 0) _bulletScreensOnScreen.push(bulletScreenOnScreen, true);
       var flag = false;
 
       _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
