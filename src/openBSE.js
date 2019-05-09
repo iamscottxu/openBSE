@@ -1,8 +1,8 @@
-import { Helper } from './lib/helper'
-import { BulletScreenEngine } from './bulletScreenEngine'
-import { BrowserNotSupportError } from './browserNotSupportError'
-import { BulletScreenType } from './bulletScreenType'
-import { Contextmenu } from './contextmenu'
+import Helper from './lib/helper'
+import GeneralEngine from './engines/generalEngine'
+import BrowserNotSupportError from './errors/browserNotSupportError'
+import GeneralType from './engines/generalType'
+import Contextmenu from './contextmenu'
 import * as build from './build.json'
 
 /**
@@ -14,7 +14,7 @@ function getVersion() {
     return Helper.clone(build);
 }
 
-export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, Contextmenu, getVersion }
+export { GeneralEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVersion }
 
 /**
  * 全局选项
@@ -25,7 +25,7 @@ export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, Contextme
  * @property {openBSE~clockCallback} [clock=time => new Date().getTime() - startTime] - 时间基准：此时间基准可指向一个方法用于获取播放器当前进度，这个方法返回值即为播放进度（单位：毫秒）。
  * @property {number} [scaling=1] 弹幕缩放比例（倍数）
  * @property {openBSE~BulletScreenStyle} [defaultStyle] 默认弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。
- * @property {openBSE.BulletScreenType} [hiddenTypes=0] 隐藏的弹幕类型：一个 {@link openBSE.BulletScreenType} 枚举。将要隐藏的弹幕类型相加，0为不隐藏任何类型的弹幕。
+ * @property {openBSE.GeneralType} [hiddenTypes=0] 隐藏的弹幕类型：一个 {@link openBSE.GeneralType} 枚举。将要隐藏的弹幕类型相加，0为不隐藏任何类型的弹幕。
  * @property {number} [opacity=1.0] 弹幕不透明度：取值范围 0.0 到 1.0，0.0 全透明；1.0 不透明。
  * @property {string} [cursorOnMouseOver='pointer'] 鼠标经过样式：当鼠标经过弹幕时的样式，可设置的值可参考 MDN [cursor] {@link https://developer.mozilla.org/zh-CN/docs/Web/CSS/cursor} 。
  */
@@ -44,7 +44,7 @@ export { BulletScreenEngine, BrowserNotSupportError, BulletScreenType, Contextme
  * @property {string} text 弹幕文本
  * @property {boolean} [canDiscard=true] 是否允许丢弃：（此参数在事件中修改无效）在弹幕过多时，程序将自动丢弃一些延迟过高的弹幕。此选项为 false 时本条弹幕无论如何都不会被丢弃，使用本选项的场景如本用户发送的弹幕。（注意：不要将太多的弹幕的 canDiscard 设为 false， 否则会因超时的弹幕不会被丢弃而造成意外的问题。）
  * @property {number} [startTime=options.clock()] 弹幕进入时间：（此参数在事件中修改无效）单位：毫秒，默认为[时间基准（options.clock）]{@link openBSE~Options}当前时间。
- * @property {openBSE.BulletScreenType} [type=openBSE.BulletScreenType.rightToLeft] 弹幕类型：（此参数在事件中修改无效）一个类型为 {@link openBSE.BulletScreenType} 的枚举。
+ * @property {openBSE.GeneralType} [type=openBSE.GeneralType.rightToLeft] 弹幕类型：（此参数在事件中修改无效）一个类型为 {@link openBSE.BulletScreenType} 的枚举。
  * @property {openBSE~BulletScreenStyle} style 弹幕样式：一个 {@link openBSE~BulletScreenStyle} 结构。设置此选项中的任何一个值，将覆盖对应的全局设置。
  * @property {number} [layer=0] 弹幕层级：此参数越大，弹幕越靠前。一条弹幕在比它层级小的弹幕前面，在比它层级大的弹幕后面。如果层级相同按照进入时间确定层级顺序。
  * @property {any} more... 其他自定义字段：（在事件中修改修改此参数无需将 e.redraw 设置为 true）例如 uuid 、 id 等。（注意：因为在事件响应方法中返回的弹幕对象是原对象克隆的，所以无法直接比较，必须使用自定义字段唯一标识一条弹幕。）

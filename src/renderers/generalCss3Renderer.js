@@ -1,11 +1,11 @@
-import { GeneralBaseRenderer } from './generalBaseRenderer'
-import { BrowserNotSupportError } from '../../browserNotSupportError'
-import { Helper } from '../helper';
+import GeneralBaseRenderer from './generalBaseRenderer'
+import BrowserNotSupportError from '../errors/browserNotSupportError'
+import Helper from '../lib/helper';
 
 /**
  * CSS3 渲染器类
  */
-class GeneralCss3Renderer extends GeneralBaseRenderer {
+export default class GeneralCss3Renderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 CSS3 渲染器类
      * @param {object} element - Element 元素
@@ -42,7 +42,7 @@ class GeneralCss3Renderer extends GeneralBaseRenderer {
                 bulletScreenDiv.style.transform =
                     bulletScreenDiv.style.webkitTransform =
                     bulletScreenDiv.style.msTransform =
-                    `translate(${Math.round(bulletScreenDiv.bulletScreenOnScreen.x - 4)}px,${Math.round(bulletScreenDiv.bulletScreenOnScreen.actualY - 4)}px)`;
+                    `translate(${(bulletScreenDiv.bulletScreenOnScreen.x - 4).toFixed(1)}px,${(bulletScreenDiv.bulletScreenOnScreen.actualY - 4).toFixed(1)}px)`;
             }
         }
 
@@ -190,4 +190,3 @@ class GeneralCss3Renderer extends GeneralBaseRenderer {
     }
 }
 
-export { GeneralCss3Renderer };

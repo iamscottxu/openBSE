@@ -1,10 +1,10 @@
-import { Resources } from './lib/resources'
+import Resources from './lib/resources'
 /**
  * 上下文菜单类
  * @alias openBSE.Contextmenu
  * @description 上下文菜单对象。用于实现一个弹幕上下文菜单。
  */
-class Contextmenu {
+export default class Contextmenu {
     /**
      * 创建弹幕引擎对象的上下文菜单。
      * @param {openBSE.BulletScreenEngine} bulletScreenEngine - 弹幕引擎对象：一个弹幕 {@link openBSE.BulletScreenEngine} 对象。要添加上下文菜单的
@@ -86,4 +86,3 @@ class Contextmenu {
     }
 }
 
-export { Contextmenu }

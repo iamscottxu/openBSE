@@ -1,4 +1,4 @@
-import { Resources } from './lib/resources'
+import Resources from '../lib/resources'
 
 /** 
  * 浏览器不支持所引发的错误
@@ -6,7 +6,7 @@ import { Resources } from './lib/resources'
  * @alias openBSE.BrowserNotSupportError
  * @extends Error
  */
-class BrowserNotSupportError extends Error {
+export default class BrowserNotSupportError extends Error {
     /**
      * 创建一个异常对象
      * @param {string} message - 消息
@@ -17,4 +17,3 @@ class BrowserNotSupportError extends Error {
     }
 }
 
-export { BrowserNotSupportError }

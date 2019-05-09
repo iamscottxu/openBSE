@@ -1,10 +1,10 @@
-import { Resources } from './resources'
-import { Helper } from './helper';
+import Resources from './resources'
+import Helper from './helper';
 
 /**
  * 事件模型类
  */
-class Event {
+export default class Event {
     /**
      * 创建一个新的事件模型。
      */
@@ -93,4 +93,4 @@ class Event {
         };
     }
 }
-export { Event }
+

@@ -1,4 +1,4 @@
-import { Resources } from '../resources'
+import Resources from '../lib/resources'
 
 /**
  * 渲染器
@@ -10,37 +10,37 @@ const RENDERERS = {
      * @private @readonly
      */
     css3: {
-        general: require('./generalCss3Renderer').GeneralCss3Renderer,
-        special: require('./generalCss3Renderer').GeneralCss3Renderer
+        general: require('./generalCss3Renderer').default,
+        special: require('./generalCss3Renderer').default
     },
     /**
      * SVG 渲染模式（仅普通弹幕引擎）
      * @private @readonly
      */
     svg: {
-        general: require('./generalSvgRenderer').GeneralSvgRenderer
+        general: require('./generalSvgRenderer').default
     },
     /**
      * WebGL 渲染模式（仅普通弹幕引擎）
      * @private @readonly
      */
     webgl: {
-        general: require('./generalWebglRenderer').GeneralWebglRenderer
+        general: require('./generalWebglRenderer').default
     },
     /**
      * Canvas 2D 渲染模式（普通弹幕引擎和特殊弹幕引擎）
      * @private @readonly
      */
     canvas: {
-        general: require('./generalCanvasRenderer').GeneralCanvasBaseRenderer,
-        special: require('./generalCanvasRenderer').GeneralCanvasBaseRenderer
+        general: require('./generalCanvasRenderer').default,
+        special: require('./generalCanvasRenderer').default
     }
 }
 
 /**
  * 渲染器工厂
  */
-class RenderersFactory {
+export default class RenderersFactory {
     /**
      * 实例化一个渲染器工厂
      * @param {object} element - Element 元素
@@ -81,4 +81,3 @@ class RenderersFactory {
     }
 }
 
-export { RenderersFactory };

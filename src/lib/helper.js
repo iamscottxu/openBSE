@@ -1,4 +1,4 @@
-import { Resources } from './resources'
+import Resources from './resources'
 
 /**
  * 设置值
@@ -150,5 +150,5 @@ const Helper = {
     cleanElement: cleanElement,
     getDevicePixelRatio: getDevicePixelRatio
 }
+export default Helper
 
-export { Helper }

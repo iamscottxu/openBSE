@@ -1,6 +1,6 @@
 /**
  * 弹幕类型枚举
- * @alias openBSE.BulletScreenType
+ * @alias openBSE.GeneralType
  * @readonly
  * @enum {number}
  */
@@ -26,5 +26,5 @@ const GeneralType = {
      */
     bottom: 8
 }
+export default GeneralType
 
-export { GeneralType }

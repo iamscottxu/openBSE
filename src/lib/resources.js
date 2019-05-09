@@ -25,4 +25,4 @@ for (let key in Resources) {
     }
 }
 
-export { Resources }
+export default Resources

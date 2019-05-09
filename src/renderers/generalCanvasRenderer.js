@@ -1,10 +1,10 @@
-import { GeneralCanvasBaseRenderer } from './generalCanvasBaseRenderer'
-import { BrowserNotSupportError } from '../../browserNotSupportError'
+import GeneralCanvasBaseRenderer from './generalCanvasBaseRenderer'
+import BrowserNotSupportError from '../errors/browserNotSupportError'
 
 /**
  * Canvas 渲染器类
  */
-class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
+export default class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
     /**
      * 实例化一个 Canvas 渲染器类
      * @param {object} element - Element 元素
@@ -46,10 +46,10 @@ class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
             _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
                 if (this.checkWhetherHide(bulletScreenOnScreen)) return;
                 canvasContext.drawImage(bulletScreenOnScreen.hideCanvas, 
-                    Math.round((bulletScreenOnScreen.x - 4) * devicePixelRatio), 
-                    Math.round((bulletScreenOnScreen.actualY - 4) * devicePixelRatio), 
-                    Math.round((bulletScreenOnScreen.width + 8) * devicePixelRatio), 
-                    Math.round((bulletScreenOnScreen.height + 8) * devicePixelRatio)
+                    ((bulletScreenOnScreen.x - 4) * devicePixelRatio).toFixed(1), 
+                    ((bulletScreenOnScreen.actualY - 4) * devicePixelRatio).toFixed(1), 
+                    ((bulletScreenOnScreen.width + 8) * devicePixelRatio).toFixed(1), 
+                    ((bulletScreenOnScreen.height + 8) * devicePixelRatio).toFixed(1)
                 );
             }, true);
         }
@@ -69,4 +69,3 @@ class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
     }
 }
 
-export { GeneralCanvasRenderer };

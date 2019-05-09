@@ -1,11 +1,11 @@
-import { GeneralBaseRenderer } from './generalBaseRenderer'
-import { LinkedList } from '../linkedList'
-import { Helper } from '../helper'
+import GeneralBaseRenderer from './generalBaseRenderer'
+import LinkedList from '../lib/linkedList'
+import Helper from '../lib/helper'
 
 /**
  * Canvas 渲染器抽象类
  */
-class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
+export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 Canvas 渲染器抽象类
      * @param {object} element - Element 元素
@@ -259,4 +259,3 @@ class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
     }
 }
 
-export { GeneralCanvasBaseRenderer };

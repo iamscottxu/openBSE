@@ -1,18 +1,18 @@
-import { LinkedList } from '../lib/linkedList'
-import { Event } from '../lib/event'
-import { RenderersFactory } from '../lib/renderers/renderersFactory'
-import { generalType } from './generalType'
-import { Helper } from '../lib/helper'
-import { Resources } from '../lib/resources'
-import * as build from './build.json'
+import LinkedList from '../lib/linkedList'
+import Event from '../lib/event'
+import RenderersFactory from '../renderers/renderersFactory'
+import GeneralType from './generalType'
+import Helper from '../lib/helper'
+import Resources from '../lib/resources'
+import * as build from '../build.json'
 
 /** 
  * 弹幕引擎对象类 
- * @alias openBSE.BulletScreenEngine
+ * @alias openBSE.GeneralEngine
  * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误。
  * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
  */
-class GeneralEngine {
+export default class GeneralEngine {
     /**
      * 创建一个弹幕引擎对象。
      * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
@@ -153,7 +153,7 @@ class GeneralEngine {
             /** 弹幕进入时间 */
             startTime: null,
             /** 弹幕类型 */
-            type: generalType.rightToLeft,
+            type: GeneralType.rightToLeft,
             /** 弹幕层级（越大越前） */
             layer: 0
         }
@@ -244,7 +244,7 @@ class GeneralEngine {
         let _oldOpacity = _options.opacity;
         //渲染器工厂
         let renderersFactory = new RenderersFactory(element, _options, _elementSize, bulletScreenEventTrigger);
-        let _renderer = renderersFactory.getRenderer(renderMode); //实例化渲染器
+        let _renderer = renderersFactory.getGeneralRenderer(renderMode); //实例化渲染器
         setInterval(setSize, 100);
 
         //公共函数
@@ -283,10 +283,10 @@ class GeneralEngine {
             bulletScreen = Helper.setValues(bulletScreen, _defaultBulletScreen, _bulletScreenType); //设置默认值
 
             if (
-                bulletScreen.type != generalType.leftToRight &&
-                bulletScreen.type != generalType.rightToLeft &&
-                bulletScreen.type != generalType.top &&
-                bulletScreen.type != generalType.bottom
+                bulletScreen.type != GeneralType.leftToRight &&
+                bulletScreen.type != GeneralType.rightToLeft &&
+                bulletScreen.type != GeneralType.top &&
+                bulletScreen.type != GeneralType.bottom
             ) throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
 
             Helper.checkTypes(bulletScreen.style, _optionsType.defaultStyle); //检查弹幕样式类型
@@ -494,7 +494,7 @@ class GeneralEngine {
                 if (bulletScreenOnScreen.pause) return; //暂停移动
                 let nowTime = _options.clock();
                 switch (bulletScreenOnScreen.type) {
-                    case generalType.rightToLeft:
+                    case GeneralType.rightToLeft:
                         if (bulletScreenOnScreen.x > -bulletScreenOnScreen.width) {
                             bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
                         }
@@ -503,7 +503,7 @@ class GeneralEngine {
                             return { remove: true };
                         }
                         break;
-                    case generalType.leftToRight:
+                    case GeneralType.leftToRight:
                         if (bulletScreenOnScreen.x < _elementSize.width) {
                             bulletScreenOnScreen.x += bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
                         }
@@ -512,8 +512,8 @@ class GeneralEngine {
                             return { remove: true };
                         }
                         break;
-                    case generalType.top:
-                    case generalType.bottom:
+                    case GeneralType.top:
+                    case GeneralType.bottom:
                         if (bulletScreenOnScreen.endTime < nowTime) {
                             _renderer.delete(bulletScreenOnScreen);
                             return { remove: true };
@@ -563,34 +563,34 @@ class GeneralEngine {
             bulletScreenOnScreen.height = bulletScreenOnScreen.size; //弹幕的高度：像素
             _renderer.creatAndgetWidth(bulletScreenOnScreen); //创建弹幕元素并计算宽度
             switch (bulletScreen.type) {
-                case generalType.rightToLeft:
+                case GeneralType.rightToLeft:
                     bulletScreenOnScreen.endTime = Math.round(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
                     bulletScreenOnScreen.x = _elementSize.width; //弹幕初始X坐标
                     bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
-                case generalType.leftToRight:
+                case GeneralType.leftToRight:
                     bulletScreenOnScreen.endTime = Math.round(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
                     bulletScreenOnScreen.x = -bulletScreenOnScreen.width; //弹幕初始X坐标
                     bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
-                case generalType.top:
+                case GeneralType.top:
                     bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
                     bulletScreenOnScreen.x = Math.round((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
                     bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
-                case generalType.bottom:
+                case GeneralType.bottom:
                     bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
                     bulletScreenOnScreen.x = Math.round((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
                     bulletScreenOnScreen.y = -_options.verticalInterval - bulletScreenOnScreen.height; //弹幕初始Y坐标
                     break;
             }
             let oldLength = _bulletScreensOnScreen.getLength();
-            if (bulletScreen.type === generalType.top || bulletScreen.type === generalType.bottom) {
+            if (bulletScreen.type === GeneralType.top || bulletScreen.type === GeneralType.bottom) {
                 _bulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
                     //弹幕不在流中，是固定弹幕
                     if (nextBulletScreenOnScreen.bulletScreen.type != bulletScreen.type)
                         return; //不是同一种类型的弹幕
-                    if (bulletScreen.type === generalType.top) {
+                    if (bulletScreen.type === GeneralType.top) {
                         //如果新弹幕在当前弹幕上方且未与当前弹幕重叠
                         if (bulletScreenOnScreen.y + bulletScreenOnScreen.height < nextBulletScreenOnScreen.y)
                             return { add: { addToUp: true, element: setActualY(bulletScreenOnScreen) }, stop: true };
@@ -618,7 +618,7 @@ class GeneralEngine {
                 let bulletScreenOnScreenWidthTime = bulletScreenOnScreen.width / (bulletScreen.style.speed * _options.playSpeed);
                 _bulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
                     //弹幕在流中，是移动弹幕
-                    if (nextBulletScreenOnScreen.bulletScreen.type === generalType.top || nextBulletScreenOnScreen.bulletScreen.type === generalType.bottom)
+                    if (nextBulletScreenOnScreen.bulletScreen.type === GeneralType.top || nextBulletScreenOnScreen.bulletScreen.type === GeneralType.bottom)
                         return; //弹幕不在流中，为固定弹幕
                     //如果新弹幕在当前弹幕上方且未与当前弹幕重叠
                     if (bulletScreenOnScreen.y + bulletScreenOnScreen.height < nextBulletScreenOnScreen.y)
@@ -646,13 +646,13 @@ class GeneralEngine {
         function setActualY(bulletScreenOnScreen) {
             let bulletScreen = bulletScreenOnScreen.bulletScreen;
             if (
-                bulletScreen.type === generalType.leftToRight ||
-                bulletScreen.type === generalType.rightToLeft ||
-                bulletScreen.type === generalType.top
+                bulletScreen.type === GeneralType.leftToRight ||
+                bulletScreen.type === GeneralType.rightToLeft ||
+                bulletScreen.type === GeneralType.top
             ) {
                 bulletScreenOnScreen.actualY = bulletScreenOnScreen.y % (_elementSize.height - bulletScreenOnScreen.height);
             }
-            else if (bulletScreen.type === generalType.bottom) {
+            else if (bulletScreen.type === GeneralType.bottom) {
                 bulletScreenOnScreen.actualY = _elementSize.height + bulletScreenOnScreen.y % _elementSize.height;
             }
             return bulletScreenOnScreen;
@@ -691,4 +691,3 @@ class GeneralEngine {
         );
     }
 }
-export { GeneralEngine }

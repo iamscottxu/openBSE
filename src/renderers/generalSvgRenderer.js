@@ -1,11 +1,11 @@
-import { GeneralBaseRenderer } from './generalBaseRenderer'
-import { BrowserNotSupportError } from '../../browserNotSupportError'
-import { Helper } from '../helper'
+import GeneralBaseRenderer from './generalBaseRenderer'
+import BrowserNotSupportError from '../errors/browserNotSupportError'
+import Helper from '../lib/helper'
 
 /**
  * SVG 渲染器类
  */
-class GeneralSvgRenderer extends GeneralBaseRenderer {
+export default class GeneralSvgRenderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 SVG 渲染器类
      * @param {object} element - Element 元素
@@ -41,7 +41,7 @@ class GeneralSvgRenderer extends GeneralBaseRenderer {
                     let item = bulletScreenOnScreen.svg[key];
                     if (this.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');
                     else item.setAttribute('opacity', '1');
-                    item.setAttribute('transform', `translate(${Math.round(bulletScreenOnScreen.x - 4)},${Math.round(bulletScreenOnScreen.actualY - 4)})`);
+                    item.setAttribute('transform', `translate(${(bulletScreenOnScreen.x - 4).toFixed(1)},${(bulletScreenOnScreen.actualY - 4).toFixed(1)})`);
                 }
             }
         }
@@ -323,4 +323,3 @@ class GeneralSvgRenderer extends GeneralBaseRenderer {
     }
 }
 
-export { GeneralSvgRenderer };
