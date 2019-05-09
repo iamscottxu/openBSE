@@ -29,7 +29,8 @@ gulp.task('es6', () => {
                 [
                     '@babel/preset-env',
                     {
-                        useBuiltIns: 'usage'
+                        useBuiltIns: 'usage',
+                        corejs: 3
                     }
                 ]
             ],
