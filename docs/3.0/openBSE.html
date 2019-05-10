@@ -269,8 +269,354 @@
         <dl>
                 
 <hr>
-<dt class="name" id="~BulletScreen">
-    <h4 id="~BulletScreen">BulletScreen</h4>
+<dt>
+    <h4 class="name" id="~clockCallback"><span class="type-signature"></span>clockCallback()</h4>
+    
+    
+</dt>
+<dd>
+
+    
+    <div class="description">
+        ClockCallback 回调方法用于播放器当前进度。
+    </div>
+    
+
+    
+
+    
+
+    
+    
+
+    
+<dl class="details">
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <h5>Returns:</h5>
+    
+            
+<div class="param-desc">
+    播放进度：单位：毫秒。
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">number</span>
+
+
+
+    </dd>
+</dl>
+
+
+        
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id="~DebugInfo">
+    <h4 id="~DebugInfo">DebugInfo</h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        DebugInfo 结构用于存放调试信息。
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">object</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>time</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">时间基准（options.clock）当前时间。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>realTimeBulletScreenCount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">实时弹幕总数</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bufferBulletScreenCount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">缓冲区弹幕总数</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>delay</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">延迟：单位：毫秒。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>delayBulletScreenCount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">丢弃弹幕数：因延迟过高而丢弃的弹幕总数。</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fps</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">帧频：单位：帧/秒。</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+            
+                
+<hr>
+<dt class="name" id="~GeneralBulletScreen">
+    <h4 id="~GeneralBulletScreen">GeneralBulletScreen</h4>
 
     
 </dt>
@@ -431,7 +777,7 @@
                 </td>
             
 
-            <td class="description last">弹幕进入时间：（此参数在事件中修改无效）单位：毫秒，默认为<a href="openBSE.html#~Options">时间基准（options.clock）</a>当前时间。</td>
+            <td class="description last">弹幕进入时间：（此参数在事件中修改无效）单位：毫秒，默认为时间基准（options.clock）当前时间。</td>
         </tr>
 
     
@@ -482,7 +828,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="openBSE.html#~BulletScreenStyle">openBSE~BulletScreenStyle</a></span>
+<span class="param-type">openBSE~BulletScreenStyle</span>
 
 
 
@@ -503,7 +849,7 @@
                 </td>
             
 
-            <td class="description last">弹幕样式：一个 <a href="openBSE.html#~BulletScreenStyle">openBSE~BulletScreenStyle</a> 结构。设置此选项中的任何一个值，将覆盖对应的全局设置。</td>
+            <td class="description last">弹幕样式：一个 openBSE~BulletScreenStyle 结构。设置此选项中的任何一个值，将覆盖对应的全局设置。</td>
         </tr>
 
     
@@ -627,8 +973,8 @@
             
                 
 <hr>
-<dt class="name" id="~BulletScreenEvent">
-    <h4 id="~BulletScreenEvent">BulletScreenEvent</h4>
+<dt class="name" id="~GeneralBulletScreenEvent">
+    <h4 id="~GeneralBulletScreenEvent">GeneralBulletScreenEvent</h4>
 
     
 </dt>
@@ -699,7 +1045,7 @@
 
             
 
-            <td class="description last">获取引发事件的弹幕弹幕的数据：retun: <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 引发事件的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。（注意：不要试图与添加弹幕时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
+            <td class="description last">获取引发事件的弹幕弹幕的数据：retun: openBSE~BulletScreen 引发事件的弹幕的数据：一个 openBSE~BulletScreen 结构。（注意：不要试图与添加弹幕时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）</td>
         </tr>
 
     
@@ -723,7 +1069,7 @@
 
             
 
-            <td class="description last">设置引发事件的弹幕弹幕的数据：params: <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> bulletScreen - 引发事件的弹幕的数据：一个 <a href="openBSE.html#~BulletScreen">openBSE~BulletScreen</a> 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。 boolean [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。</td>
+            <td class="description last">设置引发事件的弹幕弹幕的数据：params: openBSE~BulletScreen bulletScreen - 引发事件的弹幕的数据：一个 openBSE~BulletScreen 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。 boolean [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。</td>
         </tr>
 
     
@@ -991,8 +1337,8 @@
             
                 
 <hr>
-<dt class="name" id="~BulletScreenStyle">
-    <h4 id="~BulletScreenStyle">BulletScreenStyle</h4>
+<dt class="name" id="~GeneralBulletScreenStyle">
+    <h4 id="~GeneralBulletScreenStyle">GeneralBulletScreenStyle</h4>
 
     
 </dt>
@@ -1433,354 +1779,8 @@
             
                 
 <hr>
-<dt>
-    <h4 class="name" id="~clockCallback"><span class="type-signature"></span>clockCallback()</h4>
-    
-    
-</dt>
-<dd>
-
-    
-    <div class="description">
-        ClockCallback 回调方法用于播放器当前进度。
-    </div>
-    
-
-    
-
-    
-
-    
-    
-
-    
-<dl class="details">
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <h5>Returns:</h5>
-    
-            
-<div class="param-desc">
-    播放进度：单位：毫秒。
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">number</span>
-
-
-
-    </dd>
-</dl>
-
-
-        
-
-    
-</dd>
-
-            
-                
-<hr>
-<dt class="name" id="~DebugInfo">
-    <h4 id="~DebugInfo">DebugInfo</h4>
-
-    
-</dt>
-<dd>
-    
-    <div class="description">
-        DebugInfo 结构用于存放调试信息。
-    </div>
-    
-
-    
-        <h5>Type:</h5>
-        <ul>
-            <li>
-                
-<span class="param-type">object</span>
-
-
-
-            </li>
-        </ul>
-    
-
-    
-<dl class="details">
-    
-
-    <h5 class="subsection-title">Properties:</h5>
-
-    <dl>
-
-<table class="props table table-striped">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>time</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><a href="openBSE.html#~Options">时间基准（options.clock）</a>当前时间。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>bulletScreensOnScreenCount</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">实时弹幕总数</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>bulletScreensCount</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">剩余弹幕总数</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>delay</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">延迟：单位：毫秒。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>delayBulletScreensCount</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">丢弃弹幕数：因延迟过高而丢弃的弹幕总数。</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fps</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">帧频：单位：帧/秒。</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-</dl>
-
-    
-
-	
-
-	
-
-	
-
-    
-
-    
-
-    
-
-    
-
-	
-
-	
-
-	
-
-	
-
-	
-
-
-
-	
-
-	
-
-	
-
-	
-</dl>
-
-
-    
-</dd>
-
-            
-                
-<hr>
-<dt class="name" id="~Options">
-    <h4 id="~Options">Options</h4>
+<dt class="name" id="~generalOptions">
+    <h4 id="~generalOptions">generalOptions</h4>
 
     
 </dt>
@@ -1996,7 +1996,7 @@
             <td class="type">
             
                 
-<span class="param-type"><a href="openBSE.html#~BulletScreenStyle">openBSE~BulletScreenStyle</a></span>
+<span class="param-type">openBSE~BulletScreenStyle</span>
 
 
 
@@ -2019,7 +2019,7 @@
                 </td>
             
 
-            <td class="description last">默认弹幕样式：一个 <a href="openBSE.html#~BulletScreenStyle">openBSE~BulletScreenStyle</a> 结构。</td>
+            <td class="description last">默认弹幕样式：一个 openBSE~BulletScreenStyle 结构。</td>
         </tr>
 
     
@@ -2450,7 +2450,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.1</a>
 	
-		on 2019-05-09T22:08:57+08:00
+		on 2019-05-10T21:10:12+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
