@@ -33,10 +33,10 @@
             setInterval(showDebugInfo, 500);
         }
         var loadData = function (generalEngine) {
-            var _startTime = 5000;
+            var _startTime = 1000;
             for (var i = 0; i < 10000; i++) {
                 if (Math.random() > 0.6)
-                    generalEngine.addBulletScreen({
+                    generalEngine.add({
                         text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
                         startTime: _startTime,
                         type: openBSE.GeneralType.rightToLeft,
@@ -47,7 +47,7 @@
                         }
                     });
                 else
-                    generalEngine.addBulletScreen({
+                    generalEngine.add({
                         text: "橘里橘气",
                         startTime: _startTime,
                         type: (Math.random() > 0.4) ? openBSE.GeneralType.rightToLeft : openBSE.GeneralType.top,
@@ -60,18 +60,18 @@
             }
         }
         var showDebugInfo = function () {
-            var debugInfo = generalEngine.getDebugInfo();
+            var debugInfo = generalEngine.debugInfo;
             document.getElementById("time").innerText = debugInfo.time.toString();
             document.getElementById("delay").innerText = debugInfo.delay.toString();
             document.getElementById("fps").innerText = debugInfo.fps.toString();
-            document.getElementById("BulletScreensOnScreenCount").innerText = debugInfo.bulletScreensOnScreenCount.toString();
-            document.getElementById("BulletScreensCount").innerText = debugInfo.bulletScreensCount.toString();
-            document.getElementById("delayBulletScreensCount").innerText = debugInfo.delayBulletScreensCount.toString();
+            document.getElementById("BulletScreensOnScreenCount").innerText = debugInfo.realTimeBulletScreenCount.toString();
+            document.getElementById("BulletScreensCount").innerText = debugInfo.bufferBulletScreenCount.toString();
+            document.getElementById("delayBulletScreensCount").innerText = debugInfo.delayBulletScreenCount.toString();
         }
         function sendBulletScreen() {
             var bulletScreenText = document.getElementById("BulletScreenText").value;
             document.getElementById("BulletScreenText").value = '';
-            generalEngine.addBulletScreen({
+            generalEngine.add({
                 text: bulletScreenText,
                 style: {
                     boxColor: 'white'
@@ -85,14 +85,14 @@
             var hiddenTypesList = formData.getAll('hiddenTypes');
             var hiddenTypes = 0;
             for (var index in hiddenTypesList) hiddenTypes += parseInt(hiddenTypesList[index]);
-            generalEngine.setOptions({
+            generalEngine.options = {
                 hiddenTypes: hiddenTypes
-            });
+            };
         }
         function set(key, value) {
             var object = {};
             object[key] = value;
-            generalEngine.setOptions(object);
+            generalEngine.options = object;
         }
     </script>
 </head>
@@ -115,13 +115,13 @@
     </p>
     <p>上次单击的弹幕内容：<b id="clickText">无</b></p>
     <p>时间：<b id="time"></b> fps：<b id="fps"></b></p>
-    <p>实时弹幕条数：<b id="BulletScreensOnScreenCount"></b>&nbsp;剩余弹幕条数：<b id="BulletScreensCount"></b></p>
+    <p>实时弹幕数：<b id="BulletScreensOnScreenCount"></b>&nbsp;缓冲区弹幕数：<b id="BulletScreensCount"></b></p>
     <p>延迟：<b id="delay"></b>ms 延迟丢弃丢弃弹幕数：<b id="delayBulletScreensCount"></b></p>
     <a href="#" onclick="generalEngine.play();">开始</a>&nbsp;<a href="#" onclick="generalEngine.pause();">暂停</a>&nbsp;<a
         href="#" onclick="generalEngine.stop();">停止</a>&nbsp;
-    <a href="#" onclick="generalEngine.show();">显示弹幕</a>&nbsp;<a href="#" onclick="generalEngine.hide();">隐藏弹幕</a>&nbsp;
-    <a href="#" onclick="generalEngine.cleanBulletScreenList();loadData(generalEngine);">重新加载弹幕</a>&nbsp;<a
-        href="#" onclick="generalEngine.cleanScreen();">清空屏幕弹幕</a>&nbsp;<br>
+    <a href="#" onclick="generalEngine.visibility = true;">显示弹幕</a>&nbsp;<a href="#" onclick="generalEngine.visibility = false;">隐藏弹幕</a>&nbsp;
+    <a href="#" onclick="generalEngine.cleanBuffer();loadData(generalEngine);">重新加载弹幕</a>&nbsp;<a
+        href="#" onclick="generalEngine.cleanScreen();">清空屏幕</a>&nbsp;<br>
     <a href="#" onclick="set('playSpeed', 1);">1倍速</a>&nbsp;<a href="#" onclick="set('playSpeed', 1.5);">1.5倍数</a>&nbsp;
     <a href="#" onclick="set('playSpeed', 2);">2倍速</a>&nbsp;<a href="#" onclick="set('playSpeed', 2.5);">2.5倍数</a>&nbsp;
     <a href="#" onclick="set('scaling', 1);">1倍缩放</a>&nbsp;<a href="#" onclick="set('scaling', 1.5);">1.5倍缩放</a>&nbsp;
