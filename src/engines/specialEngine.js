@@ -181,7 +181,6 @@ export default class SpecialEngine {
             _bulletScreenBuffer.forEach(function (node) {
                 let lastBulletScreen = node.element;
                 if (bulletScreen.startTime > lastBulletScreen.startTime) {
-                    flag = true;
                     return {
                         add: { addToUp: true, node: newNode },
                         stop: true
