@@ -33,8 +33,8 @@ export default class GeneralCss3Renderer extends GeneralBaseRenderer {
          */
         this.draw = function () {
             for (let bulletScreenDiv of _div.getElementsByTagName('div')) {
-                if (typeof bulletScreenDiv.bulletScreenOnScreen != 'object') continue;
-                if (this.checkWhetherHide(bulletScreenDiv.bulletScreenOnScreen)) {
+                if (typeof bulletScreenDiv.realTimeBulletScreen != 'object') continue;
+                if (this.checkWhetherHide(bulletScreenDiv.realTimeBulletScreen)) {
                     bulletScreenDiv.style.visibility = 'hidden';
                     continue;
                 }
@@ -42,24 +42,24 @@ export default class GeneralCss3Renderer extends GeneralBaseRenderer {
                 bulletScreenDiv.style.transform =
                     bulletScreenDiv.style.webkitTransform =
                     bulletScreenDiv.style.msTransform =
-                    `translate(${(bulletScreenDiv.bulletScreenOnScreen.x - 4).toFixed(1)}px,${(bulletScreenDiv.bulletScreenOnScreen.actualY - 4).toFixed(1)}px)`;
+                    `translate(${(bulletScreenDiv.realTimeBulletScreen.x - 4).toFixed(1)}px,${(bulletScreenDiv.realTimeBulletScreen.actualY - 4).toFixed(1)}px)`;
             }
         }
 
         /**
          * 创建弹幕元素
          * @override
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.creatAndgetWidth = function (bulletScreenOnScreen) {
-            let bulletScreen = bulletScreenOnScreen.bulletScreen;
-            let bulletScreenDiv = bulletScreenOnScreen.div ? bulletScreenOnScreen.div : document.createElement('div');
+        this.creatAndgetWidth = function (realTimeBulletScreen) {
+            let bulletScreen = realTimeBulletScreen.bulletScreen;
+            let bulletScreenDiv = realTimeBulletScreen.div ? realTimeBulletScreen.div : document.createElement('div');
             bulletScreenDiv.style.position = 'absolute';
             bulletScreenDiv.style.whiteSpace = 'nowrap';
             bulletScreenDiv.style.fontWeight = bulletScreen.style.fontWeight;
-            bulletScreenDiv.style.fontSize = `${bulletScreenOnScreen.size}px`;
+            bulletScreenDiv.style.fontSize = `${realTimeBulletScreen.size}px`;
             bulletScreenDiv.style.fontFamily = bulletScreen.style.fontFamily;
-            bulletScreenDiv.style.lineHeight = `${bulletScreenOnScreen.size}px`;
+            bulletScreenDiv.style.lineHeight = `${realTimeBulletScreen.size}px`;
             bulletScreenDiv.style.color = bulletScreen.style.color;
             if (bulletScreen.style.shadowBlur != null)
                 bulletScreenDiv.style.textShadow = `0 0 ${bulletScreen.style.shadowBlur}px black`;
@@ -77,29 +77,29 @@ export default class GeneralCss3Renderer extends GeneralBaseRenderer {
             }
             Helper.cleanElement(bulletScreenDiv);
             bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
-            bulletScreenDiv.bulletScreenOnScreen = bulletScreenOnScreen;
+            bulletScreenDiv.realTimeBulletScreen = realTimeBulletScreen;
             insertElement(bulletScreenDiv); //insert
-            bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8; //弹幕的宽度：像素
-            bulletScreenOnScreen.div = bulletScreenDiv;
+            realTimeBulletScreen.width = bulletScreenDiv.clientWidth - 8; //弹幕的宽度：像素
+            realTimeBulletScreen.div = bulletScreenDiv;
         }
 
         /**
         * 删除弹幕元素
         * @override
-        * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+        * @param {object} realTimeBulletScreen - 实时弹幕对象
         */
-        this.delete = function (bulletScreenOnScreen) {
-            _div.removeChild(bulletScreenOnScreen.div);
+        this.delete = function (realTimeBulletScreen) {
+            _div.removeChild(realTimeBulletScreen.div);
         }
 
         /**
          * 重新添加弹幕
          * @override
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
-            this.delete(bulletScreenOnScreen);
-            this.creatAndgetWidth(bulletScreenOnScreen);
+        this.reCreatAndgetWidth = function (realTimeBulletScreen) {
+            this.delete(realTimeBulletScreen);
+            this.creatAndgetWidth(realTimeBulletScreen);
         }
 
         /**
@@ -145,30 +145,30 @@ export default class GeneralCss3Renderer extends GeneralBaseRenderer {
             //上下文菜单
             element.oncontextmenu = function (e) {
                 if (e.target != this)
-                    eventTrigger('contextmenu', e.target.bulletScreenOnScreen, e);
+                    eventTrigger('contextmenu', e.target.realTimeBulletScreen, e);
                 return false;
             };
             //单击
             element.onclick = function (e) {
                 if (e.target != this)
-                    eventTrigger('click', e.target.bulletScreenOnScreen, e);
+                    eventTrigger('click', e.target.realTimeBulletScreen, e);
                 return false;
             };
             //鼠标移动
             element.onmousemove = function (e) {
-                let bulletScreenOnScreen = e.target.bulletScreenOnScreen;
-                if (e.target === this || bulletScreenOnScreen.mousein) return;
-                bulletScreenOnScreen.mousein = true;
+                let realTimeBulletScreen = e.target.realTimeBulletScreen;
+                if (e.target === this || realTimeBulletScreen.mousein) return;
+                realTimeBulletScreen.mousein = true;
                 e.target.style.cursor = options.cursorOnMouseOver;
-                eventTrigger('mouseenter', bulletScreenOnScreen, e);
+                eventTrigger('mouseenter', realTimeBulletScreen, e);
             }
             //鼠标离开
             element.onmouseout = function (e) {
-                let bulletScreenOnScreen = e.target.bulletScreenOnScreen;
-                if (e.target === this || !bulletScreenOnScreen.mousein) return;
-                bulletScreenOnScreen.mousein = false;
+                let realTimeBulletScreen = e.target.realTimeBulletScreen;
+                if (e.target === this || !realTimeBulletScreen.mousein) return;
+                realTimeBulletScreen.mousein = false;
                 e.target.style.cursor = '';
-                eventTrigger('mouseleave', bulletScreenOnScreen, e);
+                eventTrigger('mouseleave', realTimeBulletScreen, e);
             }
         }
 
@@ -181,8 +181,8 @@ export default class GeneralCss3Renderer extends GeneralBaseRenderer {
             if (elements.length === 0) _div.appendChild(element);
             let index;
             for (index = elements.length - 1; index > 0; index--) {
-                let _layer = elements[index].bulletScreenOnScreen.bulletScreen.layer;
-                if (_layer <= element.bulletScreenOnScreen.bulletScreen.layer) break;
+                let _layer = elements[index].realTimeBulletScreen.bulletScreen.layer;
+                if (_layer <= element.realTimeBulletScreen.bulletScreen.layer) break;
             }
             if (++index === elements.length) _div.appendChild(element);
             else _div.insertBefore(element, elements[index]);

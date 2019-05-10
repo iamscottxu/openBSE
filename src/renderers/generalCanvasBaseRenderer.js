@@ -40,28 +40,28 @@ export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
          * @function
          * @override
          */
-        this.cleanScreen = _bulletScreensOnScreen.clean;
+        this.cleanScreen = () => _bulletScreensOnScreen.clean();
 
         /**
          * 创建弹幕元素
          * @override
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.creatAndgetWidth = function (bulletScreenOnScreen) {
-            let bulletScreen = bulletScreenOnScreen.bulletScreen;
+        this.creatAndgetWidth = function (realTimeBulletScreen) {
+            let bulletScreen = realTimeBulletScreen.bulletScreen;
             let hideCanvas = document.createElement('canvas');
             let hideCanvasContext = hideCanvas.getContext('2d');
 
-            hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${bulletScreenOnScreen.size}px ${bulletScreen.style.fontFamily}`;
-            bulletScreenOnScreen.width = hideCanvasContext.measureText(bulletScreen.text).width; //弹幕的宽度：像素
+            hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${realTimeBulletScreen.size}px ${bulletScreen.style.fontFamily}`;
+            realTimeBulletScreen.width = hideCanvasContext.measureText(bulletScreen.text).width; //弹幕的宽度：像素
 
-            hideCanvas.width = (bulletScreenOnScreen.width + 8) * _devicePixelRatio;
-            hideCanvas.height = (bulletScreenOnScreen.height + 8) * _devicePixelRatio;
+            hideCanvas.width = (realTimeBulletScreen.width + 8) * _devicePixelRatio;
+            hideCanvas.height = (realTimeBulletScreen.height + 8) * _devicePixelRatio;
 
             hideCanvasContext.shadowColor = 'black';
-            hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${bulletScreenOnScreen.size * _devicePixelRatio}px ${bulletScreen.style.fontFamily}`;
+            hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${realTimeBulletScreen.size * _devicePixelRatio}px ${bulletScreen.style.fontFamily}`;
             let textX = 4 * _devicePixelRatio;
-            let textY = (4 + bulletScreenOnScreen.size * 0.8) * _devicePixelRatio;
+            let textY = (4 + realTimeBulletScreen.size * 0.8) * _devicePixelRatio;
             if (bulletScreen.style.color != null) {
                 hideCanvasContext.shadowBlur = (bulletScreen.style.shadowBlur + 0.5) * _devicePixelRatio;
                 hideCanvasContext.fillStyle = bulletScreen.style.color;
@@ -79,37 +79,35 @@ export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
                 hideCanvasContext.strokeStyle = bulletScreen.style.boxColor;
                 hideCanvasContext.strokeRect(_devicePixelRatio, _devicePixelRatio, hideCanvas.width - _devicePixelRatio, hideCanvas.height - _devicePixelRatio);
             }
-            bulletScreenOnScreen.hideCanvas = hideCanvas;
+            realTimeBulletScreen.hideCanvas = hideCanvas;
 
-            let flag = false;
-            _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
-                if (_bulletScreenOnScreen.bulletScreen.layer <= bulletScreen.layer) {
-                    flag = true;
-                    return {
-                        add: { element: bulletScreenOnScreen, addToUp: false },
-                        stop: true
-                    }
+            realTimeBulletScreen.linkedListNode = new LinkedList.node(realTimeBulletScreen);
+            _bulletScreensOnScreen.forEach((node) => {
+                let _realTimeBulletScreen = node.element;
+                if (_realTimeBulletScreen.bulletScreen.layer <= bulletScreen.layer) return {
+                    add: { node: realTimeBulletScreen.linkedListNode, addToUp: false },
+                    stop: true
                 }
             }, false);
-            if (!flag) _bulletScreensOnScreen.push(bulletScreenOnScreen, false);
+            if (realTimeBulletScreen.linkedListNode.linkedList === null)
+                _bulletScreensOnScreen.push(realTimeBulletScreen.linkedListNode, false);
         }
 
         /**
          * 删除弹幕元素
          * @override
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.delete = (bulletScreenOnScreen) => _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) =>
-            _bulletScreenOnScreen === bulletScreenOnScreen ? { remove: true, stop: true } : null, true);
+        this.delete = (realTimeBulletScreen) => realTimeBulletScreen.linkedListNode.remove();
 
         /**
          * 重新添加弹幕
          * @override
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
-            this.delete(bulletScreenOnScreen);
-            this.creatAndgetWidth(bulletScreenOnScreen);
+        this.reCreatAndgetWidth = function (realTimeBulletScreen) {
+            this.delete(realTimeBulletScreen);
+            this.creatAndgetWidth(realTimeBulletScreen);
         }
 
         let _setSize = this.setSize;
@@ -138,7 +136,7 @@ export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
         this.getCanvas = () => _canvas;
 
         /**
-         * 获取屏幕弹幕对象
+         * 获取实时弹幕对象
          * @returns {LinkedList} 画布对象
          */
         this.getBulletScreensOnScreen = () => _bulletScreensOnScreen;
@@ -165,20 +163,21 @@ export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
          * @param {Element} element - 元素
          */
         function registerEvent(element) {
-            function getBulletScreenOnScreenByLocation(location) {
-                let _bulletScreenOnScreen = null;
-                _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-                    if (_checkWhetherHide(bulletScreenOnScreen)) return;
-                    let x1 = bulletScreenOnScreen.x - 4;
-                    let x2 = x1 + bulletScreenOnScreen.width + 8;
-                    let y1 = bulletScreenOnScreen.actualY - 4;
-                    let y2 = y1 + bulletScreenOnScreen.height + 8;
+            function getrealTimeBulletScreenByLocation(location) {
+                let _realTimeBulletScreen = null;
+                _bulletScreensOnScreen.forEach(function (node) {
+                    let realTimeBulletScreen = node.element;
+                    if (_checkWhetherHide(realTimeBulletScreen)) return;
+                    let x1 = realTimeBulletScreen.x - 4;
+                    let x2 = x1 + realTimeBulletScreen.width + 8;
+                    let y1 = realTimeBulletScreen.actualY - 4;
+                    let y2 = y1 + realTimeBulletScreen.height + 8;
                     if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-                        _bulletScreenOnScreen = bulletScreenOnScreen;
+                        _realTimeBulletScreen = realTimeBulletScreen;
                         return { stop: true };
                     }
                 }, false);
-                return _bulletScreenOnScreen;
+                return _realTimeBulletScreen;
             }
             function getLocation(e) {
                 function getOffsetTop(element) {
@@ -216,41 +215,43 @@ export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
 
             //上下文菜单
             element.oncontextmenu = function (e) {
-                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                if (bulletScreenOnScreen)
-                    eventTrigger('contextmenu', bulletScreenOnScreen, e);
+                let realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+                if (realTimeBulletScreen)
+                    eventTrigger('contextmenu', realTimeBulletScreen, e);
                 return false;
             };
             //单击
             element.onclick = function (e) {
-                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                if (bulletScreenOnScreen)
-                    eventTrigger('click', bulletScreenOnScreen, e);
+                let realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+                if (realTimeBulletScreen)
+                    eventTrigger('click', realTimeBulletScreen, e);
                 return false;
             };
             //鼠标移动
             element.onmousemove = function (e) {
-                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
-                    if (bulletScreenOnScreen != _bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
-                        _bulletScreenOnScreen.mousein = false;
+                let realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+                _bulletScreensOnScreen.forEach((node) => {
+                    let _realTimeBulletScreen = node.element;
+                    if (realTimeBulletScreen != _realTimeBulletScreen && _realTimeBulletScreen.mousein) {
+                        _realTimeBulletScreen.mousein = false;
                         element.style.cursor = '';
-                        eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+                        eventTrigger('mouseleave', _realTimeBulletScreen, e);
                     }
                 }, true);
-                if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
-                bulletScreenOnScreen.mousein = true;
+                if (realTimeBulletScreen === null || realTimeBulletScreen.mousein) return false;
+                realTimeBulletScreen.mousein = true;
                 element.style.cursor = options.cursorOnMouseOver;
-                eventTrigger('mouseenter', bulletScreenOnScreen, e);
+                eventTrigger('mouseenter', realTimeBulletScreen, e);
                 return false;
             }
             //鼠标离开
             element.onmouseout = function (e) {
-                _bulletScreensOnScreen.forEach((_bulletScreenOnScreen) => {
-                    if (_bulletScreenOnScreen.mousein) {
-                        _bulletScreenOnScreen.mousein = false;
+                _bulletScreensOnScreen.forEach((node) => {
+                    let _realTimeBulletScreen = node.element;
+                    if (_realTimeBulletScreen.mousein) {
+                        _realTimeBulletScreen.mousein = false;
                         element.style.cursor = '';
-                        eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+                        eventTrigger('mouseleave', _realTimeBulletScreen, e);
                     }
                 }, true);
             }

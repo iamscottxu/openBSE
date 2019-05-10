@@ -36,12 +36,12 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
          */
         this.draw = function () {
             for (let textSvg of _svg.getElementsByTagName('text')) {
-                let bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
-                for (let key in bulletScreenOnScreen.svg) {
-                    let item = bulletScreenOnScreen.svg[key];
-                    if (this.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');
+                let realTimeBulletScreen = textSvg.realTimeBulletScreen;
+                for (let key in realTimeBulletScreen.svg) {
+                    let item = realTimeBulletScreen.svg[key];
+                    if (this.checkWhetherHide(realTimeBulletScreen)) item.setAttribute('opacity', '0');
                     else item.setAttribute('opacity', '1');
-                    item.setAttribute('transform', `translate(${(bulletScreenOnScreen.x - 4).toFixed(1)},${(bulletScreenOnScreen.actualY - 4).toFixed(1)})`);
+                    item.setAttribute('transform', `translate(${(realTimeBulletScreen.x - 4).toFixed(1)},${(realTimeBulletScreen.actualY - 4).toFixed(1)})`);
                 }
             }
         }
@@ -49,17 +49,17 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
         /**
          * 创建弹幕元素
          * @override
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.creatAndgetWidth = function (bulletScreenOnScreen) {
-            let bulletScreen = bulletScreenOnScreen.bulletScreen;
-            bulletScreenOnScreen.svg = typeof bulletScreenOnScreen.svg === 'object' ? bulletScreenOnScreen.svg : {};
+        this.creatAndgetWidth = function (realTimeBulletScreen) {
+            let bulletScreen = realTimeBulletScreen.bulletScreen;
+            realTimeBulletScreen.svg = typeof realTimeBulletScreen.svg === 'object' ? realTimeBulletScreen.svg : {};
 
-            let textSvg = typeof bulletScreenOnScreen.svg.text === 'object' ? bulletScreenOnScreen.svg.text : createElementSVG('text');
+            let textSvg = typeof realTimeBulletScreen.svg.text === 'object' ? realTimeBulletScreen.svg.text : createElementSVG('text');
             textSvg.setAttribute('x', 0);
-            textSvg.setAttribute('y', bulletScreenOnScreen.size * 0.8);
+            textSvg.setAttribute('y', realTimeBulletScreen.size * 0.8);
             textSvg.setAttribute('font-family', bulletScreen.style.fontFamily);
-            textSvg.setAttribute('font-size', bulletScreenOnScreen.size);
+            textSvg.setAttribute('font-size', realTimeBulletScreen.size);
             textSvg.setAttribute('font-weight', bulletScreen.style.fontWeight);
             textSvg.setAttribute('fill', bulletScreen.style.color);
             Helper.cleanElement(textSvg);
@@ -98,25 +98,25 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
                 }
                 filterSvg.bulletScreenCount++;
                 textSvg.setAttribute('filter', `url(#${filterId})`);
-                bulletScreenOnScreen.filterId = filterId;
+                realTimeBulletScreen.filterId = filterId;
             }
 
-            bulletScreenOnScreen.svg.text = textSvg;
-            textSvg.bulletScreenOnScreen = bulletScreenOnScreen;
+            realTimeBulletScreen.svg.text = textSvg;
+            textSvg.realTimeBulletScreen = realTimeBulletScreen;
             insertElement(textSvg);
-            bulletScreenOnScreen.width = textSvg.getComputedTextLength(); //弹幕的宽度：像素
+            realTimeBulletScreen.width = textSvg.getComputedTextLength(); //弹幕的宽度：像素
 
             if (bulletScreen.style.boxColor != null) {
-                let rectSvg = typeof bulletScreenOnScreen.svg.rect === 'object' ? bulletScreenOnScreen.svg.rect : createElementSVG('rect');
+                let rectSvg = typeof realTimeBulletScreen.svg.rect === 'object' ? realTimeBulletScreen.svg.rect : createElementSVG('rect');
                 rectSvg.setAttribute('x', -3);
                 rectSvg.setAttribute('y', -3);
                 rectSvg.setAttribute('fill', 'none');
-                rectSvg.setAttribute('height', bulletScreenOnScreen.height + 7);
-                rectSvg.setAttribute('width', bulletScreenOnScreen.width + 7);
+                rectSvg.setAttribute('height', realTimeBulletScreen.height + 7);
+                rectSvg.setAttribute('width', realTimeBulletScreen.width + 7);
                 rectSvg.setAttribute('stroke', bulletScreen.style.boxColor);
                 rectSvg.setAttribute('stroke-width', 1);
-                bulletScreenOnScreen.svg.rect = rectSvg;
-                rectSvg.bulletScreenOnScreen = bulletScreenOnScreen;
+                realTimeBulletScreen.svg.rect = rectSvg;
+                rectSvg.realTimeBulletScreen = realTimeBulletScreen;
                 _svg.insertBefore(rectSvg, textSvg);
             }
         }
@@ -124,27 +124,27 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
         /**
         * 删除弹幕元素
         * @override
-        * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+        * @param {object} realTimeBulletScreen - 实时弹幕对象
         */
-        this.delete = function (bulletScreenOnScreen) {
-            if (typeof bulletScreenOnScreen.filterId != 'undefined') {
-                let filterSvg = document.getElementById(bulletScreenOnScreen.filterId);
+        this.delete = function (realTimeBulletScreen) {
+            if (typeof realTimeBulletScreen.filterId != 'undefined') {
+                let filterSvg = document.getElementById(realTimeBulletScreen.filterId);
                 if (filterSvg != null && --filterSvg.bulletScreenCount === 0)
                     _defsSvg.removeChild(filterSvg);
             }
-            for (let index in bulletScreenOnScreen.svg) {
-                _svg.removeChild(bulletScreenOnScreen.svg[index]);
+            for (let index in realTimeBulletScreen.svg) {
+                _svg.removeChild(realTimeBulletScreen.svg[index]);
             }
         }
 
         /**
          * 重新添加弹幕
          * @override
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
-            this.delete(bulletScreenOnScreen);
-            this.creatAndgetWidth(bulletScreenOnScreen);
+        this.reCreatAndgetWidth = function (realTimeBulletScreen) {
+            this.delete(realTimeBulletScreen);
+            this.creatAndgetWidth(realTimeBulletScreen);
         }
 
         let _setSize = this.setSize;
@@ -203,17 +203,17 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
          * @param {Element} element - 元素
          */
         function registerEvent(element) {
-            function getBulletScreenOnScreenByLocation(location) {
+            function getrealTimeBulletScreenByLocation(location) {
                 let textSvgs = _svg.getElementsByTagName('text');
                 for (let index = textSvgs.length - 1; index > 0; index--) {
-                    let bulletScreenOnScreen = textSvgs[index].bulletScreenOnScreen;
-                    if (_checkWhetherHide(bulletScreenOnScreen)) return;
-                    let x1 = bulletScreenOnScreen.x - 4;
-                    let x2 = x1 + bulletScreenOnScreen.width + 8;
-                    let y1 = bulletScreenOnScreen.actualY - 4;
-                    let y2 = y1 + bulletScreenOnScreen.height + 8;
+                    let realTimeBulletScreen = textSvgs[index].realTimeBulletScreen;
+                    if (_checkWhetherHide(realTimeBulletScreen)) return;
+                    let x1 = realTimeBulletScreen.x - 4;
+                    let x2 = x1 + realTimeBulletScreen.width + 8;
+                    let y1 = realTimeBulletScreen.actualY - 4;
+                    let y2 = y1 + realTimeBulletScreen.height + 8;
                     if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2)
-                        return bulletScreenOnScreen;
+                        return realTimeBulletScreen;
                 }
                 return null;
             }
@@ -253,43 +253,43 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
 
             //上下文菜单
             element.oncontextmenu = function (e) {
-                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                if (bulletScreenOnScreen)
-                    eventTrigger('contextmenu', bulletScreenOnScreen, e);
+                let realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+                if (realTimeBulletScreen)
+                    eventTrigger('contextmenu', realTimeBulletScreen, e);
                 return false;
             };
             //单击
             element.onclick = function (e) {
-                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-                if (bulletScreenOnScreen)
-                    eventTrigger('click', bulletScreenOnScreen, e);
+                let realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+                if (realTimeBulletScreen)
+                    eventTrigger('click', realTimeBulletScreen, e);
                 return false;
             };
             //鼠标移动
             element.onmousemove = function (e) {
-                let bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+                let realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
                 for (let textSvg of _svg.getElementsByTagName('text')) {
-                    let _bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
-                    if (_bulletScreenOnScreen != bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
-                        _bulletScreenOnScreen.mousein = false;
+                    let _realTimeBulletScreen = textSvg.realTimeBulletScreen;
+                    if (_realTimeBulletScreen != realTimeBulletScreen && _realTimeBulletScreen.mousein) {
+                        _realTimeBulletScreen.mousein = false;
                         element.style.cursor = '';
-                        eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+                        eventTrigger('mouseleave', _realTimeBulletScreen, e);
                     }
                 }
-                if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
-                bulletScreenOnScreen.mousein = true;
+                if (realTimeBulletScreen === null || realTimeBulletScreen.mousein) return false;
+                realTimeBulletScreen.mousein = true;
                 element.style.cursor = options.cursorOnMouseOver;
-                eventTrigger('mouseenter', bulletScreenOnScreen, e);
+                eventTrigger('mouseenter', realTimeBulletScreen, e);
                 return false;
             }
             //鼠标离开
             element.onmouseout = function (e) {
                 for (let textSvg of _svg.getElementsByTagName('text')) {
-                    let _bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
-                    if (_bulletScreenOnScreen.mousein) {
-                        _bulletScreenOnScreen.mousein = false;
+                    let _realTimeBulletScreen = textSvg.realTimeBulletScreen;
+                    if (_realTimeBulletScreen.mousein) {
+                        _realTimeBulletScreen.mousein = false;
                         element.style.cursor = '';
-                        eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+                        eventTrigger('mouseleave', _realTimeBulletScreen, e);
                     }
                 }
             }
@@ -314,8 +314,8 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
             if (elements.length === 0) _svg.appendChild(element);
             let index;
             for (index = elements.length - 1; index > 0; index--) {
-                let _layer = elements[index].bulletScreenOnScreen.bulletScreen.layer;
-                if (_layer <= element.bulletScreenOnScreen.bulletScreen.layer) break;
+                let _layer = elements[index].realTimeBulletScreen.bulletScreen.layer;
+                if (_layer <= element.realTimeBulletScreen.bulletScreen.layer) break;
             }
             if (++index === elements.length) _svg.appendChild(element);
             else _svg.insertBefore(element, elements[index]);

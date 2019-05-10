@@ -17,8 +17,8 @@ function getVersion() {
 export { GeneralEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVersion }
 
 /**
- * 全局选项
- * @typedef {object} openBSE~Options
+ * 普通弹幕全局选项
+ * @typedef {object} openBSE~generalOptions
  * @description Option 结构用于存放全局选项。
  * @property {number} [verticalInterval=8] - 弹幕垂直行间距
  * @property {number} [verticalInterval=1] - 弹幕播放速度（倍数）
@@ -39,7 +39,7 @@ export { GeneralEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVer
 
 /**
  * 单条弹幕数据
- * @typedef {object} openBSE~BulletScreen
+ * @typedef {object} openBSE~GeneralBulletScreen
  * @description BulletScreen 结构用于存放单条弹幕数据。
  * @property {string} text 弹幕文本
  * @property {boolean} [canDiscard=true] 是否允许丢弃：（此参数在事件中修改无效）在弹幕过多时，程序将自动丢弃一些延迟过高的弹幕。此选项为 false 时本条弹幕无论如何都不会被丢弃，使用本选项的场景如本用户发送的弹幕。（注意：不要将太多的弹幕的 canDiscard 设为 false， 否则会因超时的弹幕不会被丢弃而造成意外的问题。）
@@ -52,7 +52,7 @@ export { GeneralEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVer
 
 /**
  * 弹幕样式
- * @typedef {object} openBSE~BulletScreenStyle
+ * @typedef {object} openBSE~GeneralBulletScreenStyle
  * @description BulletScreenStyle 结构用于存放弹幕样式信息。
  * @property {number} [shadowBlur=2] 弹幕阴影的模糊级别：0为不显示阴影。
  * @property {string} [fontWeight="600"] 字体粗细：可选值：lighter：更细；normal：标准；bold：粗体；bolder: 更粗；100、200、300、400、500、600、700、800、900：定义由粗到细的字符（400 等同于 normal；700 等同于 bold）。
@@ -67,7 +67,7 @@ export { GeneralEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVer
 
 /**
  * 弹幕事件
- * @typedef {object} openBSE~BulletScreenEvent
+ * @typedef {object} openBSE~GeneralBulletScreenEvent
  * @property {function} getBulletScreen() - 获取引发事件的弹幕弹幕的数据：retun: {@link openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
  * @property {function} setBulletScreen(bulletScreen,redraw) - 设置引发事件的弹幕弹幕的数据：params: {@link openBSE~BulletScreen} bulletScreen - 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。 boolean [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。
  * @property {function} getPlayState() - 获取引发事件的弹幕的播放状态：retun: boolean 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
@@ -85,12 +85,12 @@ export { GeneralEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVer
  * 调试信息
  * @typedef {object} openBSE~DebugInfo
  * @description DebugInfo 结构用于存放调试信息。
- * @property {number} time [时间基准（options.clock）]{@link openBSE~Options}当前时间。
- * @property {number} bulletScreensOnScreenCount 实时弹幕总数
- * @property {number} bulletScreensCount 剩余弹幕总数
- * @property {number} delay 延迟：单位：毫秒。
- * @property {number} delayBulletScreensCount 丢弃弹幕数：因延迟过高而丢弃的弹幕总数。
- * @property {number} fps 帧频：单位：帧/秒。
+ * @property {number} time - [时间基准（options.clock）]{@link openBSE~Options}当前时间。
+ * @property {number} realTimeBulletScreenCount - 实时弹幕总数
+ * @property {number} bufferBulletScreenCount - 缓冲区弹幕总数
+ * @property {number} delay - 延迟：单位：毫秒。
+ * @property {number} delayBulletScreenCount - 丢弃弹幕数：因延迟过高而丢弃的弹幕总数。
+ * @property {number} fps - 帧频：单位：帧/秒。
  */
 
 /**

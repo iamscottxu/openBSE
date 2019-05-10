@@ -9,6 +9,11 @@ import * as build from '../build.json'
 /** 
  * 弹幕引擎对象类 
  * @alias openBSE.GeneralEngine
+ * @property {openBSE~Options} options - 设置或获取全局选项。
+ * @property {bool} visibility - 获取或设置弹幕可见性。
+ * @property {string} renderMode - 获取渲染模式。取值为“canvas”、“css3”、“webgl”或“svg”。
+ * @property {bool} playState - 获取播放状态。true：正在播放；false：已暂停/停止播放。
+ * @property {openBSE~DebugInfo} debugInfo - 获取调试信息。
  * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误。
  * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
  */
@@ -32,20 +37,20 @@ export default class GeneralEngine {
          */
         let _pauseTime = 0;
         /**
-         * 剩余弹幕
+         * 弹幕缓冲区
          * @private @type {LinkedList}
          */
-        let _bulletScreens = new LinkedList();
+        let _bulletScreenBuffer = new LinkedList();
         /**
-         * 屏幕上的弹幕
+         * 实时弹幕列表
          * @private @type {LinkedList}
          */
-        let _bulletScreensOnScreen = new LinkedList();
+        let _realTimeBulletScreens = new LinkedList();
         /**
          * 延迟弹幕总数
          * @private @type {number}
          */
-        let _delayBulletScreensCount = 0;
+        let _delayBulletScreenCount = 0;
         /**
          * 延迟（单位：毫秒）
          * @private @type {number}
@@ -68,7 +73,7 @@ export default class GeneralEngine {
         let _lastRefreshTime;
         /**
          * 全局选项
-         * @private @type {openBSE~Options}
+         * @private @type {openBSE~generalOptions}
          */
         let _options;
         /**
@@ -188,26 +193,26 @@ export default class GeneralEngine {
         let _event = new Event();
         /**
          * 弹幕单击事件。当单击弹幕时触发。
-         * @event openBSE.BulletScreenEngine#click
-         * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
+         * @event openBSE.GeneralEngine#click
+         * @property {openBSE~GeneralEvent} e - 弹幕事件结构
          */
         _event.add('click');
         /**
          * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
-         * @event openBSE.BulletScreenEngine#contextmenu
-         * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
+         * @event openBSE.GeneralEngine#contextmenu
+         * @property {openBSE~GeneralBulletScreenEvent} e - 弹幕事件结构
          */
         _event.add('contextmenu');
         /**
         * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
-        * @event openBSE.BulletScreenEngine#mouseleave
-        * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
+        * @event openBSE.GeneralEngine#mouseleave
+        * @property {openBSE~GeneralBulletScreenEvent} e - 弹幕事件结构
         */
         _event.add('mouseleave');
         /**
          * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
-         * @event openBSE.BulletScreenEngine#mouseenter
-         * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
+         * @event openBSE.GeneralEngine#mouseenter
+         * @property {openBSE~GeneralBulletScreenEvent} e - 弹幕事件结构
          */
         _event.add('mouseenter');
         /**
@@ -216,10 +221,10 @@ export default class GeneralEngine {
          * @description 绑定事件处理程序。当事件处理程序返回值为 false 时停止冒泡。
          * @param {string} name - 事件名称
          * @param {function} fun - 事件处理程序
-         * @listens openBSE.BulletScreenEngine#click
-         * @listens openBSE.BulletScreenEngine#contextmenu
-         * @listens openBSE.BulletScreenEngine#mouseleave
-         * @listens openBSE.BulletScreenEngine#mouseenter
+         * @listens openBSE.GeneralEngine#click
+         * @listens openBSE.GeneralEngine#contextmenu
+         * @listens openBSE.GeneralEngine#mouseleave
+         * @listens openBSE.GeneralEngine#mouseenter
          * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
          */
         this.bind = _event.bind;
@@ -248,37 +253,34 @@ export default class GeneralEngine {
         setInterval(setSize, 100);
 
         //公共函数
-
         /**
-         * 设置全局选项
-         * @param {openBSE~Options} options - 全局选项：一个 {@link openBSE~Options} 结构。
-         * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
-         */
-        this.setOptions = function (options) {
-            _options = Helper.setValues(options, _options, _optionsType, false); //设置默认值
-            if (_oldHiddenTypes != _options.hiddenTypes) {
-                _oldHiddenTypes = _options.hiddenTypes;
-                if (!_playing) _renderer.draw(); //非播放状态则重绘
+         * 设置或获取全局选项
+         * @private
+         **/
+        Object.defineProperty(this, 'options', {
+            get: function () {
+                return Helper.clone(_options);
+            },
+            set: function (options) {
+                _options = Helper.setValues(options, _options, _optionsType, false); //设置默认值
+                if (_oldHiddenTypes != _options.hiddenTypes) {
+                    _oldHiddenTypes = _options.hiddenTypes;
+                    if (!_playing) _renderer.draw(); //非播放状态则重绘
+                }
+                if (_oldOpacity != _options.opacity) {
+                    _oldOpacity = _options.opacity;
+                    _renderer.setOpacity();
+                }
             }
-            if (_oldOpacity != _options.opacity) {
-                _oldOpacity = _options.opacity;
-                _renderer.setOpacity();
-            }
-        };
-
-        /**
-         * 获取全局选项
-         * @returns {openBSE~Options} 全局选项：一个 {@link openBSE~Options} 结构。
-         */
-        this.getOptions = () => _options;
+        });
 
         /**
          * 添加弹幕到弹幕列表。
          * @description 添加弹幕到弹幕列表。由于弹幕在屏幕上出现过后，弹幕引擎将从列表中彻底删除此弹幕。所以，在改变播放进度时，可能需要先[清空弹幕列表]{@link openBSE.BulletScreenEngine#cleanBulletScreenList}，然后重新加载此播放进度以后的弹幕。
-         * @param {openBSE~BulletScreen} bulletScreen - 单条弹幕数据：一个 {@link openBSE~BulletScreen} 结构。
+         * @param {openBSE~GeneralBulletScreen} bulletScreen - 单条弹幕数据：一个 {@link openBSE~GeneralBulletScreen} 结构。
          * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
          */
-        this.addBulletScreen = function (bulletScreen) {
+        this.add = function (bulletScreen) {
             _defaultBulletScreen.startTime = _options.clock();
             bulletScreen = Helper.setValues(bulletScreen, _defaultBulletScreen, _bulletScreenType); //设置默认值
 
@@ -291,16 +293,18 @@ export default class GeneralEngine {
 
             Helper.checkTypes(bulletScreen.style, _optionsType.defaultStyle); //检查弹幕样式类型
 
-            let oldLength = _bulletScreens.getLength();
-            _bulletScreens.forEach(function (lastBulletScreen) {
-                if (bulletScreen.startTime > lastBulletScreen.startTime)
+            let newNode = new LinkedList.node(bulletScreen);
+            _bulletScreenBuffer.forEach(function (node) {
+                let lastBulletScreen = node.element;
+                if (bulletScreen.startTime > lastBulletScreen.startTime) {
+                    flag = true;
                     return {
-                        add: { addToUp: true, element: bulletScreen },
+                        add: { addToUp: true, node: newNode },
                         stop: true
                     };
+                }
             }, true);
-            if (oldLength === _bulletScreens.getLength())
-                _bulletScreens.push(bulletScreen, false);
+            if (newNode.linkedList === null) _bulletScreenBuffer.push(newNode, false);
 
         };
 
@@ -323,7 +327,7 @@ export default class GeneralEngine {
          * 继续所有在事件响应中设置了 e.pause = true; 弹幕的播放。
          */
         this.playAllBulletScreens = () =>
-            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => bulletScreenOnScreen.pause = false);
+            _realTimeBulletScreens.forEach((node) => node.element.pause = false);
 
         /**
          * 暂停播放弹幕。
@@ -337,11 +341,11 @@ export default class GeneralEngine {
         };
 
         /**
-         * 清空弹幕列表。
+         * 清空弹幕缓冲区。
          * @description 清空弹幕列表，但屏幕上已经出现的弹幕不会被清除。
          */
-        this.cleanBulletScreenList = function () {
-            _bulletScreens.clean();
+        this.cleanBuffer = function () {
+            _bulletScreenBuffer.clean();
         };
 
         /**
@@ -349,7 +353,7 @@ export default class GeneralEngine {
          * @description 清空屏幕内容。清空屏幕上已经出现的弹幕，不包括弹幕列表中的弹幕。
          */
         this.cleanScreen = function () {
-            _bulletScreensOnScreen.clean();
+            _realTimeBulletScreens.clean();
             _renderer.cleanScreen();
         };
 
@@ -361,67 +365,71 @@ export default class GeneralEngine {
             if (_playing) {
                 this.pause();
             }
-            this.cleanBulletScreenList();
+            this.cleanBuffer();
             this.cleanScreen();
             _pauseTime = 0;
             _startTime = null;
         };
 
         /**
-         * 隐藏弹幕。
-         * @function
+         * 获取或设置弹幕可见性。
+         * @private
          */
-        this.hide = _renderer.hide;
+        Object.defineProperty(this, 'visibility', {
+            get: function () {
+                return renderer.getVisibility();
+            },
+            set: function (visibility) {
+                if (visibility) _renderer.show();
+                else _renderer.hide();
+            }
+        });
 
-        /**
-         * 显示弹幕。
-         * @function
-         */
-        this.show = _renderer.show;
-
-        /**
-         * 获取弹幕可见性。
-         * @function
-         * @returns {boolean} - 指示弹幕是否可见。
-         * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link openBSE.BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{@link openBSE.BulletScreenEngine#hide} 。
-         */
-        this.getVisibility = _renderer.getVisibility;
         /**
          * 获取渲染模式。
-         * @returns {string} - 弹幕渲染模式： 取值为“canvas”、“css3”、“webgl”或“svg”。
+         * @private
          */
-        this.getRenderMode = () => renderMode;
+        Object.defineProperty(this, 'renderMode', {
+            get: function () {
+                return renderMode;
+            }
+        });
 
         /**
          * 获取播放状态。
-         * @returns {boolean} - 正在播放标志：true：正在播放；false：已暂停/停止播放。
+         * @private
          */
-        this.getPlayState = () => _playing;
+        Object.defineProperty(this, 'playState', {
+            get: function () {
+                return _playing;
+            }
+        });
 
         /**
         * 获取调试信息。
-        * @returns {openBSE~DebugInfo} - 调试信息：一个 {@link openBSE~DebugInfo} 结构。
+        * @private
         */
-        this.getDebugInfo = function () {
-            return {
-                time: _playing ? _options.clock() : _pauseTime,
-                bulletScreensOnScreenCount: _bulletScreensOnScreen.getLength(),
-                bulletScreensCount: _bulletScreens.getLength(),
-                delay: _delay,
-                delayBulletScreensCount: _delayBulletScreensCount,
-                fps: _playing ? Math.floor(_refreshRate * 1000) : 0 //帧频
-            };
-        };
+        Object.defineProperty(this, 'debugInfo', {
+            get: function () {
+                return {
+                    time: _playing ? _options.clock() : _pauseTime,
+                    realTimeBulletScreenCount: _realTimeBulletScreens.length,
+                    bufferBulletScreenCount: _bulletScreenBuffer.length,
+                    delay: _delay,
+                    delayBulletScreenCount: _delayBulletScreenCount,
+                    fps: _playing ? Math.floor(_refreshRate * 1000) : 0 //帧频
+                };
+            }
+        });
 
         //内部函数
-
         /**
          * 弹幕事件响应
          * @param {string} name - 事件名称
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          * @param {object} e - 事件信息
          */
-        function bulletScreenEventTrigger(name, bulletScreenOnScreen, e) {
+        function bulletScreenEventTrigger(name, realTimeBulletScreen, e) {
             if (typeof e.pageX === 'undefined' || e.pageX === null) {
                 let doc = document.documentElement, body = document.body;
                 e.pageX = e.clientX + (doc && doc.scrollLeft || body && body.scrollLeft || 0) - (doc && doc.clientLeft || body && body.clientLeft || 0);
@@ -433,7 +441,7 @@ export default class GeneralEngine {
                  * @private
                  * @returns {openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
                  */
-                getBulletScreen: () => Helper.clone(bulletScreenOnScreen.bulletScreen),
+                getBulletScreen: () => Helper.clone(realTimeBulletScreen.bulletScreen),
                 /**
                  * 设置引发事件的弹幕弹幕的数据
                  * @private
@@ -444,8 +452,8 @@ export default class GeneralEngine {
                     if (typeof redraw != 'boolean') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
                     let bulletScreenType = Helper.clone(_bulletScreenType);
                     bulletScreenType.style = _optionsType.defaultStyle;
-                    bulletScreenOnScreen.bulletScreen = Helper.setValues(bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType); //设置值
-                    if (redraw === true) _renderer.reCreatAndgetWidth(bulletScreenOnScreen); //重新创建并绘制弹幕
+                    realTimeBulletScreen.bulletScreen = Helper.setValues(bulletScreen, realTimeBulletScreen.bulletScreen, bulletScreenType); //设置值
+                    if (redraw === true) _renderer.reCreatAndgetWidth(realTimeBulletScreen); //重新创建并绘制弹幕
                     if (!_playing && redraw) _renderer.draw(); //非播放状态则重绘
                 },
                 /**
@@ -453,7 +461,7 @@ export default class GeneralEngine {
                  * @private
                  * @returns {boolean} 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
                  */
-                getPlayState: () => !bulletScreenOnScreen.pause,
+                getPlayState: () => !realTimeBulletScreen.pause,
                 /**
                  * 设置引发事件的弹幕的播放状态
                  * @private
@@ -461,7 +469,7 @@ export default class GeneralEngine {
                  */
                 setPlayState: (play) => {
                     if (typeof play != 'boolean') throw new TypeError(Resources.PARAMETERS_TYPE_ERROR);
-                    bulletScreenOnScreen.pause = !play;
+                    realTimeBulletScreen.pause = !play;
                 },
                 screenX: e.screenX, screenY: e.screenY,
                 pageX: e.pageX, pageY: e.pageY,
@@ -478,8 +486,8 @@ export default class GeneralEngine {
             if (_lastRefreshTime != null)
                 _refreshRate = 1 / (nowTime - _lastRefreshTime);
             _lastRefreshTime = nowTime;
-            addBulletScreensToScreen();
-            moveBulletScreenOnScreen();
+            addrealTimeBulletScreens();
+            moverealTimeBulletScreen();
             _renderer.draw(); //绘制弹幕
             if (_playing)
                 requestAnimationFrame(refresh);
@@ -489,33 +497,34 @@ export default class GeneralEngine {
          * 移动弹幕函数
          * @private
          */
-        function moveBulletScreenOnScreen() {
-            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                if (bulletScreenOnScreen.pause) return; //暂停移动
+        function moverealTimeBulletScreen() {
+            _realTimeBulletScreens.forEach((node) => {
+                let realTimeBulletScreen = node.element;
+                if (realTimeBulletScreen.pause) return; //暂停移动
                 let nowTime = _options.clock();
-                switch (bulletScreenOnScreen.type) {
+                switch (realTimeBulletScreen.type) {
                     case GeneralType.rightToLeft:
-                        if (bulletScreenOnScreen.x > -bulletScreenOnScreen.width) {
-                            bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
+                        if (realTimeBulletScreen.x > -realTimeBulletScreen.width) {
+                            realTimeBulletScreen.x -= realTimeBulletScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
                         }
                         else {
-                            _renderer.delete(bulletScreenOnScreen);
+                            _renderer.delete(realTimeBulletScreen);
                             return { remove: true };
                         }
                         break;
                     case GeneralType.leftToRight:
-                        if (bulletScreenOnScreen.x < _elementSize.width) {
-                            bulletScreenOnScreen.x += bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
+                        if (realTimeBulletScreen.x < _elementSize.width) {
+                            realTimeBulletScreen.x += realTimeBulletScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
                         }
                         else {
-                            _renderer.delete(bulletScreenOnScreen);
+                            _renderer.delete(realTimeBulletScreen);
                             return { remove: true };
                         }
                         break;
                     case GeneralType.top:
                     case GeneralType.bottom:
-                        if (bulletScreenOnScreen.endTime < nowTime) {
-                            _renderer.delete(bulletScreenOnScreen);
+                        if (realTimeBulletScreen.endTime < nowTime) {
+                            _renderer.delete(realTimeBulletScreen);
                             return { remove: true };
                         }
                         break;
@@ -524,138 +533,148 @@ export default class GeneralEngine {
         }
 
         /**
-         * 添加弹幕到屏幕函数
+         * 添加弹幕到实时弹幕列表
          * @private
          */
-        function addBulletScreensToScreen() {
-            if (_bulletScreensOnScreen.getLength() === 0)
+        function addrealTimeBulletScreens() {
+            if (_realTimeBulletScreens.length === 0)
                 _delay = 0;
             let times = Math.floor(_refreshRate * 2000);
             do {
-                let bulletScreen = _bulletScreens.pop(false, false);
-                if (bulletScreen === null) return;
+                let node = _bulletScreenBuffer.pop(false, false);
+                if (node === null) return;
+                let bulletScreen = node.element;
                 let nowTime = _options.clock();
                 if (bulletScreen.startTime > nowTime) return;
                 if (!_options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
                     bulletScreen.style = Helper.setValues(bulletScreen.style, _options.defaultStyle, _optionsType.defaultStyle); //填充默认样式
-                    getBulletScreenOnScreen(nowTime, bulletScreen); //生成屏幕弹幕对象并添加到屏幕弹幕集合            
+                    getRealTimeBulletScreen(nowTime, bulletScreen); //生成实时弹幕对象并添加到实时弹幕集合            
                 }
-                else _delayBulletScreensCount++;
-                _bulletScreens.pop(true, false);
+                else _delayBulletScreenCount++;
+                node.remove();
                 times--;
-            } while (_bulletScreensOnScreen.getLength() === 0 || times > 0);
+            } while (_realTimeBulletScreens.length === 0 || times > 0);
         }
 
         /**
-         * 生成屏幕弹幕对象函数
+         * 生成实时弹幕对象
          * @private
          * @param {number} nowTime - 当前时间
-         * @param {openBSE~BulletScreen} bulletScreen - 弹幕
+         * @param {openBSE~BulletScreen} bulletScreen - 弹幕的链表节点
          */
-        function getBulletScreenOnScreen(nowTime, bulletScreen) {
+        function getRealTimeBulletScreen(nowTime, bulletScreen) {
             _delay = nowTime - bulletScreen.startTime;
-            let bulletScreenOnScreen = {};
-            bulletScreenOnScreen.pause = false; //是否暂停移动
-            bulletScreenOnScreen.bulletScreen = bulletScreen;
-            bulletScreenOnScreen.startTime = nowTime; //弹幕头部进屏幕时间
-            bulletScreenOnScreen.size = bulletScreen.style.size; //字体大小：像素
-            bulletScreenOnScreen.type = bulletScreen.type; //弹幕类型
-            bulletScreenOnScreen.height = bulletScreenOnScreen.size; //弹幕的高度：像素
-            _renderer.creatAndgetWidth(bulletScreenOnScreen); //创建弹幕元素并计算宽度
+            let realTimeBulletScreen = {};
+            realTimeBulletScreen.pause = false; //是否暂停移动
+            realTimeBulletScreen.bulletScreen = bulletScreen;
+            realTimeBulletScreen.startTime = nowTime; //弹幕头部进屏幕时间
+            realTimeBulletScreen.size = bulletScreen.style.size; //字体大小：像素
+            realTimeBulletScreen.type = bulletScreen.type; //弹幕类型
+            realTimeBulletScreen.height = realTimeBulletScreen.size; //弹幕的高度：像素
+            _renderer.creatAndgetWidth(realTimeBulletScreen); //创建弹幕元素并计算宽度
             switch (bulletScreen.type) {
                 case GeneralType.rightToLeft:
-                    bulletScreenOnScreen.endTime = Math.round(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
-                    bulletScreenOnScreen.x = _elementSize.width; //弹幕初始X坐标
-                    bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
+                    realTimeBulletScreen.endTime = Math.round(nowTime + (_elementSize.width + realTimeBulletScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
+                    realTimeBulletScreen.x = _elementSize.width; //弹幕初始X坐标
+                    realTimeBulletScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case GeneralType.leftToRight:
-                    bulletScreenOnScreen.endTime = Math.round(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
-                    bulletScreenOnScreen.x = -bulletScreenOnScreen.width; //弹幕初始X坐标
-                    bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
+                    realTimeBulletScreen.endTime = Math.round(nowTime + (_elementSize.width + realTimeBulletScreen.width) / (bulletScreen.style.speed * _options.playSpeed)); //弹幕尾部出屏幕的时间
+                    realTimeBulletScreen.x = -realTimeBulletScreen.width; //弹幕初始X坐标
+                    realTimeBulletScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case GeneralType.top:
-                    bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
-                    bulletScreenOnScreen.x = Math.round((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
-                    bulletScreenOnScreen.y = _options.verticalInterval; //弹幕初始Y坐标
+                    realTimeBulletScreen.endTime = realTimeBulletScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
+                    realTimeBulletScreen.x = Math.round((_elementSize.width - realTimeBulletScreen.width) / 2); //弹幕初始X坐标
+                    realTimeBulletScreen.y = _options.verticalInterval; //弹幕初始Y坐标
                     break;
                 case GeneralType.bottom:
-                    bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
-                    bulletScreenOnScreen.x = Math.round((_elementSize.width - bulletScreenOnScreen.width) / 2); //弹幕初始X坐标
-                    bulletScreenOnScreen.y = -_options.verticalInterval - bulletScreenOnScreen.height; //弹幕初始Y坐标
+                    realTimeBulletScreen.endTime = realTimeBulletScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
+                    realTimeBulletScreen.x = Math.round((_elementSize.width - realTimeBulletScreen.width) / 2); //弹幕初始X坐标
+                    realTimeBulletScreen.y = -_options.verticalInterval - realTimeBulletScreen.height; //弹幕初始Y坐标
                     break;
             }
-            let oldLength = _bulletScreensOnScreen.getLength();
+
+            let newNode = new LinkedList.node(realTimeBulletScreen);
             if (bulletScreen.type === GeneralType.top || bulletScreen.type === GeneralType.bottom) {
-                _bulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
+                _realTimeBulletScreens.forEach((node) => {
+                    let nextrealTimeBulletScreen = node.element;
                     //弹幕不在流中，是固定弹幕
-                    if (nextBulletScreenOnScreen.bulletScreen.type != bulletScreen.type)
+                    if (nextrealTimeBulletScreen.bulletScreen.type != bulletScreen.type)
                         return; //不是同一种类型的弹幕
                     if (bulletScreen.type === GeneralType.top) {
                         //如果新弹幕在当前弹幕上方且未与当前弹幕重叠
-                        if (bulletScreenOnScreen.y + bulletScreenOnScreen.height < nextBulletScreenOnScreen.y)
-                            return { add: { addToUp: true, element: setActualY(bulletScreenOnScreen) }, stop: true };
+                        if (realTimeBulletScreen.y + realTimeBulletScreen.height < nextrealTimeBulletScreen.y) {
+                            setActualY(realTimeBulletScreen);
+                            return { add: { addToUp: true, node: newNode }, stop: true };
+                        }
                         //如果上一条弹幕的消失时间小于当前弹幕的出现时间
-                        if (nextBulletScreenOnScreen.endTime < nowTime)
-                            bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
+                        if (nextrealTimeBulletScreen.endTime < nowTime)
+                            realTimeBulletScreen.y = nextrealTimeBulletScreen.y;
                         else
-                            bulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + _options.verticalInterval;
+                            realTimeBulletScreen.y = nextrealTimeBulletScreen.y + nextrealTimeBulletScreen.height + _options.verticalInterval;
                     }
                     else {
                         //如果新弹幕在当前弹幕下方且未与当前弹幕重叠
-                        if (bulletScreenOnScreen.y > nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height) {
-                            return { add: { addToUp: true, element: setActualY(bulletScreenOnScreen) }, stop: true };
+                        if (realTimeBulletScreen.y > nextrealTimeBulletScreen.y + nextrealTimeBulletScreen.height) {
+                            setActualY(realTimeBulletScreen);
+                            return { add: { addToUp: true, node: newNode }, stop: true };
                         }
                         //如果上一条弹幕的消失时间小于当前弹幕的出现时间
-                        if (nextBulletScreenOnScreen.endTime < nowTime)
-                            bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
+                        if (nextrealTimeBulletScreen.endTime < nowTime)
+                            realTimeBulletScreen.y = nextrealTimeBulletScreen.y;
                         else
-                            bulletScreenOnScreen.y = nextBulletScreenOnScreen.y - bulletScreenOnScreen.height - _options.verticalInterval;
+                            realTimeBulletScreen.y = nextrealTimeBulletScreen.y - realTimeBulletScreen.height - _options.verticalInterval;
                     }
                 }, true);
             }
             else {
                 //当前弹幕经过一个点需要的总时长
-                let bulletScreenOnScreenWidthTime = bulletScreenOnScreen.width / (bulletScreen.style.speed * _options.playSpeed);
-                _bulletScreensOnScreen.forEach((nextBulletScreenOnScreen) => {
+                let realTimeBulletScreenWidthTime = realTimeBulletScreen.width / (bulletScreen.style.speed * _options.playSpeed);
+                _realTimeBulletScreens.forEach((node) => {
+                    let nextrealTimeBulletScreen = node.element;
                     //弹幕在流中，是移动弹幕
-                    if (nextBulletScreenOnScreen.bulletScreen.type === GeneralType.top || nextBulletScreenOnScreen.bulletScreen.type === GeneralType.bottom)
+                    if (nextrealTimeBulletScreen.bulletScreen.type === GeneralType.top || nextrealTimeBulletScreen.bulletScreen.type === GeneralType.bottom)
                         return; //弹幕不在流中，为固定弹幕
                     //如果新弹幕在当前弹幕上方且未与当前弹幕重叠
-                    if (bulletScreenOnScreen.y + bulletScreenOnScreen.height < nextBulletScreenOnScreen.y)
-                        return { add: { addToUp: true, element: setActualY(bulletScreenOnScreen) }, stop: true };
+                    if (realTimeBulletScreen.y + realTimeBulletScreen.height < nextrealTimeBulletScreen.y) {
+                        setActualY(realTimeBulletScreen);
+                        return { add: { addToUp: true, node: newNode }, stop: true };
+                    }
                     //上一条弹幕经过一个点需要的总时长
-                    let nextBulletScreenOnScreenWidthTime = nextBulletScreenOnScreen.width / (nextBulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed);
+                    let nextrealTimeBulletScreenWidthTime = nextrealTimeBulletScreen.width / (nextrealTimeBulletScreen.bulletScreen.style.speed * _options.playSpeed);
                     //如果上一条弹幕的消失时间小于当前弹幕的出现时间
-                    if (nextBulletScreenOnScreen.startTime + nextBulletScreenOnScreenWidthTime >= nowTime || //如果上一条弹幕的头进入了，但是尾还没进入
-                        nextBulletScreenOnScreen.endTime >= bulletScreenOnScreen.endTime - bulletScreenOnScreenWidthTime) //如果当前弹幕头出去了，上一条弹幕尾还没出去
-                        bulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + _options.verticalInterval;
+                    if (nextrealTimeBulletScreen.startTime + nextrealTimeBulletScreenWidthTime >= nowTime || //如果上一条弹幕的头进入了，但是尾还没进入
+                        nextrealTimeBulletScreen.endTime >= realTimeBulletScreen.endTime - realTimeBulletScreenWidthTime) //如果当前弹幕头出去了，上一条弹幕尾还没出去
+                        realTimeBulletScreen.y = nextrealTimeBulletScreen.y + nextrealTimeBulletScreen.height + _options.verticalInterval;
                     else
-                        bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
+                        realTimeBulletScreen.y = nextrealTimeBulletScreen.y;
                 }, true);
             }
-            if (_bulletScreensOnScreen.getLength() === oldLength)
-                _bulletScreensOnScreen.push(setActualY(bulletScreenOnScreen), false);
+            if (newNode.linkedList === null) {
+                setActualY(realTimeBulletScreen);
+                _realTimeBulletScreens.push(newNode, false);
+            }
         }
 
         /**
          * 设置真实的Y坐标
          * @private
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕事件
-         * @returns {object} 屏幕弹幕事件
+         * @param {object} realTimeBulletScreen - 实时弹幕事件
+         * @returns {object} 实时弹幕事件
          */
-        function setActualY(bulletScreenOnScreen) {
-            let bulletScreen = bulletScreenOnScreen.bulletScreen;
+        function setActualY(realTimeBulletScreen) {
+            let bulletScreen = realTimeBulletScreen.bulletScreen;
             if (
                 bulletScreen.type === GeneralType.leftToRight ||
                 bulletScreen.type === GeneralType.rightToLeft ||
                 bulletScreen.type === GeneralType.top
             ) {
-                bulletScreenOnScreen.actualY = bulletScreenOnScreen.y % (_elementSize.height - bulletScreenOnScreen.height);
+                realTimeBulletScreen.actualY = realTimeBulletScreen.y % (_elementSize.height - realTimeBulletScreen.height);
             }
             else if (bulletScreen.type === GeneralType.bottom) {
-                bulletScreenOnScreen.actualY = _elementSize.height + bulletScreenOnScreen.y % _elementSize.height;
+                realTimeBulletScreen.actualY = _elementSize.height + realTimeBulletScreen.y % _elementSize.height;
             }
-            return bulletScreenOnScreen;
         }
 
         /**

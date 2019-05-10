@@ -53,15 +53,16 @@ export default class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
             let devicePixelRatio = this.getDevicePixelRatio();
             // 清空画布
             _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
-            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                if (this.checkWhetherHide(bulletScreenOnScreen)) return;
+            _bulletScreensOnScreen.forEach((node) => {
+                let realTimeBulletScreen = node.element;
+                if (this.checkWhetherHide(realTimeBulletScreen)) return;
                 // 四个顶点坐标
-                let x1 = (bulletScreenOnScreen.x - 4) * devicePixelRatio;
-                let x2 = x1 + (bulletScreenOnScreen.width + 8) * devicePixelRatio;
-                let y1 = (bulletScreenOnScreen.actualY - 4) * devicePixelRatio;
-                let y2 = y1 + (bulletScreenOnScreen.height + 8) * devicePixelRatio;
+                let x1 = (realTimeBulletScreen.x - 4) * devicePixelRatio;
+                let x2 = x1 + (realTimeBulletScreen.width + 8) * devicePixelRatio;
+                let y1 = (realTimeBulletScreen.actualY - 4) * devicePixelRatio;
+                let y2 = y1 + (realTimeBulletScreen.height + 8) * devicePixelRatio;
                 //绑定纹理
-                _webglContext.bindTexture(_webglContext.TEXTURE_2D, bulletScreenOnScreen.texture2D);
+                _webglContext.bindTexture(_webglContext.TEXTURE_2D, realTimeBulletScreen.texture2D);
                 //绑定范围
                 let positionBuffer = _webglContext.createBuffer();
                 // 将绑定点绑定到缓冲数据（positionBuffer）
@@ -93,10 +94,10 @@ export default class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
         /**
          * 创建弹幕元素
          * @override
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.creatAndgetWidth = function (bulletScreenOnScreen) {
-            _creatAndgetWidth(bulletScreenOnScreen);
+        this.creatAndgetWidth = function (realTimeBulletScreen) {
+            _creatAndgetWidth(realTimeBulletScreen);
             let texture = _webglContext.createTexture();
             _webglContext.bindTexture(_webglContext.TEXTURE_2D, texture);
             // 设置参数
@@ -104,8 +105,8 @@ export default class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
             _webglContext.texParameteri(_webglContext.TEXTURE_2D, _webglContext.TEXTURE_MAG_FILTER, _webglContext.NEAREST);
             _webglContext.texParameteri(_webglContext.TEXTURE_2D, _webglContext.TEXTURE_WRAP_S, _webglContext.CLAMP_TO_EDGE);
             _webglContext.texParameteri(_webglContext.TEXTURE_2D, _webglContext.TEXTURE_WRAP_T, _webglContext.CLAMP_TO_EDGE);
-            _webglContext.texImage2D(_webglContext.TEXTURE_2D, 0, _webglContext.RGBA, _webglContext.RGBA, _webglContext.UNSIGNED_BYTE, bulletScreenOnScreen.hideCanvas);
-            bulletScreenOnScreen.texture2D = texture;
+            _webglContext.texImage2D(_webglContext.TEXTURE_2D, 0, _webglContext.RGBA, _webglContext.RGBA, _webglContext.UNSIGNED_BYTE, realTimeBulletScreen.hideCanvas);
+            realTimeBulletScreen.texture2D = texture;
         }
 
         let _setSize = this.setSize;

@@ -43,13 +43,14 @@ export default class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
             let devicePixelRatio = this.getDevicePixelRatio();
             let canvasContext = canvas.getContext('2d');
             canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-            _bulletScreensOnScreen.forEach((bulletScreenOnScreen) => {
-                if (this.checkWhetherHide(bulletScreenOnScreen)) return;
-                canvasContext.drawImage(bulletScreenOnScreen.hideCanvas, 
-                    ((bulletScreenOnScreen.x - 4) * devicePixelRatio).toFixed(1), 
-                    ((bulletScreenOnScreen.actualY - 4) * devicePixelRatio).toFixed(1), 
-                    ((bulletScreenOnScreen.width + 8) * devicePixelRatio).toFixed(1), 
-                    ((bulletScreenOnScreen.height + 8) * devicePixelRatio).toFixed(1)
+            _bulletScreensOnScreen.forEach((node) => {
+                let realTimeBulletScreen = node.element;
+                if (this.checkWhetherHide(realTimeBulletScreen)) return;
+                canvasContext.drawImage(realTimeBulletScreen.hideCanvas, 
+                    ((realTimeBulletScreen.x - 4) * devicePixelRatio).toFixed(1), 
+                    ((realTimeBulletScreen.actualY - 4) * devicePixelRatio).toFixed(1), 
+                    ((realTimeBulletScreen.width + 8) * devicePixelRatio).toFixed(1), 
+                    ((realTimeBulletScreen.height + 8) * devicePixelRatio).toFixed(1)
                 );
             }, true);
         }

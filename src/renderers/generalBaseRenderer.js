@@ -88,35 +88,35 @@ export default class GeneralBaseRenderer {
         /**
          * 创建弹幕元素
          * @abstract
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.creatAndgetWidth = function (bulletScreenOnScreen) {
+        this.creatAndgetWidth = function (realTimeBulletScreen) {
             throw new SyntaxError();
         }
 
         /**
          * 删除弹幕元素
          * @abstract
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.delete = function (bulletScreenOnScreen) {
+        this.delete = function (realTimeBulletScreen) {
             throw new SyntaxError();
         }
 
         /**
          * 重新添加弹幕
          * @abstract
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+        this.reCreatAndgetWidth = function (realTimeBulletScreen) {
             throw new SyntaxError();
         }
 
         /**
          * 检查弹幕是否被隐藏
-         * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
-        this.checkWhetherHide = (bulletScreenOnScreen) => (bulletScreenOnScreen.bulletScreen.type & options.hiddenTypes) === bulletScreenOnScreen.bulletScreen.type;
+        this.checkWhetherHide = (realTimeBulletScreen) => (realTimeBulletScreen.bulletScreen.type & options.hiddenTypes) === realTimeBulletScreen.bulletScreen.type;
 
         /**
         * 设置尺寸
