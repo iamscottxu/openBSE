@@ -36,7 +36,7 @@ window.openBSE = openBSE;
 
 
 },{"./openBSE":"openbse"}],2:[function(require,module,exports){
-module.exports={"version":"3.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Thu, 09 May 2019 14:08:48 GMT"}
+module.exports={"version":"3.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Fri, 10 May 2019 13:09:42 GMT"}
 
 },{}],3:[function(require,module,exports){
 "use strict";
@@ -227,6 +227,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 /** 
  * 弹幕引擎对象类 
  * @alias openBSE.GeneralEngine
+ * @property {openBSE~Options} options - 设置或获取全局选项。
+ * @property {bool} visibility - 获取或设置弹幕可见性。
+ * @property {string} renderMode - 获取渲染模式。取值为“canvas”、“css3”、“webgl”或“svg”。
+ * @property {bool} playState - 获取播放状态。true：正在播放；false：已暂停/停止播放。
+ * @property {openBSE~DebugInfo} debugInfo - 获取调试信息。
  * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误。
  * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
  */
@@ -255,25 +260,25 @@ function GeneralEngine(element, options) {
 
   var _pauseTime = 0;
   /**
-   * 剩余弹幕
+   * 弹幕缓冲区
    * @private @type {LinkedList}
    */
 
-  var _bulletScreens = new _linkedList["default"]();
+  var _bulletScreenBuffer = new _linkedList["default"]();
   /**
-   * 屏幕上的弹幕
+   * 实时弹幕列表
    * @private @type {LinkedList}
    */
 
 
-  var _bulletScreensOnScreen = new _linkedList["default"]();
+  var _realTimeBulletScreens = new _linkedList["default"]();
   /**
    * 延迟弹幕总数
    * @private @type {number}
    */
 
 
-  var _delayBulletScreensCount = 0;
+  var _delayBulletScreenCount = 0;
   /**
    * 延迟（单位：毫秒）
    * @private @type {number}
@@ -301,7 +306,7 @@ function GeneralEngine(element, options) {
   var _lastRefreshTime;
   /**
    * 全局选项
-   * @private @type {openBSE~Options}
+   * @private @type {openBSE~generalOptions}
    */
 
 
@@ -447,32 +452,32 @@ function GeneralEngine(element, options) {
   var _event = new _event2["default"]();
   /**
    * 弹幕单击事件。当单击弹幕时触发。
-   * @event openBSE.BulletScreenEngine#click
-   * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
+   * @event openBSE.GeneralEngine#click
+   * @property {openBSE~GeneralEvent} e - 弹幕事件结构
    */
 
 
   _event.add('click');
   /**
    * 弹幕上下文菜单事件。当触发弹幕上下文菜单时触发。
-   * @event openBSE.BulletScreenEngine#contextmenu
-   * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
+   * @event openBSE.GeneralEngine#contextmenu
+   * @property {openBSE~GeneralBulletScreenEvent} e - 弹幕事件结构
    */
 
 
   _event.add('contextmenu');
   /**
   * 弹幕鼠标离开事件。当鼠标离开弹幕时触发。
-  * @event openBSE.BulletScreenEngine#mouseleave
-  * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
+  * @event openBSE.GeneralEngine#mouseleave
+  * @property {openBSE~GeneralBulletScreenEvent} e - 弹幕事件结构
   */
 
 
   _event.add('mouseleave');
   /**
    * 弹幕鼠标进入事件。当鼠标进入弹幕时触发。
-   * @event openBSE.BulletScreenEngine#mouseenter
-   * @property {openBSE~BulletScreenEvent} e - 弹幕事件结构
+   * @event openBSE.GeneralEngine#mouseenter
+   * @property {openBSE~GeneralBulletScreenEvent} e - 弹幕事件结构
    */
 
 
@@ -483,10 +488,10 @@ function GeneralEngine(element, options) {
    * @description 绑定事件处理程序。当事件处理程序返回值为 false 时停止冒泡。
    * @param {string} name - 事件名称
    * @param {function} fun - 事件处理程序
-   * @listens openBSE.BulletScreenEngine#click
-   * @listens openBSE.BulletScreenEngine#contextmenu
-   * @listens openBSE.BulletScreenEngine#mouseleave
-   * @listens openBSE.BulletScreenEngine#mouseenter
+   * @listens openBSE.GeneralEngine#click
+   * @listens openBSE.GeneralEngine#contextmenu
+   * @listens openBSE.GeneralEngine#mouseleave
+   * @listens openBSE.GeneralEngine#mouseenter
    * @throws {TypeError} 传入的参数错误或事件不存在时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
@@ -519,62 +524,61 @@ function GeneralEngine(element, options) {
 
   setInterval(setSize, 100);
   /**
-   * 设置全局选项
-   * @param {openBSE~Options} options - 全局选项：一个 {@link openBSE~Options} 结构。
-   * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
-   */
+   * 设置或获取全局选项
+   * @private
+   **/
 
-  this.setOptions = function (options) {
-    _options = _helper["default"].setValues(options, _options, _optionsType, false);
+  Object.defineProperty(this, 'options', {
+    get: function get() {
+      return _helper["default"].clone(_options);
+    },
+    set: function set(options) {
+      _options = _helper["default"].setValues(options, _options, _optionsType, false);
 
-    if (_oldHiddenTypes != _options.hiddenTypes) {
-      _oldHiddenTypes = _options.hiddenTypes;
-      if (!_playing) _renderer.draw();
+      if (_oldHiddenTypes != _options.hiddenTypes) {
+        _oldHiddenTypes = _options.hiddenTypes;
+        if (!_playing) _renderer.draw();
+      }
+
+      if (_oldOpacity != _options.opacity) {
+        _oldOpacity = _options.opacity;
+
+        _renderer.setOpacity();
+      }
     }
-
-    if (_oldOpacity != _options.opacity) {
-      _oldOpacity = _options.opacity;
-
-      _renderer.setOpacity();
-    }
-  };
-  /**
-   * 获取全局选项
-   * @returns {openBSE~Options} 全局选项：一个 {@link openBSE~Options} 结构。
-   */
-
-
-  this.getOptions = function () {
-    return _options;
-  };
+  });
   /**
    * 添加弹幕到弹幕列表。
    * @description 添加弹幕到弹幕列表。由于弹幕在屏幕上出现过后，弹幕引擎将从列表中彻底删除此弹幕。所以，在改变播放进度时，可能需要先[清空弹幕列表]{@link openBSE.BulletScreenEngine#cleanBulletScreenList}，然后重新加载此播放进度以后的弹幕。
-   * @param {openBSE~BulletScreen} bulletScreen - 单条弹幕数据：一个 {@link openBSE~BulletScreen} 结构。
+   * @param {openBSE~GeneralBulletScreen} bulletScreen - 单条弹幕数据：一个 {@link openBSE~GeneralBulletScreen} 结构。
    * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
    */
 
-
-  this.addBulletScreen = function (bulletScreen) {
+  this.add = function (bulletScreen) {
     _defaultBulletScreen.startTime = _options.clock();
     bulletScreen = _helper["default"].setValues(bulletScreen, _defaultBulletScreen, _bulletScreenType);
     if (bulletScreen.type != _generalType["default"].leftToRight && bulletScreen.type != _generalType["default"].rightToLeft && bulletScreen.type != _generalType["default"].top && bulletScreen.type != _generalType["default"].bottom) throw new TypeError(_resources["default"].PARAMETERS_TYPE_ERROR);
 
     _helper["default"].checkTypes(bulletScreen.style, _optionsType.defaultStyle);
 
-    var oldLength = _bulletScreens.getLength();
+    var newNode = new _linkedList["default"].node(bulletScreen);
 
-    _bulletScreens.forEach(function (lastBulletScreen) {
-      if (bulletScreen.startTime > lastBulletScreen.startTime) return {
-        add: {
-          addToUp: true,
-          element: bulletScreen
-        },
-        stop: true
-      };
+    _bulletScreenBuffer.forEach(function (node) {
+      var lastBulletScreen = node.element;
+
+      if (bulletScreen.startTime > lastBulletScreen.startTime) {
+        flag = true;
+        return {
+          add: {
+            addToUp: true,
+            node: newNode
+          },
+          stop: true
+        };
+      }
     }, true);
 
-    if (oldLength === _bulletScreens.getLength()) _bulletScreens.push(bulletScreen, false);
+    if (newNode.linkedList === null) _bulletScreenBuffer.push(newNode, false);
   };
   /**
    * 开始播放弹幕。
@@ -596,8 +600,8 @@ function GeneralEngine(element, options) {
 
 
   this.playAllBulletScreens = function () {
-    return _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-      return bulletScreenOnScreen.pause = false;
+    return _realTimeBulletScreens.forEach(function (node) {
+      return node.element.pause = false;
     });
   };
   /**
@@ -613,13 +617,13 @@ function GeneralEngine(element, options) {
     }
   };
   /**
-   * 清空弹幕列表。
+   * 清空弹幕缓冲区。
    * @description 清空弹幕列表，但屏幕上已经出现的弹幕不会被清除。
    */
 
 
-  this.cleanBulletScreenList = function () {
-    _bulletScreens.clean();
+  this.cleanBuffer = function () {
+    _bulletScreenBuffer.clean();
   };
   /**
    * 清空屏幕内容。
@@ -628,7 +632,7 @@ function GeneralEngine(element, options) {
 
 
   this.cleanScreen = function () {
-    _bulletScreensOnScreen.clean();
+    _realTimeBulletScreens.clean();
 
     _renderer.cleanScreen();
   };
@@ -643,74 +647,70 @@ function GeneralEngine(element, options) {
       this.pause();
     }
 
-    this.cleanBulletScreenList();
+    this.cleanBuffer();
     this.cleanScreen();
     _pauseTime = 0;
     _startTime = null;
   };
   /**
-   * 隐藏弹幕。
-   * @function
+   * 获取或设置弹幕可见性。
+   * @private
    */
 
 
-  this.hide = _renderer.hide;
-  /**
-   * 显示弹幕。
-   * @function
-   */
-
-  this.show = _renderer.show;
-  /**
-   * 获取弹幕可见性。
-   * @function
-   * @returns {boolean} - 指示弹幕是否可见。
-   * @description 获取弹幕可见性。如要显示弹幕请调用 [bulletScreenEngine.show();]{@link openBSE.BulletScreenEngine#show} ，要隐藏弹幕请调用 [bulletScreenEngine.hide();]{@link openBSE.BulletScreenEngine#hide} 。
-   */
-
-  this.getVisibility = _renderer.getVisibility;
+  Object.defineProperty(this, 'visibility', {
+    get: function get() {
+      return renderer.getVisibility();
+    },
+    set: function set(visibility) {
+      if (visibility) _renderer.show();else _renderer.hide();
+    }
+  });
   /**
    * 获取渲染模式。
-   * @returns {string} - 弹幕渲染模式： 取值为“canvas”、“css3”、“webgl”或“svg”。
+   * @private
    */
 
-  this.getRenderMode = function () {
-    return renderMode;
-  };
+  Object.defineProperty(this, 'renderMode', {
+    get: function get() {
+      return renderMode;
+    }
+  });
   /**
    * 获取播放状态。
-   * @returns {boolean} - 正在播放标志：true：正在播放；false：已暂停/停止播放。
+   * @private
    */
 
-
-  this.getPlayState = function () {
-    return _playing;
-  };
+  Object.defineProperty(this, 'playState', {
+    get: function get() {
+      return _playing;
+    }
+  });
   /**
   * 获取调试信息。
-  * @returns {openBSE~DebugInfo} - 调试信息：一个 {@link openBSE~DebugInfo} 结构。
+  * @private
   */
 
-
-  this.getDebugInfo = function () {
-    return {
-      time: _playing ? _options.clock() : _pauseTime,
-      bulletScreensOnScreenCount: _bulletScreensOnScreen.getLength(),
-      bulletScreensCount: _bulletScreens.getLength(),
-      delay: _delay,
-      delayBulletScreensCount: _delayBulletScreensCount,
-      fps: _playing ? Math.floor(_refreshRate * 1000) : 0
-    };
-  };
+  Object.defineProperty(this, 'debugInfo', {
+    get: function get() {
+      return {
+        time: _playing ? _options.clock() : _pauseTime,
+        realTimeBulletScreenCount: _realTimeBulletScreens.length,
+        bufferBulletScreenCount: _bulletScreenBuffer.length,
+        delay: _delay,
+        delayBulletScreenCount: _delayBulletScreenCount,
+        fps: _playing ? Math.floor(_refreshRate * 1000) : 0
+      };
+    }
+  });
   /**
    * 弹幕事件响应
    * @param {string} name - 事件名称
-   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+   * @param {object} realTimeBulletScreen - 实时弹幕对象
    * @param {object} e - 事件信息
    */
 
-
-  function bulletScreenEventTrigger(name, bulletScreenOnScreen, e) {
+  function bulletScreenEventTrigger(name, realTimeBulletScreen, e) {
     if (typeof e.pageX === 'undefined' || e.pageX === null) {
       var doc = document.documentElement,
           body = document.body;
@@ -725,7 +725,7 @@ function GeneralEngine(element, options) {
        * @returns {openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
        */
       getBulletScreen: function getBulletScreen() {
-        return _helper["default"].clone(bulletScreenOnScreen.bulletScreen);
+        return _helper["default"].clone(realTimeBulletScreen.bulletScreen);
       },
 
       /**
@@ -741,8 +741,8 @@ function GeneralEngine(element, options) {
         var bulletScreenType = _helper["default"].clone(_bulletScreenType);
 
         bulletScreenType.style = _optionsType.defaultStyle;
-        bulletScreenOnScreen.bulletScreen = _helper["default"].setValues(bulletScreen, bulletScreenOnScreen.bulletScreen, bulletScreenType);
-        if (redraw === true) _renderer.reCreatAndgetWidth(bulletScreenOnScreen);
+        realTimeBulletScreen.bulletScreen = _helper["default"].setValues(bulletScreen, realTimeBulletScreen.bulletScreen, bulletScreenType);
+        if (redraw === true) _renderer.reCreatAndgetWidth(realTimeBulletScreen);
         if (!_playing && redraw) _renderer.draw();
       },
 
@@ -752,7 +752,7 @@ function GeneralEngine(element, options) {
        * @returns {boolean} 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
        */
       getPlayState: function getPlayState() {
-        return !bulletScreenOnScreen.pause;
+        return !realTimeBulletScreen.pause;
       },
 
       /**
@@ -762,7 +762,7 @@ function GeneralEngine(element, options) {
        */
       setPlayState: function setPlayState(play) {
         if (typeof play != 'boolean') throw new TypeError(_resources["default"].PARAMETERS_TYPE_ERROR);
-        bulletScreenOnScreen.pause = !play;
+        realTimeBulletScreen.pause = !play;
       },
       screenX: e.screenX,
       screenY: e.screenY,
@@ -782,8 +782,8 @@ function GeneralEngine(element, options) {
     var nowTime = new Date().getTime();
     if (_lastRefreshTime != null) _refreshRate = 1 / (nowTime - _lastRefreshTime);
     _lastRefreshTime = nowTime;
-    addBulletScreensToScreen();
-    moveBulletScreenOnScreen();
+    addrealTimeBulletScreens();
+    moverealTimeBulletScreen();
 
     _renderer.draw();
 
@@ -795,18 +795,19 @@ function GeneralEngine(element, options) {
    */
 
 
-  function moveBulletScreenOnScreen() {
-    _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-      if (bulletScreenOnScreen.pause) return;
+  function moverealTimeBulletScreen() {
+    _realTimeBulletScreens.forEach(function (node) {
+      var realTimeBulletScreen = node.element;
+      if (realTimeBulletScreen.pause) return;
 
       var nowTime = _options.clock();
 
-      switch (bulletScreenOnScreen.type) {
+      switch (realTimeBulletScreen.type) {
         case _generalType["default"].rightToLeft:
-          if (bulletScreenOnScreen.x > -bulletScreenOnScreen.width) {
-            bulletScreenOnScreen.x -= bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
+          if (realTimeBulletScreen.x > -realTimeBulletScreen.width) {
+            realTimeBulletScreen.x -= realTimeBulletScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
           } else {
-            _renderer["delete"](bulletScreenOnScreen);
+            _renderer["delete"](realTimeBulletScreen);
 
             return {
               remove: true
@@ -816,10 +817,10 @@ function GeneralEngine(element, options) {
           break;
 
         case _generalType["default"].leftToRight:
-          if (bulletScreenOnScreen.x < _elementSize.width) {
-            bulletScreenOnScreen.x += bulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
+          if (realTimeBulletScreen.x < _elementSize.width) {
+            realTimeBulletScreen.x += realTimeBulletScreen.bulletScreen.style.speed * _options.playSpeed / _refreshRate;
           } else {
-            _renderer["delete"](bulletScreenOnScreen);
+            _renderer["delete"](realTimeBulletScreen);
 
             return {
               remove: true
@@ -830,8 +831,8 @@ function GeneralEngine(element, options) {
 
         case _generalType["default"].top:
         case _generalType["default"].bottom:
-          if (bulletScreenOnScreen.endTime < nowTime) {
-            _renderer["delete"](bulletScreenOnScreen);
+          if (realTimeBulletScreen.endTime < nowTime) {
+            _renderer["delete"](realTimeBulletScreen);
 
             return {
               remove: true
@@ -843,19 +844,20 @@ function GeneralEngine(element, options) {
     }, true);
   }
   /**
-   * 添加弹幕到屏幕函数
+   * 添加弹幕到实时弹幕列表
    * @private
    */
 
 
-  function addBulletScreensToScreen() {
-    if (_bulletScreensOnScreen.getLength() === 0) _delay = 0;
+  function addrealTimeBulletScreens() {
+    if (_realTimeBulletScreens.length === 0) _delay = 0;
     var times = Math.floor(_refreshRate * 2000);
 
     do {
-      var bulletScreen = _bulletScreens.pop(false, false);
+      var node = _bulletScreenBuffer.pop(false, false);
 
-      if (bulletScreen === null) return;
+      if (node === null) return;
+      var bulletScreen = node.element;
 
       var nowTime = _options.clock();
 
@@ -863,126 +865,139 @@ function GeneralEngine(element, options) {
 
       if (!_options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
         bulletScreen.style = _helper["default"].setValues(bulletScreen.style, _options.defaultStyle, _optionsType.defaultStyle);
-        getBulletScreenOnScreen(nowTime, bulletScreen);
-      } else _delayBulletScreensCount++;
+        getRealTimeBulletScreen(nowTime, bulletScreen);
+      } else _delayBulletScreenCount++;
 
-      _bulletScreens.pop(true, false);
-
+      node.remove();
       times--;
-    } while (_bulletScreensOnScreen.getLength() === 0 || times > 0);
+    } while (_realTimeBulletScreens.length === 0 || times > 0);
   }
   /**
-   * 生成屏幕弹幕对象函数
+   * 生成实时弹幕对象
    * @private
    * @param {number} nowTime - 当前时间
-   * @param {openBSE~BulletScreen} bulletScreen - 弹幕
+   * @param {openBSE~BulletScreen} bulletScreen - 弹幕的链表节点
    */
 
 
-  function getBulletScreenOnScreen(nowTime, bulletScreen) {
+  function getRealTimeBulletScreen(nowTime, bulletScreen) {
     _delay = nowTime - bulletScreen.startTime;
-    var bulletScreenOnScreen = {};
-    bulletScreenOnScreen.pause = false;
-    bulletScreenOnScreen.bulletScreen = bulletScreen;
-    bulletScreenOnScreen.startTime = nowTime;
-    bulletScreenOnScreen.size = bulletScreen.style.size;
-    bulletScreenOnScreen.type = bulletScreen.type;
-    bulletScreenOnScreen.height = bulletScreenOnScreen.size;
+    var realTimeBulletScreen = {};
+    realTimeBulletScreen.pause = false;
+    realTimeBulletScreen.bulletScreen = bulletScreen;
+    realTimeBulletScreen.startTime = nowTime;
+    realTimeBulletScreen.size = bulletScreen.style.size;
+    realTimeBulletScreen.type = bulletScreen.type;
+    realTimeBulletScreen.height = realTimeBulletScreen.size;
 
-    _renderer.creatAndgetWidth(bulletScreenOnScreen);
+    _renderer.creatAndgetWidth(realTimeBulletScreen);
 
     switch (bulletScreen.type) {
       case _generalType["default"].rightToLeft:
-        bulletScreenOnScreen.endTime = Math.round(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed));
-        bulletScreenOnScreen.x = _elementSize.width;
-        bulletScreenOnScreen.y = _options.verticalInterval;
+        realTimeBulletScreen.endTime = Math.round(nowTime + (_elementSize.width + realTimeBulletScreen.width) / (bulletScreen.style.speed * _options.playSpeed));
+        realTimeBulletScreen.x = _elementSize.width;
+        realTimeBulletScreen.y = _options.verticalInterval;
         break;
 
       case _generalType["default"].leftToRight:
-        bulletScreenOnScreen.endTime = Math.round(nowTime + (_elementSize.width + bulletScreenOnScreen.width) / (bulletScreen.style.speed * _options.playSpeed));
-        bulletScreenOnScreen.x = -bulletScreenOnScreen.width;
-        bulletScreenOnScreen.y = _options.verticalInterval;
+        realTimeBulletScreen.endTime = Math.round(nowTime + (_elementSize.width + realTimeBulletScreen.width) / (bulletScreen.style.speed * _options.playSpeed));
+        realTimeBulletScreen.x = -realTimeBulletScreen.width;
+        realTimeBulletScreen.y = _options.verticalInterval;
         break;
 
       case _generalType["default"].top:
-        bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
-        bulletScreenOnScreen.x = Math.round((_elementSize.width - bulletScreenOnScreen.width) / 2);
-        bulletScreenOnScreen.y = _options.verticalInterval;
+        realTimeBulletScreen.endTime = realTimeBulletScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
+        realTimeBulletScreen.x = Math.round((_elementSize.width - realTimeBulletScreen.width) / 2);
+        realTimeBulletScreen.y = _options.verticalInterval;
         break;
 
       case _generalType["default"].bottom:
-        bulletScreenOnScreen.endTime = bulletScreenOnScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
-        bulletScreenOnScreen.x = Math.round((_elementSize.width - bulletScreenOnScreen.width) / 2);
-        bulletScreenOnScreen.y = -_options.verticalInterval - bulletScreenOnScreen.height;
+        realTimeBulletScreen.endTime = realTimeBulletScreen.startTime + bulletScreen.style.residenceTime * _options.playSpeed;
+        realTimeBulletScreen.x = Math.round((_elementSize.width - realTimeBulletScreen.width) / 2);
+        realTimeBulletScreen.y = -_options.verticalInterval - realTimeBulletScreen.height;
         break;
     }
 
-    var oldLength = _bulletScreensOnScreen.getLength();
+    var newNode = new _linkedList["default"].node(realTimeBulletScreen);
 
     if (bulletScreen.type === _generalType["default"].top || bulletScreen.type === _generalType["default"].bottom) {
-      _bulletScreensOnScreen.forEach(function (nextBulletScreenOnScreen) {
-        if (nextBulletScreenOnScreen.bulletScreen.type != bulletScreen.type) return;
+      _realTimeBulletScreens.forEach(function (node) {
+        var nextrealTimeBulletScreen = node.element;
+        if (nextrealTimeBulletScreen.bulletScreen.type != bulletScreen.type) return;
 
         if (bulletScreen.type === _generalType["default"].top) {
-          if (bulletScreenOnScreen.y + bulletScreenOnScreen.height < nextBulletScreenOnScreen.y) return {
-            add: {
-              addToUp: true,
-              element: setActualY(bulletScreenOnScreen)
-            },
-            stop: true
-          };
-          if (nextBulletScreenOnScreen.endTime < nowTime) bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + _options.verticalInterval;
-        } else {
-          if (bulletScreenOnScreen.y > nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height) {
+          if (realTimeBulletScreen.y + realTimeBulletScreen.height < nextrealTimeBulletScreen.y) {
+            setActualY(realTimeBulletScreen);
             return {
               add: {
                 addToUp: true,
-                element: setActualY(bulletScreenOnScreen)
+                node: newNode
               },
               stop: true
             };
           }
 
-          if (nextBulletScreenOnScreen.endTime < nowTime) bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y - bulletScreenOnScreen.height - _options.verticalInterval;
+          if (nextrealTimeBulletScreen.endTime < nowTime) realTimeBulletScreen.y = nextrealTimeBulletScreen.y;else realTimeBulletScreen.y = nextrealTimeBulletScreen.y + nextrealTimeBulletScreen.height + _options.verticalInterval;
+        } else {
+          if (realTimeBulletScreen.y > nextrealTimeBulletScreen.y + nextrealTimeBulletScreen.height) {
+            setActualY(realTimeBulletScreen);
+            return {
+              add: {
+                addToUp: true,
+                node: newNode
+              },
+              stop: true
+            };
+          }
+
+          if (nextrealTimeBulletScreen.endTime < nowTime) realTimeBulletScreen.y = nextrealTimeBulletScreen.y;else realTimeBulletScreen.y = nextrealTimeBulletScreen.y - realTimeBulletScreen.height - _options.verticalInterval;
         }
       }, true);
     } else {
-      var bulletScreenOnScreenWidthTime = bulletScreenOnScreen.width / (bulletScreen.style.speed * _options.playSpeed);
+      var realTimeBulletScreenWidthTime = realTimeBulletScreen.width / (bulletScreen.style.speed * _options.playSpeed);
 
-      _bulletScreensOnScreen.forEach(function (nextBulletScreenOnScreen) {
-        if (nextBulletScreenOnScreen.bulletScreen.type === _generalType["default"].top || nextBulletScreenOnScreen.bulletScreen.type === _generalType["default"].bottom) return;
-        if (bulletScreenOnScreen.y + bulletScreenOnScreen.height < nextBulletScreenOnScreen.y) return {
-          add: {
-            addToUp: true,
-            element: setActualY(bulletScreenOnScreen)
-          },
-          stop: true
-        };
-        var nextBulletScreenOnScreenWidthTime = nextBulletScreenOnScreen.width / (nextBulletScreenOnScreen.bulletScreen.style.speed * _options.playSpeed);
-        if (nextBulletScreenOnScreen.startTime + nextBulletScreenOnScreenWidthTime >= nowTime || nextBulletScreenOnScreen.endTime >= bulletScreenOnScreen.endTime - bulletScreenOnScreenWidthTime) bulletScreenOnScreen.y = nextBulletScreenOnScreen.y + nextBulletScreenOnScreen.height + _options.verticalInterval;else bulletScreenOnScreen.y = nextBulletScreenOnScreen.y;
+      _realTimeBulletScreens.forEach(function (node) {
+        var nextrealTimeBulletScreen = node.element;
+        if (nextrealTimeBulletScreen.bulletScreen.type === _generalType["default"].top || nextrealTimeBulletScreen.bulletScreen.type === _generalType["default"].bottom) return;
+
+        if (realTimeBulletScreen.y + realTimeBulletScreen.height < nextrealTimeBulletScreen.y) {
+          setActualY(realTimeBulletScreen);
+          return {
+            add: {
+              addToUp: true,
+              node: newNode
+            },
+            stop: true
+          };
+        }
+
+        var nextrealTimeBulletScreenWidthTime = nextrealTimeBulletScreen.width / (nextrealTimeBulletScreen.bulletScreen.style.speed * _options.playSpeed);
+        if (nextrealTimeBulletScreen.startTime + nextrealTimeBulletScreenWidthTime >= nowTime || nextrealTimeBulletScreen.endTime >= realTimeBulletScreen.endTime - realTimeBulletScreenWidthTime) realTimeBulletScreen.y = nextrealTimeBulletScreen.y + nextrealTimeBulletScreen.height + _options.verticalInterval;else realTimeBulletScreen.y = nextrealTimeBulletScreen.y;
       }, true);
     }
 
-    if (_bulletScreensOnScreen.getLength() === oldLength) _bulletScreensOnScreen.push(setActualY(bulletScreenOnScreen), false);
+    if (newNode.linkedList === null) {
+      setActualY(realTimeBulletScreen);
+
+      _realTimeBulletScreens.push(newNode, false);
+    }
   }
   /**
    * 设置真实的Y坐标
    * @private
-   * @param {object} bulletScreenOnScreen - 屏幕弹幕事件
-   * @returns {object} 屏幕弹幕事件
+   * @param {object} realTimeBulletScreen - 实时弹幕事件
+   * @returns {object} 实时弹幕事件
    */
 
 
-  function setActualY(bulletScreenOnScreen) {
-    var bulletScreen = bulletScreenOnScreen.bulletScreen;
+  function setActualY(realTimeBulletScreen) {
+    var bulletScreen = realTimeBulletScreen.bulletScreen;
 
     if (bulletScreen.type === _generalType["default"].leftToRight || bulletScreen.type === _generalType["default"].rightToLeft || bulletScreen.type === _generalType["default"].top) {
-      bulletScreenOnScreen.actualY = bulletScreenOnScreen.y % (_elementSize.height - bulletScreenOnScreen.height);
+      realTimeBulletScreen.actualY = realTimeBulletScreen.y % (_elementSize.height - realTimeBulletScreen.height);
     } else if (bulletScreen.type === _generalType["default"].bottom) {
-      bulletScreenOnScreen.actualY = _elementSize.height + bulletScreenOnScreen.y % _elementSize.height;
+      realTimeBulletScreen.actualY = _elementSize.height + realTimeBulletScreen.y % _elementSize.height;
     }
-
-    return bulletScreenOnScreen;
   }
   /**
    * 设置尺寸
@@ -1545,11 +1560,7 @@ exports["default"] = _default;
 },{"./resources":11,"core-js/modules/es.array.iterator":133,"core-js/modules/es.array.slice":134,"core-js/modules/es.date.to-string":136,"core-js/modules/es.object.define-property":142,"core-js/modules/es.object.to-string":146,"core-js/modules/es.regexp.to-string":150,"core-js/modules/es.string.iterator":151,"core-js/modules/es.symbol":155,"core-js/modules/es.symbol.description":153,"core-js/modules/es.symbol.iterator":154,"core-js/modules/web.dom-collections.iterator":181}],9:[function(require,module,exports){
 "use strict";
 
-require("core-js/modules/es.array.for-each");
-
 require("core-js/modules/es.object.define-property");
-
-require("core-js/modules/web.dom-collections.for-each");
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -1558,156 +1569,215 @@ exports["default"] = void 0;
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
+
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+
 /**
  * 双向链表类
  */
-var LinkedList =
-/**
- * 创建一个双向链表。
- */
-function LinkedList() {
-  _classCallCheck(this, LinkedList);
-
+var LinkedList = function () {
   /**
-   * 双向链表节点
-   * @private
-  */
-  var node = function node(element) {
-    _classCallCheck(this, node);
+   * 创建一个双向链表。
+   */
+  function LinkedList() {
+    _classCallCheck(this, LinkedList);
 
-    this.element = element;
-    this.next = null;
-    this.previous = null;
-  };
-
-  var topNode = new node(null);
-  var bottomNode = new node(null);
-  var length = 0;
-  topNode.next = bottomNode;
-  bottomNode.previous = topNode;
+    this._topNode = new LinkedList.node(null);
+    this._bottomNode = new LinkedList.node(null);
+    this._length = 0;
+    this._topNode._next = this._bottomNode;
+    this._bottomNode._previous = this._topNode;
+    this._topNode._linkedList = this._bottomNode._linkedList = this;
+  }
   /**
    * 获取元素个数
    * @returns {number} 元素个数
    */
 
-  this.getLength = function (l) {
-    return length;
-  };
-  /**
-   * 插入元素
-   * @param {*} element - 元素
-   * @param {boolean} top - true: 插入到顶部 false: 插入到底部
-   */
 
+  _createClass(LinkedList, [{
+    key: "push",
 
-  this.push = function (element, top) {
-    var thisNode = new node(element);
-
-    if (top) {
-      thisNode.next = topNode.next;
-      thisNode.previous = topNode;
-      topNode.next = topNode.next.previous = thisNode;
-    } else {
-      thisNode.previous = bottomNode.previous;
-      thisNode.next = bottomNode;
-      bottomNode.previous = bottomNode.previous.next = thisNode;
+    /**
+     * 插入节点
+     * @param {*} node - 节点
+     * @param {boolean} top - true: 插入到顶部 false: 插入到底部
+     */
+    value: function push(node) {
+      var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      if (node._linkedList != null && node._linkedList != this) return false;
+      if (top) return this._topNode.add(node, false);else return this._bottomNode.add(node, true);
     }
+    /**
+     * 读取元素
+     * @param {boolean} remove - 读取后是否删除
+     * @param {boolean} top - true: 读取顶部 false: 读取底部
+     * @returns {*} 节点
+     */
 
-    length++;
-  };
-  /**
-   * 读取元素
-   * @param {boolean} remove - 读取后是否删除
-   * @param {boolean} top - true: 读取顶部 false: 读取底部
-   * @returns {*} 元素
-   */
+  }, {
+    key: "pop",
+    value: function pop() {
+      var remove = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : true;
+      var top = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+      var thisNode;
+      if (top) thisNode = this._topNode.next;else thisNode = this._bottomNode.previous;
+      if (thisNode != null && remove) thisNode.remove();
+      return thisNode;
+    }
+    /**
+     * 清空链表
+     */
 
+  }, {
+    key: "clean",
+    value: function clean() {
+      this._topNode._next = this._bottomNode;
+      this._bottomNode._previous = this._topNode;
+      this._length = 0;
+    }
+    /**
+     * 遍历链表
+     * @param {function} fun - 遍历回调函数
+     * 回调函数（参数：元素，返回：{remove：删除此元素，add:插入节点(add.addToUp:插入到上方, add.node:节点), stop：停止遍历}）
+     * @param {boolean} topToBottom - true: 从顶到底 false: 从底到顶
+     */
 
-  this.pop = function (remove, top) {
-    var thisNode;
+  }, {
+    key: "forEach",
+    value: function forEach(fun, topToBottom) {
+      var thisNode = topToBottom ? this._topNode : this._bottomNode;
+      var nextNode = topToBottom ? thisNode._next : thisNode._previous;
 
-    if (top) {
-      thisNode = topNode.next;
+      while (topToBottom ? (thisNode = nextNode) != this._bottomNode : (thisNode = nextNode) != this._topNode) {
+        nextNode = topToBottom ? thisNode._next : thisNode._previous;
 
-      if (topNode.next != bottomNode && remove) {
-        thisNode.next.previous = topNode;
-        topNode.next = thisNode.next;
-      }
-    } else {
-      thisNode = bottomNode.previous;
+        var _return = fun(thisNode);
 
-      if (bottomNode.previous != topNode && remove) {
-        thisNode.previous.next = bottomNode;
-        bottomNode.previous = thisNode.previous;
+        if (_return) {
+          if (_return.add) thisNode.add(_return.add.node, _return.add.addToUp);
+          if (_return.remove) thisNode.remove();
+          if (_return.stop) return;
+        }
       }
     }
+  }, {
+    key: "length",
+    get: function get() {
+      return this._length;
+    }
+  }], [{
+    key: "node",
 
-    if (remove) length--;
-    return thisNode.element;
-  };
-  /**
-   * 清空链表
-   */
+    /**
+     * 双向链表节点
+     * @private
+    */
+    get: function get() {
+      return function () {
+        /**
+         * 创建一个双向链表节点。
+         * @param {*} element - 元素
+         */
+        function _class(element) {
+          _classCallCheck(this, _class);
+
+          this._element = element;
+          this._next = null;
+          this._previous = null;
+          this._linkedList = null;
+        }
+        /**
+         * 获取元素。
+         */
 
 
-  this.clean = function () {
-    topNode = new node(null);
-    bottomNode = new node(null);
-    topNode.next = bottomNode;
-    bottomNode.previous = topNode;
-    length = 0;
-  };
-  /**
-   * 遍历链表
-   * @param {function} fun - 遍历回调函数
-   * 回调函数（参数：元素，返回：{remove：删除此元素，add:插入元素(add.addToUp:插入到上方, add.element:元素), stop：停止遍历}）
-   * @param {boolean} topToBottom - true: 从顶到底 false: 从底到顶
-   */
+        _createClass(_class, [{
+          key: "add",
 
+          /**
+           * 添加双向链表节点。
+           * @param {*} node - 节点
+           * @param {*} addToUp - 插入到上方
+           */
+          value: function add(node) {
+            var addToUp = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : true;
+            node.remove();
 
-  this.forEach = function (fun, topToBottom) {
-    var thisNode = topToBottom ? topNode : bottomNode;
+            if (addToUp) {
+              node._previous = this._previous;
+              node._next = this;
+              this._previous._next = node;
+              this._previous = node;
+            } else {
+              node._previous = this;
+              node._next = this._next;
+              this._next._previous = node;
+              this._next = node;
+            }
 
-    while (topToBottom ? (thisNode = thisNode.next) != bottomNode : (thisNode = thisNode.previous) != topNode) {
-      var _return = fun(thisNode.element);
-
-      if (_return) {
-        if (_return.add) {
-          var newNode = new node(_return.add.element);
-
-          if (_return.add.addToUp) {
-            newNode.previous = thisNode.previous;
-            newNode.next = thisNode;
-            thisNode.previous.next = newNode;
-            thisNode.previous = newNode;
-          } else {
-            newNode.previous = thisNode;
-            newNode.next = thisNode.next;
-            thisNode.next.previous = newNode;
-            thisNode.next = newNode;
+            node._linkedList = this._linkedList;
+            this._linkedList._length++;
+            return true;
           }
+        }, {
+          key: "remove",
+          value: function remove() {
+            if (this._next == null || this._previous == null || this._linkedList == null) return false;
+            this._previous._next = this._next;
+            this._next._previous = this._previous;
+            this._next = this._previous = null;
+            this._linkedList._length--;
+            this._linkedList = null;
+            return true;
+          }
+        }, {
+          key: "element",
+          get: function get() {
+            return this._element;
+          }
+          /**
+           * 获取双向链表。
+           */
 
-          length++;
-        }
+        }, {
+          key: "linkedList",
+          get: function get() {
+            return this._linkedList;
+          }
+          /**
+           * 获取上一个双向链表节点。
+           */
 
-        if (_return.remove) {
-          thisNode.previous.next = thisNode.next;
-          thisNode.next.previous = thisNode.previous;
-          length--;
-        }
+        }, {
+          key: "previous",
+          get: function get() {
+            if (this._linkedList === null || this._previous === this._linkedList._topNode) return null;else return this._previous;
+          }
+          /**
+           * 获取下一个双向链表节点。
+           */
 
-        if (_return.stop) {
-          return;
-        }
-      }
+        }, {
+          key: "next",
+          get: function get() {
+            if (this._linkedList === null || this._next === this._linkedList._bottomNode) return null;else return this._next;
+          }
+        }]);
+
+        return _class;
+      }();
     }
-  };
-};
+  }]);
+
+  return LinkedList;
+}();
 
 exports["default"] = LinkedList;
 
 
-},{"core-js/modules/es.array.for-each":131,"core-js/modules/es.object.define-property":142,"core-js/modules/web.dom-collections.for-each":180}],10:[function(require,module,exports){
+},{"core-js/modules/es.object.define-property":142}],10:[function(require,module,exports){
 module.exports={
     "EVENT_NAME_NOT_FOUND_ERROR": "Event name not found.",
     "EVENT_ALREADY_EXISTS_ERROR": "Event already exists.",
@@ -1908,41 +1978,41 @@ function GeneralBaseRenderer(element, options, elementSize) {
   /**
    * 创建弹幕元素
    * @abstract
-   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+   * @param {object} realTimeBulletScreen - 实时弹幕对象
    */
 
 
-  this.creatAndgetWidth = function (bulletScreenOnScreen) {
+  this.creatAndgetWidth = function (realTimeBulletScreen) {
     throw new SyntaxError();
   };
   /**
    * 删除弹幕元素
    * @abstract
-   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+   * @param {object} realTimeBulletScreen - 实时弹幕对象
    */
 
 
-  this["delete"] = function (bulletScreenOnScreen) {
+  this["delete"] = function (realTimeBulletScreen) {
     throw new SyntaxError();
   };
   /**
    * 重新添加弹幕
    * @abstract
-   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+   * @param {object} realTimeBulletScreen - 实时弹幕对象
    */
 
 
-  this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
+  this.reCreatAndgetWidth = function (realTimeBulletScreen) {
     throw new SyntaxError();
   };
   /**
    * 检查弹幕是否被隐藏
-   * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+   * @param {object} realTimeBulletScreen - 实时弹幕对象
    */
 
 
-  this.checkWhetherHide = function (bulletScreenOnScreen) {
-    return (bulletScreenOnScreen.bulletScreen.type & options.hiddenTypes) === bulletScreenOnScreen.bulletScreen.type;
+  this.checkWhetherHide = function (realTimeBulletScreen) {
+    return (realTimeBulletScreen.bulletScreen.type & options.hiddenTypes) === realTimeBulletScreen.bulletScreen.type;
   };
   /**
   * 设置尺寸
@@ -2094,25 +2164,28 @@ var GeneralCanvasBaseRenderer = function (_GeneralBaseRenderer) {
      * @override
      */
 
-    _this.cleanScreen = _bulletScreensOnScreen.clean;
+    _this.cleanScreen = function () {
+      return _bulletScreensOnScreen.clean();
+    };
     /**
      * 创建弹幕元素
      * @override
-     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     * @param {object} realTimeBulletScreen - 实时弹幕对象
      */
 
-    _this.creatAndgetWidth = function (bulletScreenOnScreen) {
-      var bulletScreen = bulletScreenOnScreen.bulletScreen;
+
+    _this.creatAndgetWidth = function (realTimeBulletScreen) {
+      var bulletScreen = realTimeBulletScreen.bulletScreen;
       var hideCanvas = document.createElement('canvas');
       var hideCanvasContext = hideCanvas.getContext('2d');
-      hideCanvasContext.font = "".concat(bulletScreen.style.fontWeight, " ").concat(bulletScreenOnScreen.size, "px ").concat(bulletScreen.style.fontFamily);
-      bulletScreenOnScreen.width = hideCanvasContext.measureText(bulletScreen.text).width;
-      hideCanvas.width = (bulletScreenOnScreen.width + 8) * _devicePixelRatio;
-      hideCanvas.height = (bulletScreenOnScreen.height + 8) * _devicePixelRatio;
+      hideCanvasContext.font = "".concat(bulletScreen.style.fontWeight, " ").concat(realTimeBulletScreen.size, "px ").concat(bulletScreen.style.fontFamily);
+      realTimeBulletScreen.width = hideCanvasContext.measureText(bulletScreen.text).width;
+      hideCanvas.width = (realTimeBulletScreen.width + 8) * _devicePixelRatio;
+      hideCanvas.height = (realTimeBulletScreen.height + 8) * _devicePixelRatio;
       hideCanvasContext.shadowColor = 'black';
-      hideCanvasContext.font = "".concat(bulletScreen.style.fontWeight, " ").concat(bulletScreenOnScreen.size * _devicePixelRatio, "px ").concat(bulletScreen.style.fontFamily);
+      hideCanvasContext.font = "".concat(bulletScreen.style.fontWeight, " ").concat(realTimeBulletScreen.size * _devicePixelRatio, "px ").concat(bulletScreen.style.fontFamily);
       var textX = 4 * _devicePixelRatio;
-      var textY = (4 + bulletScreenOnScreen.size * 0.8) * _devicePixelRatio;
+      var textY = (4 + realTimeBulletScreen.size * 0.8) * _devicePixelRatio;
 
       if (bulletScreen.style.color != null) {
         hideCanvasContext.shadowBlur = (bulletScreen.style.shadowBlur + 0.5) * _devicePixelRatio;
@@ -2134,49 +2207,42 @@ var GeneralCanvasBaseRenderer = function (_GeneralBaseRenderer) {
         hideCanvasContext.strokeRect(_devicePixelRatio, _devicePixelRatio, hideCanvas.width - _devicePixelRatio, hideCanvas.height - _devicePixelRatio);
       }
 
-      bulletScreenOnScreen.hideCanvas = hideCanvas;
-      var flag = false;
+      realTimeBulletScreen.hideCanvas = hideCanvas;
+      realTimeBulletScreen.linkedListNode = new _linkedList["default"].node(realTimeBulletScreen);
 
-      _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
-        if (_bulletScreenOnScreen.bulletScreen.layer <= bulletScreen.layer) {
-          flag = true;
-          return {
-            add: {
-              element: bulletScreenOnScreen,
-              addToUp: false
-            },
-            stop: true
-          };
-        }
+      _bulletScreensOnScreen.forEach(function (node) {
+        var _realTimeBulletScreen = node.element;
+        if (_realTimeBulletScreen.bulletScreen.layer <= bulletScreen.layer) return {
+          add: {
+            node: realTimeBulletScreen.linkedListNode,
+            addToUp: false
+          },
+          stop: true
+        };
       }, false);
 
-      if (!flag) _bulletScreensOnScreen.push(bulletScreenOnScreen, false);
+      if (realTimeBulletScreen.linkedListNode.linkedList === null) _bulletScreensOnScreen.push(realTimeBulletScreen.linkedListNode, false);
     };
     /**
      * 删除弹幕元素
      * @override
-     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     * @param {object} realTimeBulletScreen - 实时弹幕对象
      */
 
 
-    _this["delete"] = function (bulletScreenOnScreen) {
-      return _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
-        return _bulletScreenOnScreen === bulletScreenOnScreen ? {
-          remove: true,
-          stop: true
-        } : null;
-      }, true);
+    _this["delete"] = function (realTimeBulletScreen) {
+      return realTimeBulletScreen.linkedListNode.remove();
     };
     /**
      * 重新添加弹幕
      * @override
-     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     * @param {object} realTimeBulletScreen - 实时弹幕对象
      */
 
 
-    _this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
-      this["delete"](bulletScreenOnScreen);
-      this.creatAndgetWidth(bulletScreenOnScreen);
+    _this.reCreatAndgetWidth = function (realTimeBulletScreen) {
+      this["delete"](realTimeBulletScreen);
+      this.creatAndgetWidth(realTimeBulletScreen);
     };
 
     var _setSize = _this.setSize;
@@ -2212,7 +2278,7 @@ var GeneralCanvasBaseRenderer = function (_GeneralBaseRenderer) {
       return _canvas;
     };
     /**
-     * 获取屏幕弹幕对象
+     * 获取实时弹幕对象
      * @returns {LinkedList} 画布对象
      */
 
@@ -2247,25 +2313,26 @@ var GeneralCanvasBaseRenderer = function (_GeneralBaseRenderer) {
      */
 
     function registerEvent(element) {
-      function getBulletScreenOnScreenByLocation(location) {
-        var _bulletScreenOnScreen = null;
+      function getrealTimeBulletScreenByLocation(location) {
+        var _realTimeBulletScreen = null;
 
-        _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-          if (_checkWhetherHide(bulletScreenOnScreen)) return;
-          var x1 = bulletScreenOnScreen.x - 4;
-          var x2 = x1 + bulletScreenOnScreen.width + 8;
-          var y1 = bulletScreenOnScreen.actualY - 4;
-          var y2 = y1 + bulletScreenOnScreen.height + 8;
+        _bulletScreensOnScreen.forEach(function (node) {
+          var realTimeBulletScreen = node.element;
+          if (_checkWhetherHide(realTimeBulletScreen)) return;
+          var x1 = realTimeBulletScreen.x - 4;
+          var x2 = x1 + realTimeBulletScreen.width + 8;
+          var y1 = realTimeBulletScreen.actualY - 4;
+          var y2 = y1 + realTimeBulletScreen.height + 8;
 
           if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) {
-            _bulletScreenOnScreen = bulletScreenOnScreen;
+            _realTimeBulletScreen = realTimeBulletScreen;
             return {
               stop: true
             };
           }
         }, false);
 
-        return _bulletScreenOnScreen;
+        return _realTimeBulletScreen;
       }
 
       function getLocation(e) {
@@ -2313,41 +2380,45 @@ var GeneralCanvasBaseRenderer = function (_GeneralBaseRenderer) {
       }
 
       element.oncontextmenu = function (e) {
-        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreenOnScreen) eventTrigger('contextmenu', bulletScreenOnScreen, e);
+        var realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+        if (realTimeBulletScreen) eventTrigger('contextmenu', realTimeBulletScreen, e);
         return false;
       };
 
       element.onclick = function (e) {
-        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreenOnScreen) eventTrigger('click', bulletScreenOnScreen, e);
+        var realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+        if (realTimeBulletScreen) eventTrigger('click', realTimeBulletScreen, e);
         return false;
       };
 
       element.onmousemove = function (e) {
-        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        var realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
 
-        _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
-          if (bulletScreenOnScreen != _bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
-            _bulletScreenOnScreen.mousein = false;
+        _bulletScreensOnScreen.forEach(function (node) {
+          var _realTimeBulletScreen = node.element;
+
+          if (realTimeBulletScreen != _realTimeBulletScreen && _realTimeBulletScreen.mousein) {
+            _realTimeBulletScreen.mousein = false;
             element.style.cursor = '';
-            eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+            eventTrigger('mouseleave', _realTimeBulletScreen, e);
           }
         }, true);
 
-        if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
-        bulletScreenOnScreen.mousein = true;
+        if (realTimeBulletScreen === null || realTimeBulletScreen.mousein) return false;
+        realTimeBulletScreen.mousein = true;
         element.style.cursor = options.cursorOnMouseOver;
-        eventTrigger('mouseenter', bulletScreenOnScreen, e);
+        eventTrigger('mouseenter', realTimeBulletScreen, e);
         return false;
       };
 
       element.onmouseout = function (e) {
-        _bulletScreensOnScreen.forEach(function (_bulletScreenOnScreen) {
-          if (_bulletScreenOnScreen.mousein) {
-            _bulletScreenOnScreen.mousein = false;
+        _bulletScreensOnScreen.forEach(function (node) {
+          var _realTimeBulletScreen = node.element;
+
+          if (_realTimeBulletScreen.mousein) {
+            _realTimeBulletScreen.mousein = false;
             element.style.cursor = '';
-            eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+            eventTrigger('mouseleave', _realTimeBulletScreen, e);
           }
         }, true);
       };
@@ -2472,9 +2543,10 @@ var GeneralCanvasRenderer = function (_GeneralCanvasBaseRen) {
       var canvasContext = canvas.getContext('2d');
       canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
-      _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-        if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
-        canvasContext.drawImage(bulletScreenOnScreen.hideCanvas, ((bulletScreenOnScreen.x - 4) * devicePixelRatio).toFixed(1), ((bulletScreenOnScreen.actualY - 4) * devicePixelRatio).toFixed(1), ((bulletScreenOnScreen.width + 8) * devicePixelRatio).toFixed(1), ((bulletScreenOnScreen.height + 8) * devicePixelRatio).toFixed(1));
+      _bulletScreensOnScreen.forEach(function (node) {
+        var realTimeBulletScreen = node.element;
+        if (_this2.checkWhetherHide(realTimeBulletScreen)) return;
+        canvasContext.drawImage(realTimeBulletScreen.hideCanvas, ((realTimeBulletScreen.x - 4) * devicePixelRatio).toFixed(1), ((realTimeBulletScreen.actualY - 4) * devicePixelRatio).toFixed(1), ((realTimeBulletScreen.width + 8) * devicePixelRatio).toFixed(1), ((realTimeBulletScreen.height + 8) * devicePixelRatio).toFixed(1));
       }, true);
     };
     /**
@@ -2603,15 +2675,15 @@ var GeneralCss3Renderer = function (_GeneralBaseRenderer) {
       try {
         for (var _iterator = _div.getElementsByTagName('div')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var bulletScreenDiv = _step.value;
-          if (_typeof(bulletScreenDiv.bulletScreenOnScreen) != 'object') continue;
+          if (_typeof(bulletScreenDiv.realTimeBulletScreen) != 'object') continue;
 
-          if (this.checkWhetherHide(bulletScreenDiv.bulletScreenOnScreen)) {
+          if (this.checkWhetherHide(bulletScreenDiv.realTimeBulletScreen)) {
             bulletScreenDiv.style.visibility = 'hidden';
             continue;
           }
 
           bulletScreenDiv.style.visibility = 'visible';
-          bulletScreenDiv.style.transform = bulletScreenDiv.style.webkitTransform = bulletScreenDiv.style.msTransform = "translate(".concat((bulletScreenDiv.bulletScreenOnScreen.x - 4).toFixed(1), "px,").concat((bulletScreenDiv.bulletScreenOnScreen.actualY - 4).toFixed(1), "px)");
+          bulletScreenDiv.style.transform = bulletScreenDiv.style.webkitTransform = bulletScreenDiv.style.msTransform = "translate(".concat((bulletScreenDiv.realTimeBulletScreen.x - 4).toFixed(1), "px,").concat((bulletScreenDiv.realTimeBulletScreen.actualY - 4).toFixed(1), "px)");
         }
       } catch (err) {
         _didIteratorError = true;
@@ -2631,19 +2703,19 @@ var GeneralCss3Renderer = function (_GeneralBaseRenderer) {
     /**
      * 创建弹幕元素
      * @override
-     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     * @param {object} realTimeBulletScreen - 实时弹幕对象
      */
 
 
-    _this.creatAndgetWidth = function (bulletScreenOnScreen) {
-      var bulletScreen = bulletScreenOnScreen.bulletScreen;
-      var bulletScreenDiv = bulletScreenOnScreen.div ? bulletScreenOnScreen.div : document.createElement('div');
+    _this.creatAndgetWidth = function (realTimeBulletScreen) {
+      var bulletScreen = realTimeBulletScreen.bulletScreen;
+      var bulletScreenDiv = realTimeBulletScreen.div ? realTimeBulletScreen.div : document.createElement('div');
       bulletScreenDiv.style.position = 'absolute';
       bulletScreenDiv.style.whiteSpace = 'nowrap';
       bulletScreenDiv.style.fontWeight = bulletScreen.style.fontWeight;
-      bulletScreenDiv.style.fontSize = "".concat(bulletScreenOnScreen.size, "px");
+      bulletScreenDiv.style.fontSize = "".concat(realTimeBulletScreen.size, "px");
       bulletScreenDiv.style.fontFamily = bulletScreen.style.fontFamily;
-      bulletScreenDiv.style.lineHeight = "".concat(bulletScreenOnScreen.size, "px");
+      bulletScreenDiv.style.lineHeight = "".concat(realTimeBulletScreen.size, "px");
       bulletScreenDiv.style.color = bulletScreen.style.color;
       if (bulletScreen.style.shadowBlur != null) bulletScreenDiv.style.textShadow = "0 0 ".concat(bulletScreen.style.shadowBlur, "px black");
 
@@ -2663,31 +2735,31 @@ var GeneralCss3Renderer = function (_GeneralBaseRenderer) {
       _helper["default"].cleanElement(bulletScreenDiv);
 
       bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
-      bulletScreenDiv.bulletScreenOnScreen = bulletScreenOnScreen;
+      bulletScreenDiv.realTimeBulletScreen = realTimeBulletScreen;
       insertElement(bulletScreenDiv);
-      bulletScreenOnScreen.width = bulletScreenDiv.clientWidth - 8;
-      bulletScreenOnScreen.div = bulletScreenDiv;
+      realTimeBulletScreen.width = bulletScreenDiv.clientWidth - 8;
+      realTimeBulletScreen.div = bulletScreenDiv;
     };
     /**
     * 删除弹幕元素
     * @override
-    * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+    * @param {object} realTimeBulletScreen - 实时弹幕对象
     */
 
 
-    _this["delete"] = function (bulletScreenOnScreen) {
-      _div.removeChild(bulletScreenOnScreen.div);
+    _this["delete"] = function (realTimeBulletScreen) {
+      _div.removeChild(realTimeBulletScreen.div);
     };
     /**
      * 重新添加弹幕
      * @override
-     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     * @param {object} realTimeBulletScreen - 实时弹幕对象
      */
 
 
-    _this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
-      this["delete"](bulletScreenOnScreen);
-      this.creatAndgetWidth(bulletScreenOnScreen);
+    _this.reCreatAndgetWidth = function (realTimeBulletScreen) {
+      this["delete"](realTimeBulletScreen);
+      this.creatAndgetWidth(realTimeBulletScreen);
     };
     /**
      * 添加Div
@@ -2730,29 +2802,29 @@ var GeneralCss3Renderer = function (_GeneralBaseRenderer) {
 
     function registerEvent(element) {
       element.oncontextmenu = function (e) {
-        if (e.target != this) eventTrigger('contextmenu', e.target.bulletScreenOnScreen, e);
+        if (e.target != this) eventTrigger('contextmenu', e.target.realTimeBulletScreen, e);
         return false;
       };
 
       element.onclick = function (e) {
-        if (e.target != this) eventTrigger('click', e.target.bulletScreenOnScreen, e);
+        if (e.target != this) eventTrigger('click', e.target.realTimeBulletScreen, e);
         return false;
       };
 
       element.onmousemove = function (e) {
-        var bulletScreenOnScreen = e.target.bulletScreenOnScreen;
-        if (e.target === this || bulletScreenOnScreen.mousein) return;
-        bulletScreenOnScreen.mousein = true;
+        var realTimeBulletScreen = e.target.realTimeBulletScreen;
+        if (e.target === this || realTimeBulletScreen.mousein) return;
+        realTimeBulletScreen.mousein = true;
         e.target.style.cursor = options.cursorOnMouseOver;
-        eventTrigger('mouseenter', bulletScreenOnScreen, e);
+        eventTrigger('mouseenter', realTimeBulletScreen, e);
       };
 
       element.onmouseout = function (e) {
-        var bulletScreenOnScreen = e.target.bulletScreenOnScreen;
-        if (e.target === this || !bulletScreenOnScreen.mousein) return;
-        bulletScreenOnScreen.mousein = false;
+        var realTimeBulletScreen = e.target.realTimeBulletScreen;
+        if (e.target === this || !realTimeBulletScreen.mousein) return;
+        realTimeBulletScreen.mousein = false;
         e.target.style.cursor = '';
-        eventTrigger('mouseleave', bulletScreenOnScreen, e);
+        eventTrigger('mouseleave', realTimeBulletScreen, e);
       };
     }
     /**
@@ -2768,8 +2840,8 @@ var GeneralCss3Renderer = function (_GeneralBaseRenderer) {
       var index;
 
       for (index = elements.length - 1; index > 0; index--) {
-        var _layer = elements[index].bulletScreenOnScreen.bulletScreen.layer;
-        if (_layer <= element.bulletScreenOnScreen.bulletScreen.layer) break;
+        var _layer = elements[index].realTimeBulletScreen.bulletScreen.layer;
+        if (_layer <= element.realTimeBulletScreen.bulletScreen.layer) break;
       }
 
       if (++index === elements.length) _div.appendChild(element);else _div.insertBefore(element, elements[index]);
@@ -2892,12 +2964,12 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
       try {
         for (var _iterator = _svg.getElementsByTagName('text')[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var textSvg = _step.value;
-          var bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+          var realTimeBulletScreen = textSvg.realTimeBulletScreen;
 
-          for (var key in bulletScreenOnScreen.svg) {
-            var item = bulletScreenOnScreen.svg[key];
-            if (this.checkWhetherHide(bulletScreenOnScreen)) item.setAttribute('opacity', '0');else item.setAttribute('opacity', '1');
-            item.setAttribute('transform', "translate(".concat((bulletScreenOnScreen.x - 4).toFixed(1), ",").concat((bulletScreenOnScreen.actualY - 4).toFixed(1), ")"));
+          for (var key in realTimeBulletScreen.svg) {
+            var item = realTimeBulletScreen.svg[key];
+            if (this.checkWhetherHide(realTimeBulletScreen)) item.setAttribute('opacity', '0');else item.setAttribute('opacity', '1');
+            item.setAttribute('transform', "translate(".concat((realTimeBulletScreen.x - 4).toFixed(1), ",").concat((realTimeBulletScreen.actualY - 4).toFixed(1), ")"));
           }
         }
       } catch (err) {
@@ -2918,18 +2990,18 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
     /**
      * 创建弹幕元素
      * @override
-     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     * @param {object} realTimeBulletScreen - 实时弹幕对象
      */
 
 
-    _this.creatAndgetWidth = function (bulletScreenOnScreen) {
-      var bulletScreen = bulletScreenOnScreen.bulletScreen;
-      bulletScreenOnScreen.svg = _typeof(bulletScreenOnScreen.svg) === 'object' ? bulletScreenOnScreen.svg : {};
-      var textSvg = _typeof(bulletScreenOnScreen.svg.text) === 'object' ? bulletScreenOnScreen.svg.text : createElementSVG('text');
+    _this.creatAndgetWidth = function (realTimeBulletScreen) {
+      var bulletScreen = realTimeBulletScreen.bulletScreen;
+      realTimeBulletScreen.svg = _typeof(realTimeBulletScreen.svg) === 'object' ? realTimeBulletScreen.svg : {};
+      var textSvg = _typeof(realTimeBulletScreen.svg.text) === 'object' ? realTimeBulletScreen.svg.text : createElementSVG('text');
       textSvg.setAttribute('x', 0);
-      textSvg.setAttribute('y', bulletScreenOnScreen.size * 0.8);
+      textSvg.setAttribute('y', realTimeBulletScreen.size * 0.8);
       textSvg.setAttribute('font-family', bulletScreen.style.fontFamily);
-      textSvg.setAttribute('font-size', bulletScreenOnScreen.size);
+      textSvg.setAttribute('font-size', realTimeBulletScreen.size);
       textSvg.setAttribute('font-weight', bulletScreen.style.fontWeight);
       textSvg.setAttribute('fill', bulletScreen.style.color);
 
@@ -2974,25 +3046,25 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
 
         filterSvg.bulletScreenCount++;
         textSvg.setAttribute('filter', "url(#".concat(filterId, ")"));
-        bulletScreenOnScreen.filterId = filterId;
+        realTimeBulletScreen.filterId = filterId;
       }
 
-      bulletScreenOnScreen.svg.text = textSvg;
-      textSvg.bulletScreenOnScreen = bulletScreenOnScreen;
+      realTimeBulletScreen.svg.text = textSvg;
+      textSvg.realTimeBulletScreen = realTimeBulletScreen;
       insertElement(textSvg);
-      bulletScreenOnScreen.width = textSvg.getComputedTextLength();
+      realTimeBulletScreen.width = textSvg.getComputedTextLength();
 
       if (bulletScreen.style.boxColor != null) {
-        var rectSvg = _typeof(bulletScreenOnScreen.svg.rect) === 'object' ? bulletScreenOnScreen.svg.rect : createElementSVG('rect');
+        var rectSvg = _typeof(realTimeBulletScreen.svg.rect) === 'object' ? realTimeBulletScreen.svg.rect : createElementSVG('rect');
         rectSvg.setAttribute('x', -3);
         rectSvg.setAttribute('y', -3);
         rectSvg.setAttribute('fill', 'none');
-        rectSvg.setAttribute('height', bulletScreenOnScreen.height + 7);
-        rectSvg.setAttribute('width', bulletScreenOnScreen.width + 7);
+        rectSvg.setAttribute('height', realTimeBulletScreen.height + 7);
+        rectSvg.setAttribute('width', realTimeBulletScreen.width + 7);
         rectSvg.setAttribute('stroke', bulletScreen.style.boxColor);
         rectSvg.setAttribute('stroke-width', 1);
-        bulletScreenOnScreen.svg.rect = rectSvg;
-        rectSvg.bulletScreenOnScreen = bulletScreenOnScreen;
+        realTimeBulletScreen.svg.rect = rectSvg;
+        rectSvg.realTimeBulletScreen = realTimeBulletScreen;
 
         _svg.insertBefore(rectSvg, textSvg);
       }
@@ -3000,30 +3072,30 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
     /**
     * 删除弹幕元素
     * @override
-    * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+    * @param {object} realTimeBulletScreen - 实时弹幕对象
     */
 
 
-    _this["delete"] = function (bulletScreenOnScreen) {
-      if (typeof bulletScreenOnScreen.filterId != 'undefined') {
-        var filterSvg = document.getElementById(bulletScreenOnScreen.filterId);
+    _this["delete"] = function (realTimeBulletScreen) {
+      if (typeof realTimeBulletScreen.filterId != 'undefined') {
+        var filterSvg = document.getElementById(realTimeBulletScreen.filterId);
         if (filterSvg != null && --filterSvg.bulletScreenCount === 0) _defsSvg.removeChild(filterSvg);
       }
 
-      for (var index in bulletScreenOnScreen.svg) {
-        _svg.removeChild(bulletScreenOnScreen.svg[index]);
+      for (var index in realTimeBulletScreen.svg) {
+        _svg.removeChild(realTimeBulletScreen.svg[index]);
       }
     };
     /**
      * 重新添加弹幕
      * @override
-     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     * @param {object} realTimeBulletScreen - 实时弹幕对象
      */
 
 
-    _this.reCreatAndgetWidth = function (bulletScreenOnScreen) {
-      this["delete"](bulletScreenOnScreen);
-      this.creatAndgetWidth(bulletScreenOnScreen);
+    _this.reCreatAndgetWidth = function (realTimeBulletScreen) {
+      this["delete"](realTimeBulletScreen);
+      this.creatAndgetWidth(realTimeBulletScreen);
     };
 
     var _setSize = _this.setSize;
@@ -3091,17 +3163,17 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
      */
 
     function registerEvent(element) {
-      function getBulletScreenOnScreenByLocation(location) {
+      function getrealTimeBulletScreenByLocation(location) {
         var textSvgs = _svg.getElementsByTagName('text');
 
         for (var index = textSvgs.length - 1; index > 0; index--) {
-          var bulletScreenOnScreen = textSvgs[index].bulletScreenOnScreen;
-          if (_checkWhetherHide(bulletScreenOnScreen)) return;
-          var x1 = bulletScreenOnScreen.x - 4;
-          var x2 = x1 + bulletScreenOnScreen.width + 8;
-          var y1 = bulletScreenOnScreen.actualY - 4;
-          var y2 = y1 + bulletScreenOnScreen.height + 8;
-          if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) return bulletScreenOnScreen;
+          var realTimeBulletScreen = textSvgs[index].realTimeBulletScreen;
+          if (_checkWhetherHide(realTimeBulletScreen)) return;
+          var x1 = realTimeBulletScreen.x - 4;
+          var x2 = x1 + realTimeBulletScreen.width + 8;
+          var y1 = realTimeBulletScreen.actualY - 4;
+          var y2 = y1 + realTimeBulletScreen.height + 8;
+          if (location.x >= x1 && location.x <= x2 && location.y >= y1 && location.y <= y2) return realTimeBulletScreen;
         }
 
         return null;
@@ -3152,19 +3224,19 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
       }
 
       element.oncontextmenu = function (e) {
-        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreenOnScreen) eventTrigger('contextmenu', bulletScreenOnScreen, e);
+        var realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+        if (realTimeBulletScreen) eventTrigger('contextmenu', realTimeBulletScreen, e);
         return false;
       };
 
       element.onclick = function (e) {
-        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
-        if (bulletScreenOnScreen) eventTrigger('click', bulletScreenOnScreen, e);
+        var realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
+        if (realTimeBulletScreen) eventTrigger('click', realTimeBulletScreen, e);
         return false;
       };
 
       element.onmousemove = function (e) {
-        var bulletScreenOnScreen = getBulletScreenOnScreenByLocation(getLocation(e));
+        var realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
         var _iteratorNormalCompletion2 = true;
         var _didIteratorError2 = false;
         var _iteratorError2 = undefined;
@@ -3172,12 +3244,12 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
         try {
           for (var _iterator2 = _svg.getElementsByTagName('text')[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
             var textSvg = _step2.value;
-            var _bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+            var _realTimeBulletScreen = textSvg.realTimeBulletScreen;
 
-            if (_bulletScreenOnScreen != bulletScreenOnScreen && _bulletScreenOnScreen.mousein) {
-              _bulletScreenOnScreen.mousein = false;
+            if (_realTimeBulletScreen != realTimeBulletScreen && _realTimeBulletScreen.mousein) {
+              _realTimeBulletScreen.mousein = false;
               element.style.cursor = '';
-              eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+              eventTrigger('mouseleave', _realTimeBulletScreen, e);
             }
           }
         } catch (err) {
@@ -3195,10 +3267,10 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
           }
         }
 
-        if (bulletScreenOnScreen === null || bulletScreenOnScreen.mousein) return false;
-        bulletScreenOnScreen.mousein = true;
+        if (realTimeBulletScreen === null || realTimeBulletScreen.mousein) return false;
+        realTimeBulletScreen.mousein = true;
         element.style.cursor = options.cursorOnMouseOver;
-        eventTrigger('mouseenter', bulletScreenOnScreen, e);
+        eventTrigger('mouseenter', realTimeBulletScreen, e);
         return false;
       };
 
@@ -3210,12 +3282,12 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
         try {
           for (var _iterator3 = _svg.getElementsByTagName('text')[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
             var textSvg = _step3.value;
-            var _bulletScreenOnScreen = textSvg.bulletScreenOnScreen;
+            var _realTimeBulletScreen = textSvg.realTimeBulletScreen;
 
-            if (_bulletScreenOnScreen.mousein) {
-              _bulletScreenOnScreen.mousein = false;
+            if (_realTimeBulletScreen.mousein) {
+              _realTimeBulletScreen.mousein = false;
               element.style.cursor = '';
-              eventTrigger('mouseleave', _bulletScreenOnScreen, e);
+              eventTrigger('mouseleave', _realTimeBulletScreen, e);
             }
           }
         } catch (err) {
@@ -3258,8 +3330,8 @@ var GeneralSvgRenderer = function (_GeneralBaseRenderer) {
       var index;
 
       for (index = elements.length - 1; index > 0; index--) {
-        var _layer = elements[index].bulletScreenOnScreen.bulletScreen.layer;
-        if (_layer <= element.bulletScreenOnScreen.bulletScreen.layer) break;
+        var _layer = elements[index].realTimeBulletScreen.bulletScreen.layer;
+        if (_layer <= element.realTimeBulletScreen.bulletScreen.layer) break;
       }
 
       if (++index === elements.length) _svg.appendChild(element);else _svg.insertBefore(element, elements[index]);
@@ -3449,14 +3521,15 @@ var GeneralWebglRenderer = function (_GeneralCanvasBaseRen) {
 
       _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
 
-      _bulletScreensOnScreen.forEach(function (bulletScreenOnScreen) {
-        if (_this2.checkWhetherHide(bulletScreenOnScreen)) return;
-        var x1 = (bulletScreenOnScreen.x - 4) * devicePixelRatio;
-        var x2 = x1 + (bulletScreenOnScreen.width + 8) * devicePixelRatio;
-        var y1 = (bulletScreenOnScreen.actualY - 4) * devicePixelRatio;
-        var y2 = y1 + (bulletScreenOnScreen.height + 8) * devicePixelRatio;
+      _bulletScreensOnScreen.forEach(function (node) {
+        var realTimeBulletScreen = node.element;
+        if (_this2.checkWhetherHide(realTimeBulletScreen)) return;
+        var x1 = (realTimeBulletScreen.x - 4) * devicePixelRatio;
+        var x2 = x1 + (realTimeBulletScreen.width + 8) * devicePixelRatio;
+        var y1 = (realTimeBulletScreen.actualY - 4) * devicePixelRatio;
+        var y2 = y1 + (realTimeBulletScreen.height + 8) * devicePixelRatio;
 
-        _webglContext.bindTexture(_webglContext.TEXTURE_2D, bulletScreenOnScreen.texture2D);
+        _webglContext.bindTexture(_webglContext.TEXTURE_2D, realTimeBulletScreen.texture2D);
 
         var positionBuffer = _webglContext.createBuffer();
 
@@ -3476,11 +3549,11 @@ var GeneralWebglRenderer = function (_GeneralCanvasBaseRen) {
     /**
      * 创建弹幕元素
      * @override
-     * @param {object} bulletScreenOnScreen - 屏幕弹幕对象
+     * @param {object} realTimeBulletScreen - 实时弹幕对象
      */
 
-    _this.creatAndgetWidth = function (bulletScreenOnScreen) {
-      _creatAndgetWidth(bulletScreenOnScreen);
+    _this.creatAndgetWidth = function (realTimeBulletScreen) {
+      _creatAndgetWidth(realTimeBulletScreen);
 
       var texture = _webglContext.createTexture();
 
@@ -3494,9 +3567,9 @@ var GeneralWebglRenderer = function (_GeneralCanvasBaseRen) {
 
       _webglContext.texParameteri(_webglContext.TEXTURE_2D, _webglContext.TEXTURE_WRAP_T, _webglContext.CLAMP_TO_EDGE);
 
-      _webglContext.texImage2D(_webglContext.TEXTURE_2D, 0, _webglContext.RGBA, _webglContext.RGBA, _webglContext.UNSIGNED_BYTE, bulletScreenOnScreen.hideCanvas);
+      _webglContext.texImage2D(_webglContext.TEXTURE_2D, 0, _webglContext.RGBA, _webglContext.RGBA, _webglContext.UNSIGNED_BYTE, realTimeBulletScreen.hideCanvas);
 
-      bulletScreenOnScreen.texture2D = texture;
+      realTimeBulletScreen.texture2D = texture;
     };
 
     var _setSize = _this.setSize;
@@ -8260,8 +8333,8 @@ function getVersion() {
   return _helper["default"].clone(build);
 }
 /**
- * 全局选项
- * @typedef {object} openBSE~Options
+ * 普通弹幕全局选项
+ * @typedef {object} openBSE~generalOptions
  * @description Option 结构用于存放全局选项。
  * @property {number} [verticalInterval=8] - 弹幕垂直行间距
  * @property {number} [verticalInterval=1] - 弹幕播放速度（倍数）
@@ -8282,7 +8355,7 @@ function getVersion() {
 
 /**
  * 单条弹幕数据
- * @typedef {object} openBSE~BulletScreen
+ * @typedef {object} openBSE~GeneralBulletScreen
  * @description BulletScreen 结构用于存放单条弹幕数据。
  * @property {string} text 弹幕文本
  * @property {boolean} [canDiscard=true] 是否允许丢弃：（此参数在事件中修改无效）在弹幕过多时，程序将自动丢弃一些延迟过高的弹幕。此选项为 false 时本条弹幕无论如何都不会被丢弃，使用本选项的场景如本用户发送的弹幕。（注意：不要将太多的弹幕的 canDiscard 设为 false， 否则会因超时的弹幕不会被丢弃而造成意外的问题。）
@@ -8295,7 +8368,7 @@ function getVersion() {
 
 /**
  * 弹幕样式
- * @typedef {object} openBSE~BulletScreenStyle
+ * @typedef {object} openBSE~GeneralBulletScreenStyle
  * @description BulletScreenStyle 结构用于存放弹幕样式信息。
  * @property {number} [shadowBlur=2] 弹幕阴影的模糊级别：0为不显示阴影。
  * @property {string} [fontWeight="600"] 字体粗细：可选值：lighter：更细；normal：标准；bold：粗体；bolder: 更粗；100、200、300、400、500、600、700、800、900：定义由粗到细的字符（400 等同于 normal；700 等同于 bold）。
@@ -8310,7 +8383,7 @@ function getVersion() {
 
 /**
  * 弹幕事件
- * @typedef {object} openBSE~BulletScreenEvent
+ * @typedef {object} openBSE~GeneralBulletScreenEvent
  * @property {function} getBulletScreen() - 获取引发事件的弹幕弹幕的数据：retun: {@link openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
  * @property {function} setBulletScreen(bulletScreen,redraw) - 设置引发事件的弹幕弹幕的数据：params: {@link openBSE~BulletScreen} bulletScreen - 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。 boolean [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。
  * @property {function} getPlayState() - 获取引发事件的弹幕的播放状态：retun: boolean 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
@@ -8328,12 +8401,12 @@ function getVersion() {
  * 调试信息
  * @typedef {object} openBSE~DebugInfo
  * @description DebugInfo 结构用于存放调试信息。
- * @property {number} time [时间基准（options.clock）]{@link openBSE~Options}当前时间。
- * @property {number} bulletScreensOnScreenCount 实时弹幕总数
- * @property {number} bulletScreensCount 剩余弹幕总数
- * @property {number} delay 延迟：单位：毫秒。
- * @property {number} delayBulletScreensCount 丢弃弹幕数：因延迟过高而丢弃的弹幕总数。
- * @property {number} fps 帧频：单位：帧/秒。
+ * @property {number} time - [时间基准（options.clock）]{@link openBSE~Options}当前时间。
+ * @property {number} realTimeBulletScreenCount - 实时弹幕总数
+ * @property {number} bufferBulletScreenCount - 缓冲区弹幕总数
+ * @property {number} delay - 延迟：单位：毫秒。
+ * @property {number} delayBulletScreenCount - 丢弃弹幕数：因延迟过高而丢弃的弹幕总数。
+ * @property {number} fps - 帧频：单位：帧/秒。
  */
 
 /**
