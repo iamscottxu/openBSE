@@ -136,6 +136,22 @@ function getDevicePixelRatio(showWarn = false) {
 }
 
 /**
+ * 浅比较
+ * @param {*} objectA - 对象A
+ * @param {*} objectB - 对象B
+ * @returns {bool} - 相等为 true，不等为 false
+ */
+function shallowEqual(objectA, objectB) {
+    if (objectA === objectB) return true;
+    if (typeof objectA === 'object' && typeof objectB === 'object') {
+        for (let key in objectA)
+            if (!shallowEqual(objectA[key], objectB[key])) return false;
+        return true;
+    }
+    return false;
+}
+
+/**
  * 帮助对象
  * @namespace
  */
@@ -148,7 +164,8 @@ const Helper = {
     _typeof: _typeof,
     clone: clone,
     cleanElement: cleanElement,
-    getDevicePixelRatio: getDevicePixelRatio
+    getDevicePixelRatio: getDevicePixelRatio,
+    shallowEqual: shallowEqual
 }
 export default Helper
 

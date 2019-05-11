@@ -3,7 +3,7 @@ import RenderersFactory from '../renderers/renderersFactory'
 import Helper from '../lib/helper'
 import Resources from '../lib/resources'
 import * as build from '../build.json'
-import { Interpreter } from '../lib/JS-Interpreter/acorn_interpreter'
+import Interpreter from '../lib/JS-Interpreter/interpreter'
 
 export default class SpecialEngine {
     constructor(element, options, renderMode = 'canvas') {
@@ -190,7 +190,7 @@ export default class SpecialEngine {
         let _oldClientHeight = element.clientHeight;
         let _oldOpacity = _options.opacity;
         //渲染器工厂
-        let renderersFactory = new RenderersFactory(element, _options, _elementSize, bulletScreenEventTrigger);
+        let renderersFactory = new RenderersFactory(element, _options, _elementSize);
         let _renderer = renderersFactory.getSpecialRenderer(renderMode); //实例化渲染器
         setInterval(setSize, 100);
 
@@ -222,18 +222,8 @@ export default class SpecialEngine {
             _defaultBulletScreen.startTime = _options.clock();
             bulletScreen = Helper.setValues(bulletScreen, _defaultBulletScreen, _bulletScreenType); //设置默认值
 
-            //创建解释器对象
-            bulletScreen.interpreter = new Interpreter(bulletScreen.renderCode, (interpreter, scope) => {
-                interpreter.setProperty(scope, 'time', _playing ? _options.clock() : _pauseTime - bulletScreen.startTime);
-                interpreter.setProperty(scope, 'startTime', bulletScreen.startTime);
-                interpreter.setProperty(scope, 'endTime', bulletScreen.endTime);
-                interpreter.setProperty(scope, 'elementWidth', _elementSize.width);
-                interpreter.setProperty(scope, 'elementHeight', _elementSize.height);
-                interpreter.setProperty(scope, 'scaling', devicePixelRatio * options.scaling);
-                interpreter.setProperty(scope, 'setStyle', interpreter.createNativeFunction((style) => {
-                    bulletScreen.style = Helper.setValues(style, _defaultStyle, _bulletScreenType, _defaultStyleType);
-                }));
-            });
+            bulletScreen.style = Helper.clone(_defaultStyle);
+            bulletScreen.style.text = bulletScreen.text;
 
             let newNode = new LinkedList.node(bulletScreen);
             _bulletScreenBuffer.forEach(function (node) {
@@ -378,7 +368,11 @@ export default class SpecialEngine {
         function moveRealTimeBulletScreen() {
             _realTimeBulletScreens.forEach((node) => {
                 let realTimeBulletScreen = node.element;
-                if (realTimeBulletScreen.endTime > nowTime) realTimeBulletScreen.interpreter.run();
+                let nowTime = _options.clock();
+                //创建解释器对象
+                let interpreter = new Interpreter(realTimeBulletScreen.renderCode, (interpreter, scope) =>
+                    InterpreterInit(interpreter, scope, realTimeBulletScreen));
+                if (realTimeBulletScreen.endTime > nowTime) interpreter.run();
                 else {
                     _renderer.delete(realTimeBulletScreen);
                     return { remove: true };
@@ -401,7 +395,7 @@ export default class SpecialEngine {
                 let nowTime = _options.clock();
                 if (bulletScreen.startTime > nowTime) return;
                 if (!_options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
-                    _renderer.creat(realTimeBulletScreen); //创建弹幕元素并计算宽度
+                    _renderer.creat(bulletScreen); //创建弹幕元素
                     _realTimeBulletScreens.push(node, false);
                 } else {
                     _delayBulletScreenCount++;
@@ -409,6 +403,37 @@ export default class SpecialEngine {
                 }
                 times--;
             } while (_realTimeBulletScreens.length === 0 || times > 0);
+        }
+
+        /**
+         * 解释器加载
+         * @private
+         * @param {*} interpreter - 解释器对象
+         * @param {*} scope - scope
+         * @param {*} bulletScreen - 弹幕对象
+         */
+        function InterpreterInit(interpreter, scope, bulletScreen) {
+            interpreter.setProperty(scope, 'time', _options.clock());
+            interpreter.setProperty(scope, 'startTime', bulletScreen.startTime);
+            interpreter.setProperty(scope, 'endTime', bulletScreen.endTime);
+            interpreter.setProperty(scope, 'elementWidth', _elementSize.width);
+            interpreter.setProperty(scope, 'elementHeight', _elementSize.height);
+            interpreter.setProperty(scope, 'scaling', devicePixelRatio * options.scaling);
+            interpreter.setProperty(scope, 'setStyle', interpreter.createNativeFunction((obj) => setStyle(obj.properties, bulletScreen)));
+        }
+
+        /**
+         * 设置弹幕样式
+         * @private
+         * @param {*} style - 弹幕样式
+         * @param {*} bulletScreen - 弹幕对象
+         */
+        function setStyle(style, bulletScreen) {
+            if (Helper.isEmpty(style) || style === {}) return;
+            let oldStyle = bulletScreen.style;
+            bulletScreen.style = Helper.setValues(style, bulletScreen.style, _defaultStyleType, true);
+            if (Helper.shallowEqual(oldStyle, bulletScreen.style)) return;
+            _renderer.refresh(bulletScreen);
         }
 
         /**

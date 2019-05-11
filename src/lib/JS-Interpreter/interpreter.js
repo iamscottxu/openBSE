@@ -31,6 +31,7 @@
  *     global scope object.
  * @constructor
  */
+import acorn from './acorn'
 var Interpreter = function(code, opt_initFunc) {
   if (typeof code === 'string') {
     code = acorn.parse(code, Interpreter.PARSE_OPTIONS);
@@ -3921,7 +3922,8 @@ Interpreter.prototype['stepWhileStatement'] =
 // Preserve top-level API functions from being pruned/renamed by JS compilers.
 // Add others as needed.
 // The global object ('window' in a browser, 'global' in node.js) is 'this'.
-this['Interpreter'] = Interpreter;
+//this['Interpreter'] = Interpreter;
+export default Interpreter
 Interpreter.prototype['step'] = Interpreter.prototype.step;
 Interpreter.prototype['run'] = Interpreter.prototype.run;
 Interpreter.prototype['appendCode'] = Interpreter.prototype.appendCode;

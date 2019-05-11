@@ -9,7 +9,7 @@ export default class SpecialBaseRenderer {
    * @param {object} elementSize - 元素大小
    */
   constructor(element, options, elementSize) {
-      if (new.target === GeneralBaseRenderer) {
+      if (new.target === SpecialBaseRenderer) {
           throw new SyntaxError();
       }
 
@@ -83,6 +83,15 @@ export default class SpecialBaseRenderer {
        */
       this.draw = function () {
           throw new SyntaxError();
+      }
+
+      /**
+       * 刷新弹幕样式 
+       * @abstract
+       * @param {object} realTimeBulletScreen - 实时弹幕对象
+       */
+      this.refresh = function (realTimeBulletScreen) {
+        throw new SyntaxError();
       }
 
       /**

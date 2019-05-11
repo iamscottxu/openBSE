@@ -1,5 +1,6 @@
 import Helper from './lib/helper'
 import GeneralEngine from './engines/generalEngine'
+import SpecialEngine from './engines/specialEngine'
 import BrowserNotSupportError from './errors/browserNotSupportError'
 import GeneralType from './engines/generalType'
 import Contextmenu from './contextmenu'
@@ -14,7 +15,7 @@ function getVersion() {
     return Helper.clone(build);
 }
 
-export { GeneralEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVersion }
+export { GeneralEngine, SpecialEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVersion }
 
 /**
  * 普通弹幕全局选项

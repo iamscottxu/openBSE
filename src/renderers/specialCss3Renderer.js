@@ -31,18 +31,40 @@ export default class SpecialCss3Renderer extends SpecialBaseRenderer {
          * @override
          */
         this.draw = function () {
-            for (let bulletScreenDiv of _div.getElementsByTagName('div')) {
-                if (typeof bulletScreenDiv.realTimeBulletScreen != 'object') continue;
-                if (this.checkWhetherHide(bulletScreenDiv.realTimeBulletScreen)) {
-                    bulletScreenDiv.style.visibility = 'hidden';
-                    continue;
-                }
-                bulletScreenDiv.style.visibility = 'visible';
-                bulletScreenDiv.style.transform =
-                    bulletScreenDiv.style.webkitTransform =
-                    bulletScreenDiv.style.msTransform =
-                    `translate(${(bulletScreenDiv.realTimeBulletScreen.x - 4).toFixed(1)}px,${(bulletScreenDiv.realTimeBulletScreen.actualY - 4).toFixed(1)}px)`;
+
+        }
+
+        /**
+         * 刷新弹幕样式 
+         * @override
+         * @param {object} realTimeBulletScreen - 实时弹幕对象
+        */
+        this.refresh = function (realTimeBulletScreen) {
+            let bulletScreenDiv = realTimeBulletScreen.div;
+            bulletScreenDiv.style.position = 'absolute';
+            bulletScreenDiv.style.whiteSpace = 'nowrap';
+            bulletScreenDiv.style.fontWeight = realTimeBulletScreen.style.fontWeight;
+            bulletScreenDiv.style.fontSize = `${realTimeBulletScreen.style.size}px`;
+            bulletScreenDiv.style.fontFamily = realTimeBulletScreen.style.fontFamily;
+            bulletScreenDiv.style.lineHeight = `${realTimeBulletScreen.style.size}px`;
+            bulletScreenDiv.style.color = realTimeBulletScreen.style.color;
+            if (realTimeBulletScreen.style.shadowBlur != null)
+                bulletScreenDiv.style.textShadow = `0 0 ${realTimeBulletScreen.style.shadowBlur}px black`;
+            if (realTimeBulletScreen.style.borderColor != null) {
+                bulletScreenDiv.style.textStroke = bulletScreenDiv.style.webkitTextStroke = `0.5px`;
+                bulletScreenDiv.style.textStrokeColor = bulletScreenDiv.style.webkitTextStrokeColor = realTimeBulletScreen.style.borderColor;
             }
+            if (realTimeBulletScreen.style.boxColor != null) {
+                bulletScreenDiv.style.padding = '3px';
+                bulletScreenDiv.style.border = '1px solid';
+                bulletScreenDiv.style.borderColor = realTimeBulletScreen.style.boxColor;
+            }
+            else {
+                bulletScreenDiv.style.padding = '4px';
+            }
+            bulletScreenDiv.style.transform = realTimeBulletScreen.style.transform;
+            Helper.cleanElement(bulletScreenDiv);
+            bulletScreenDiv.appendChild(document.createTextNode(realTimeBulletScreen.style.text));
         }
 
         /**
@@ -51,35 +73,10 @@ export default class SpecialCss3Renderer extends SpecialBaseRenderer {
          * @param {object} realTimeBulletScreen - 实时弹幕对象
          */
         this.creat = function (realTimeBulletScreen) {
-            let bulletScreen = realTimeBulletScreen.bulletScreen;
-            let bulletScreenDiv = realTimeBulletScreen.div ? realTimeBulletScreen.div : document.createElement('div');
-            bulletScreenDiv.style.position = 'absolute';
-            bulletScreenDiv.style.whiteSpace = 'nowrap';
-            bulletScreenDiv.style.fontWeight = bulletScreen.style.fontWeight;
-            bulletScreenDiv.style.fontSize = `${realTimeBulletScreen.size}px`;
-            bulletScreenDiv.style.fontFamily = bulletScreen.style.fontFamily;
-            bulletScreenDiv.style.lineHeight = `${realTimeBulletScreen.size}px`;
-            bulletScreenDiv.style.color = bulletScreen.style.color;
-            if (bulletScreen.style.shadowBlur != null)
-                bulletScreenDiv.style.textShadow = `0 0 ${bulletScreen.style.shadowBlur}px black`;
-            if (bulletScreen.style.borderColor != null) {
-                bulletScreenDiv.style.textStroke = bulletScreenDiv.style.webkitTextStroke = `0.5px`;
-                bulletScreenDiv.style.textStrokeColor = bulletScreenDiv.style.webkitTextStrokeColor = bulletScreen.style.borderColor;
-            }
-            if (bulletScreen.style.boxColor != null) {
-                bulletScreenDiv.style.padding = '3px';
-                bulletScreenDiv.style.border = '1px solid';
-                bulletScreenDiv.style.borderColor = bulletScreen.style.boxColor;
-            }
-            else {
-                bulletScreenDiv.style.padding = '4px';
-            }
-            Helper.cleanElement(bulletScreenDiv);
-            bulletScreenDiv.appendChild(document.createTextNode(bulletScreen.text));
-            bulletScreenDiv.realTimeBulletScreen = realTimeBulletScreen;
-            insertElement(bulletScreenDiv); //insert
-            realTimeBulletScreen.width = bulletScreenDiv.clientWidth - 8; //弹幕的宽度：像素
+            let bulletScreenDiv = document.createElement('div');
             realTimeBulletScreen.div = bulletScreenDiv;
+            this.refresh(realTimeBulletScreen);
+            _div.appendChild(bulletScreenDiv);
         }
 
         /**
@@ -107,7 +104,6 @@ export default class SpecialCss3Renderer extends SpecialBaseRenderer {
                 div.style.webkitUserSelect =
                 div.style.msUserSelect = 'none';
             div.style.cursor = 'default';
-            registerEvent(div); //注册事件响应程序
             return div;
         }
 

@@ -28,7 +28,6 @@ export default class LinkedList {
      * @param {boolean} top - true: 插入到顶部 false: 插入到底部
      */
     push(node, top = true) {
-        if (node._linkedList != null && node._linkedList != this) return false;
         if (top) return this._topNode.add(node, false);
         else return this._bottomNode.add(node, true);
     }
