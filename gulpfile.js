@@ -22,7 +22,7 @@ gulp.task('es6', () => {
     buildConfig.buildDate = new Date().toUTCString();
     fs.writeJSONSync('dist/build.json', buildConfig);
     fs.copyFileSync('src/lib/resources.json', 'dist/lib/resources.json');
-    return gulp.src('src/**/*.js')
+    return gulp.src(['src/**/*.js', '!src/JS-Interpreter/acorn_interpreter.js', '!src/JS-Interpreter/demos/*.js'])
         .pipe(sourcemaps.init())
         .pipe(babel({
             presets: [
