@@ -40,6 +40,18 @@
                 endTime: 100000000,
                 renderCode: 'setStyle({text:"测试" + Math.floor(time / 500) % 500, transform: "translate(" + Math.floor(time / 10) % 500 + "px," + (500 - Math.floor(time / 100) % 500) + "px)"});'
             });
+            specialEngine.add({
+                text: '测试',
+                startTime: 1000,
+                endTime: 100000000,
+                renderCode: 'setStyle({text:"测试" + Math.floor(time / 500) % 500, transform: "translate(" + (500 - Math.floor(time / 10) % 500) + "px," + Math.floor(time / 100) % 500 + "px)"});'
+            });
+            specialEngine.add({
+                text: 'AAAAAAAAAAAAAAAAAAAAAAAAAA',
+                startTime: 1000,
+                endTime: 100000000,
+                renderCode: 'setStyle({text: Math.floor(time / 1000) % 2 == 1 ? "AAAAAAAAAAAAAAAAAAAAAAAAAA" : "", transform: "translate(350px, 450px)"});'
+            });
         }
         var showDebugInfo = function () {
             var debugInfo = specialEngine.debugInfo;
