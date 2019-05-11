@@ -104,6 +104,31 @@ export default class SpecialEngine {
             renderCode: null
         }
 
+        /** 
+         * 默认弹幕样式 
+         * @private @readonly
+         * */
+        const _defaultStyle = {
+            /** 弹幕文本 */
+            text: null,
+            /** 阴影的模糊级别，0为不显示阴影 */
+            shadowBlur: 2,
+            /** 字体粗细 */
+            fontWeight: '600',
+            /** 字体系列 */
+            fontFamily: 'sans-serif',
+            /** 字体大小（单位：像素） */
+            size: 25,
+            /** 外框颜色 */
+            boxColor: null,
+            /** 字体颜色 */
+            color: 'white',
+            /** 描边颜色 */
+            borderColor: null,
+            /** 变换 */
+            transform: null
+        }
+
         /**
          * 弹幕数据类型
          * @private @readonly
@@ -114,6 +139,31 @@ export default class SpecialEngine {
             startTime: 'number',
             endTime: 'number',
             renderCode: 'string'
+        }
+
+        /** 
+         * 默认弹幕样式数据类型 
+         * @private @readonly
+         * */
+        const _defaultStyleType = {
+            /** 弹幕文本 */
+            text: 'string',
+            /** 阴影的模糊级别，0为不显示阴影 */
+            shadowBlur: 'number',
+            /** 字体粗细 */
+            fontWeight: ['string', 'number'],
+            /** 字体系列 */
+            fontFamily: 'string',
+            /** 字体大小（单位：像素） */
+            size: 'number',
+            /** 外框颜色 */
+            boxColor: ['string', 'null'],
+            /** 字体颜色 */
+            color: 'string',
+            /** 描边颜色 */
+            borderColor: ['string', 'null'],
+            /** 变换 */
+            transform: ['string', 'null']
         }
 
         /**
@@ -141,7 +191,7 @@ export default class SpecialEngine {
         let _oldOpacity = _options.opacity;
         //渲染器工厂
         let renderersFactory = new RenderersFactory(element, _options, _elementSize, bulletScreenEventTrigger);
-        let _renderer = renderersFactory.getGeneralRenderer(renderMode); //实例化渲染器
+        let _renderer = renderersFactory.getSpecialRenderer(renderMode); //实例化渲染器
         setInterval(setSize, 100);
 
         //公共函数
@@ -174,18 +224,24 @@ export default class SpecialEngine {
 
             //创建解释器对象
             bulletScreen.interpreter = new Interpreter(bulletScreen.renderCode, (interpreter, scope) => {
-                interpreter.setProperty
+                interpreter.setProperty(scope, 'time', _playing ? _options.clock() : _pauseTime - bulletScreen.startTime);
+                interpreter.setProperty(scope, 'startTime', bulletScreen.startTime);
+                interpreter.setProperty(scope, 'endTime', bulletScreen.endTime);
+                interpreter.setProperty(scope, 'elementWidth', _elementSize.width);
+                interpreter.setProperty(scope, 'elementHeight', _elementSize.height);
+                interpreter.setProperty(scope, 'scaling', devicePixelRatio * options.scaling);
+                interpreter.setProperty(scope, 'setStyle', interpreter.createNativeFunction((style) => {
+                    bulletScreen.style = Helper.setValues(style, _defaultStyle, _bulletScreenType, _defaultStyleType);
+                }));
             });
 
             let newNode = new LinkedList.node(bulletScreen);
             _bulletScreenBuffer.forEach(function (node) {
                 let lastBulletScreen = node.element;
-                if (bulletScreen.startTime > lastBulletScreen.startTime) {
-                    return {
-                        add: { addToUp: true, node: newNode },
-                        stop: true
-                    };
-                }
+                if (bulletScreen.startTime > lastBulletScreen.startTime) return {
+                    add: { addToUp: true, node: newNode },
+                    stop: true
+                };
             }, true);
             if (newNode.linkedList === null) _bulletScreenBuffer.push(newNode, false);
         };
@@ -299,6 +355,61 @@ export default class SpecialEngine {
         });
 
         //内部函数
+        /**
+         * 刷新弹幕函数
+         * @private
+         */
+        function refresh() {
+            let nowTime = new Date().getTime();
+            if (_lastRefreshTime != null)
+                _refreshRate = 1 / (nowTime - _lastRefreshTime);
+            _lastRefreshTime = nowTime;
+            addRealTimeBulletScreens();
+            moveRealTimeBulletScreen();
+            _renderer.draw(); //绘制弹幕
+            if (_playing)
+                requestAnimationFrame(refresh);
+        }
+
+        /**
+         * 移动弹幕函数
+         * @private
+         */
+        function moveRealTimeBulletScreen() {
+            _realTimeBulletScreens.forEach((node) => {
+                let realTimeBulletScreen = node.element;
+                if (realTimeBulletScreen.endTime > nowTime) realTimeBulletScreen.interpreter.run();
+                else {
+                    _renderer.delete(realTimeBulletScreen);
+                    return { remove: true };
+                }
+            }, true);
+        }
+
+        /**
+         * 添加弹幕到实时弹幕列表
+         * @private
+         */
+        function addRealTimeBulletScreens() {
+            if (_realTimeBulletScreens.length === 0)
+                _delay = 0;
+            let times = Math.floor(_refreshRate * 2000);
+            do {
+                let node = _bulletScreenBuffer.pop(false, false);
+                if (node === null) return;
+                let bulletScreen = node.element;
+                let nowTime = _options.clock();
+                if (bulletScreen.startTime > nowTime) return;
+                if (!_options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
+                    _renderer.creat(realTimeBulletScreen); //创建弹幕元素并计算宽度
+                    _realTimeBulletScreens.push(node, false);
+                } else {
+                    _delayBulletScreenCount++;
+                    node.remove();
+                }
+                times--;
+            } while (_realTimeBulletScreens.length === 0 || times > 0);
+        }
 
         /**
          * 设置尺寸

@@ -11,7 +11,7 @@ const RENDERERS = {
      */
     css3: {
         general: require('./generalCss3Renderer').default,
-        special: require('./generalCss3Renderer').default
+        special: require('./specialCss3Renderer').default
     },
     /**
      * SVG 渲染模式（仅普通弹幕引擎）
