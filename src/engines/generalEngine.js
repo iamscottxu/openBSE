@@ -296,12 +296,10 @@ export default class GeneralEngine {
             let newNode = new LinkedList.node(bulletScreen);
             _bulletScreenBuffer.forEach(function (node) {
                 let lastBulletScreen = node.element;
-                if (bulletScreen.startTime > lastBulletScreen.startTime) {
-                    return {
-                        add: { addToUp: true, node: newNode },
-                        stop: true
-                    };
-                }
+                if (bulletScreen.startTime > lastBulletScreen.startTime) return {
+                    add: { addToUp: true, node: newNode },
+                    stop: true
+                };
             }, true);
             if (newNode.linkedList === null) _bulletScreenBuffer.push(newNode, false);
 
@@ -485,8 +483,8 @@ export default class GeneralEngine {
             if (_lastRefreshTime != null)
                 _refreshRate = 1 / (nowTime - _lastRefreshTime);
             _lastRefreshTime = nowTime;
-            addrealTimeBulletScreens();
-            moverealTimeBulletScreen();
+            addRealTimeBulletScreens();
+            moveRealTimeBulletScreen();
             _renderer.draw(); //绘制弹幕
             if (_playing)
                 requestAnimationFrame(refresh);
@@ -496,7 +494,7 @@ export default class GeneralEngine {
          * 移动弹幕函数
          * @private
          */
-        function moverealTimeBulletScreen() {
+        function moveRealTimeBulletScreen() {
             _realTimeBulletScreens.forEach((node) => {
                 let realTimeBulletScreen = node.element;
                 if (realTimeBulletScreen.pause) return; //暂停移动
@@ -535,7 +533,7 @@ export default class GeneralEngine {
          * 添加弹幕到实时弹幕列表
          * @private
          */
-        function addrealTimeBulletScreens() {
+        function addRealTimeBulletScreens() {
             if (_realTimeBulletScreens.length === 0)
                 _delay = 0;
             let times = Math.floor(_refreshRate * 2000);
