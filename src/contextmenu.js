@@ -7,14 +7,14 @@ import Resources from './lib/resources'
 export default class Contextmenu {
     /**
      * 创建弹幕引擎对象的上下文菜单。
-     * @param {openBSE.BulletScreenEngine} bulletScreenEngine - 弹幕引擎对象：一个弹幕 {@link openBSE.BulletScreenEngine} 对象。要添加上下文菜单的
+     * @param {openBSE.BulletScreenEngine} generalEngine - 弹幕引擎对象：一个弹幕 {@link openBSE.BulletScreenEngine} 对象。要添加上下文菜单的
      * @param {Element} element - 上下文菜单元素：当显示上下文菜单时要显示的 div 。有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
      * @param {number} [layer=10] - 弹幕层级：当显示上下文菜单或鼠标指向弹幕时弹幕要移动到的层级。有关弹幕层级的详细说明请参阅 {@link openBSE~options} 结构。
      * @param {boolean} [pause=true] - 是否暂停：当鼠标指向弹幕或单开上下文菜单时弹幕是否暂停移动/播放。
      */
-    constructor(bulletScreenEngine, element, layer = 10, pause = true) {
+    constructor(generalEngine, element, layer = 10, pause = true) {
         if (
-            typeof bulletScreenEngine != 'object' ||
+            typeof generalEngine != 'object' ||
             typeof element != 'object' ||
             typeof pause != 'boolean' ||
             (typeof layer != 'number' && layer != null)
@@ -22,7 +22,7 @@ export default class Contextmenu {
 
         element.bulletScreenEvent = null;
 
-        let _getContextmenuState = () => contextmenu.style.display != 'none';
+        let _getContextmenuState = () => element.style.display != 'none';
         /**
          * 获取上下文菜单的状态
          * @function
@@ -50,8 +50,14 @@ export default class Contextmenu {
         element.style.display = 'none';
         element.oncontextmenu = () => false;
 
+        let isParent = (element, parentElement) => {
+            do if (element === parentElement) return true;
+            while(document != (element = element.parentNode))
+            return false;
+        }
+
         let _closeContextmenu = function (e) {
-            if (_getContextmenuState() && e.target != element) {
+            if (_getContextmenuState() && !isParent(e.target,element)) {
                 element.style.display = 'none';
                 if (pause) element.bulletScreenEvent.setPlayState(true);
                 element.bulletScreenEvent.setBulletScreen({ _contextmenu: false }, false);
@@ -63,7 +69,7 @@ export default class Contextmenu {
         window.addEventListener('contextmenu', _closeContextmenu, true);
         window.addEventListener('scroll', _closeContextmenu, true);
 
-        bulletScreenEngine.bind('contextmenu', function (e) {
+        generalEngine.bind('contextmenu', function (e) {
             e.setBulletScreen({ layer: layer, _contextmenu: true }, layer != null);
             if (pause) e.setPlayState(false);
             element.style.display = '';
@@ -75,12 +81,12 @@ export default class Contextmenu {
             element.bulletScreenEvent = e;
         });
 
-        bulletScreenEngine.bind('mouseenter', function (e) {
+        generalEngine.bind('mouseenter', function (e) {
             if (layer != null) e.setBulletScreen({ layer: layer }, true);
             if (pause) e.setPlayState(false);
         });
 
-        bulletScreenEngine.bind('mouseleave', function (e) {
+        generalEngine.bind('mouseleave', function (e) {
             if (!e.getBulletScreen()._contextmenu && pause) e.setPlayState(true);
         });
     }
