@@ -1,0 +1,68 @@
+.stage {
+    width:936px;
+    height:526.5px;
+    position:relative;
+    background: black;
+}
+.stage-el {
+    width: 100%;
+    height: 100%;
+    left:0;
+    top:0;
+    right:0;
+    bottom:0;
+    position:absolute;
+}
+.debug-info {
+    padding:5px 8px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    width:400px;
+    background-color:rgba(0, 0, 0, 0.8);
+    text-align:left;
+    position:absolute;
+    top:10px;
+    left:10px;
+    border-radius:3px;
+}
+.debug-info > .close {
+    position:absolute;
+    top:8px;
+    right: 8px;
+    color:white;
+    font-size:9px;
+    cursor: pointer;
+}
+.debug-info > .text {
+    color:white;
+    font-family:Helvetica,Arial,sans-serif;
+    font-size:9px;
+    font-weight:bold;
+    line-height:15px;
+    width: 100%;
+    margin: 3px 0;
+}
+.debug-info > .chart {
+    width: 100%;
+    height: 45px;
+    margin: 3px 0;
+}
+.contextmenu {
+    width:200px;
+    background-color:rgba(0, 0, 0, 0.8);
+    color:white;
+    border-radius:2px;
+    font-size: 13px;
+}
+.contextmenu > .item {
+    height:20px;
+    padding:7px 10px;
+    cursor: default;
+}
+.contextmenu > .item.canselect {
+    cursor: pointer;
+}
+.contextmenu > .item.canselect:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
