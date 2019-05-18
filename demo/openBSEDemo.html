@@ -3,107 +3,32 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>弹幕引擎Demo</title>
+    <title>openBSE Demo</title>
+    <link href="style.css" rel="stylesheet" type="text/css">
     <script src="../dist/openBSE.all.min.js"></script>
-    <script>
-        window.onload = function () {
-            var versionInfo = openBSE.getVersion();
-            document.getElementById("version").innerText = versionInfo.version;
-            document.getElementById("buildDate").innerText = versionInfo.buildDate;
-            window.generalEngine = new openBSE.GeneralEngine(document.getElementById('BulletScreensDiv'), {
-                defaultStyle: {
-                    fontFamily: '"Microsoft YaHei","PingFang SC",SimHei,"Heiti SC",sans-serif',
-                    borderColor: 'rgba(0,0,0,0.4)',
-                    fontWeight: 'normal',
-                    shadowBlur: 4
-                }
-            }, 'canvas');
-
-            var contextmenu = new openBSE.Contextmenu(generalEngine, document.getElementById('contextmenu'));
-
-            generalEngine.bind('click', function (e) {
-                document.getElementById("clickText").innerText = e.getBulletScreen().text;
-                e.setBulletScreen({
-                    style: { color: 'red' },
-                    layer: 2
-                }, true);
-            });
-
-            loadData(generalEngine);
-            setInterval(showDebugInfo, 500);
-        }
-        var loadData = function (generalEngine) {
-            var _startTime = 1000;
-            for (var i = 0; i < 10000; i++) {
-                if (Math.random() > 0.6)
-                    generalEngine.add({
-                        text: "这是一个长长长长长长长长长长长长长长长长长长长长长长长长的测试(^_^)",
-                        startTime: _startTime,
-                        type: openBSE.GeneralType.rightToLeft,
-                        style: {
-                            speed: 0.15 + Math.random() / 90,
-                            size: 23,
-                            color: 'white'
-                        }
-                    });
-                else
-                    generalEngine.add({
-                        text: "橘里橘气",
-                        startTime: _startTime,
-                        type: (Math.random() > 0.4) ? openBSE.GeneralType.rightToLeft : openBSE.GeneralType.top,
-                        style: {
-                            speed: 0.1 + Math.random() / 90,
-                            color: '#FFCC66'
-                        }
-                    });
-                _startTime += Math.round(Math.random() * 500);
-            }
-        }
-        var showDebugInfo = function () {
-            var debugInfo = generalEngine.debugInfo;
-            document.getElementById("time").innerText = debugInfo.time.toString();
-            document.getElementById("delay").innerText = debugInfo.delay.toString();
-            document.getElementById("fps").innerText = debugInfo.fps.toString();
-            document.getElementById("BulletScreensOnScreenCount").innerText = debugInfo.realTimeBulletScreenCount.toString();
-            document.getElementById("BulletScreensCount").innerText = debugInfo.bufferBulletScreenCount.toString();
-            document.getElementById("delayBulletScreensCount").innerText = debugInfo.delayBulletScreenCount.toString();
-        }
-        function sendBulletScreen() {
-            var bulletScreenText = document.getElementById("BulletScreenText").value;
-            document.getElementById("BulletScreenText").value = '';
-            generalEngine.add({
-                text: bulletScreenText,
-                style: {
-                    boxColor: 'white'
-                },
-                layer: 1,
-                canDiscard: false
-            });
-        }
-        function sethiddenTypes() {
-            var formData = new FormData(document.getElementById("hiddenTypes"));
-            var hiddenTypesList = formData.getAll('hiddenTypes');
-            var hiddenTypes = 0;
-            for (var index in hiddenTypesList) hiddenTypes += parseInt(hiddenTypesList[index]);
-            generalEngine.options = {
-                hiddenTypes: hiddenTypes
-            };
-        }
-        function set(key, value) {
-            var object = {};
-            object[key] = value;
-            generalEngine.options = object;
-        }
-    </script>
+    <script src="stats.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script src="contextmenu.js"></script>
+    <script src="openBSEDemo.js"></script>
 </head>
 
 <body>
     <p style="font-size: 70%">引擎版本：<b id="version"></b>&nbsp;构建时间：<b id="buildDate"></b></p>
-    <div style="width:936px;height:526.5px;position:relative;">
-        <div style="left:0;top:0;right:0;bottom:0;position:absolute;background:url(./images/background.jpg);background-size: 100%;"></div>
-        <div id="BulletScreensDiv" style="left:0;top:0;right:0;bottom:0;position:absolute;"></div>
+    <div class="stage" id="stage">
+        <video class="stage-el" id="video"></video>
+        <div class="stage-el" id="BulletScreensDiv"></div>
+        <div class="debug-info" id="debug_info" style="display:none;">
+            <div class="close" id="debug_info_close">[x]</div>
+            <div class="text">Time: <b id="time"></b>ms</div>
+            <div class="text">Delay Bullet-Screen Count: <b id="delayBulletScreenCount"></b></div>
+            <div class="text">Buffer Bullet-Screen Count: <b id="bufferBulletScreenCount"></b></div>
+            <div class="chart" id="fps"></div>
+            <div class="chart" id="delay"></div>
+            <div class="chart" id="realTimeBulletScreenCount"></div>
+        </div>
     </div>
-    <p><input type="text" style="width:500px;" id="BulletScreenText">&nbsp;<a href="#" onclick="sendBulletScreen();">发送</a></p>
+    <p><input type="text" style="width:500px;" id="BulletScreenText">&nbsp;<a href="#"
+            onclick="sendBulletScreen();">发送</a></p>
     <p>
         隐藏弹幕：
         <form id="hiddenTypes" onclick="sethiddenTypes();">
@@ -114,22 +39,31 @@
         </form>
     </p>
     <p>上次单击的弹幕内容：<b id="clickText">无</b></p>
-    <p>时间：<b id="time"></b> fps：<b id="fps"></b></p>
-    <p>实时弹幕数：<b id="BulletScreensOnScreenCount"></b>&nbsp;缓冲区弹幕数：<b id="BulletScreensCount"></b></p>
-    <p>延迟：<b id="delay"></b>ms 延迟丢弃丢弃弹幕数：<b id="delayBulletScreensCount"></b></p>
-    <a href="#" onclick="generalEngine.play();">开始</a>&nbsp;<a href="#" onclick="generalEngine.pause();">暂停</a>&nbsp;<a
-        href="#" onclick="generalEngine.stop();">停止</a>&nbsp;
-    <a href="#" onclick="generalEngine.visibility = true;">显示弹幕</a>&nbsp;<a href="#" onclick="generalEngine.visibility = false;">隐藏弹幕</a>&nbsp;
-    <a href="#" onclick="generalEngine.cleanBuffer();loadData(generalEngine);">重新加载弹幕</a>&nbsp;<a
-        href="#" onclick="generalEngine.cleanScreen();">清空屏幕</a>&nbsp;<br>
+    <a href="#" onclick="videoElement.play();">开始</a>&nbsp;<a href="#" onclick="videoElement.pause();">暂停</a>
+    <!--&nbsp;<a href="#"
+        onclick="generalEngine.stop();">停止</a>&nbsp;-->
+    <a href="#" onclick="generalEngine.visibility = true;">显示弹幕</a>&nbsp;<a href="#"
+        onclick="generalEngine.visibility = false;">隐藏弹幕</a>&nbsp;
+    <a href="#" onclick="generalEngine.cleanBuffer();loadData(generalEngine);">重新加载弹幕</a>&nbsp;<a href="#"
+        onclick="generalEngine.cleanScreen();">清空屏幕</a>&nbsp;<br>
     <a href="#" onclick="set('playSpeed', 1);">1倍速</a>&nbsp;<a href="#" onclick="set('playSpeed', 1.5);">1.5倍数</a>&nbsp;
     <a href="#" onclick="set('playSpeed', 2);">2倍速</a>&nbsp;<a href="#" onclick="set('playSpeed', 2.5);">2.5倍数</a>&nbsp;
     <a href="#" onclick="set('scaling', 1);">1倍缩放</a>&nbsp;<a href="#" onclick="set('scaling', 1.5);">1.5倍缩放</a>&nbsp;
-    <a href="#" onclick="set('scaling', 2);">2倍缩放</a>&nbsp;<a href="#" onclick="set('scaling', 0.75);">0.75倍缩放</a>&nbsp;<br>
+    <a href="#" onclick="set('scaling', 2);">2倍缩放</a>&nbsp;<a href="#"
+        onclick="set('scaling', 0.75);">0.75倍缩放</a>&nbsp;<br>
     <a href="#" onclick="set('opacity', 0);">100%透明</a>&nbsp;<a href="#" onclick="set('opacity', 0.25);">75%透明</a>&nbsp;
-    <a href="#" onclick="set('opacity', 0.5);">50%透明</a>&nbsp;<a href="#" onclick="set('opacity', 0.75);">25%透明</a>&nbsp;
+    <a href="#" onclick="set('opacity', 0.5);">50%透明</a>&nbsp;<a href="#"
+        onclick="set('opacity', 0.75);">25%透明</a>&nbsp;
     <a href="#" onclick="set('opacity', 1);">不透明</a>
-    <div id="contextmenu" style="padding:3px;width:120px;height:19px;position:fixed;border:1px solid black;background:rgba(255, 255, 255, 0.9);font-size: 13px;display:none;cursor: default;">上下文菜单</div>
+    <div class="contextmenu" id="bullet_screen_contextmenu" style="display:none;">
+        <div class="item canselect">举报</div>
+        <div class="item canselect">举报并屏蔽</div>
+        <div class="item canselect">复制</div>
+    </div>
+    <div class="contextmenu" id="stage_contextmenu" style="display:none;">
+        <div class="item">openBSE v<b id="contextmenu_item_version"></b></div>
+        <div class="item canselect" id="contextmenu_item_debug_info">弹幕详细统计信息</div>
+    </div>
 </body>
 
 </html>
