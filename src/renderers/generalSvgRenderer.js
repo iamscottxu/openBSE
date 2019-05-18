@@ -254,16 +254,20 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
             //上下文菜单
             element.oncontextmenu = function (e) {
                 let realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
-                if (realTimeBulletScreen)
+                if (realTimeBulletScreen) {
+                    e.stopPropagation();
                     eventTrigger('contextmenu', realTimeBulletScreen, e);
-                return false;
+                    return false;
+                }
             };
             //单击
             element.onclick = function (e) {
                 let realTimeBulletScreen = getrealTimeBulletScreenByLocation(getLocation(e));
-                if (realTimeBulletScreen)
+                if (realTimeBulletScreen) {
+                    e.stopPropagation();
                     eventTrigger('click', realTimeBulletScreen, e);
-                return false;
+                    return false;
+                }
             };
             //鼠标移动
             element.onmousemove = function (e) {
@@ -280,7 +284,6 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
                 realTimeBulletScreen.mousein = true;
                 element.style.cursor = options.cursorOnMouseOver;
                 eventTrigger('mouseenter', realTimeBulletScreen, e);
-                return false;
             }
             //鼠标离开
             element.onmouseout = function (e) {

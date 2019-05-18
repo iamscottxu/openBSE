@@ -144,15 +144,19 @@ export default class GeneralCss3Renderer extends GeneralBaseRenderer {
         function registerEvent(element) {
             //上下文菜单
             element.oncontextmenu = function (e) {
-                if (e.target != this)
+                if (e.target != this) {
+                    e.stopPropagation();
                     eventTrigger('contextmenu', e.target.realTimeBulletScreen, e);
-                return false;
+                    return false;
+                }
             };
             //单击
             element.onclick = function (e) {
-                if (e.target != this)
+                if (e.target != this) {
+                    e.stopPropagation();
                     eventTrigger('click', e.target.realTimeBulletScreen, e);
-                return false;
+                    return false;
+                }
             };
             //鼠标移动
             element.onmousemove = function (e) {
