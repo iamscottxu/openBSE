@@ -10,7 +10,7 @@
             var versionInfo = openBSE.getVersion();
             document.getElementById("version").innerText = versionInfo.version;
             document.getElementById("buildDate").innerText = versionInfo.buildDate;
-            window.specialEngine = new openBSE.SpecialEngine(document.getElementById('BulletScreensDiv'), {}, 'css3');
+            window.specialEngine = new openBSE.SpecialEngine(document.getElementById('BulletScreensDiv'), {}, 'canvas');
 
             loadData(specialEngine);
             setInterval(showDebugInfo, 500);
@@ -20,19 +20,19 @@
                 text: '测试测试测试测试',
                 startTime: 1000,
                 endTime: 100000000,
-                renderCode: 'setStyle({transform: "translate(100px,100px) rotate(" + Math.floor(time / 10) % 360 + "deg)"});'
+                renderCode: 'setStyle({transform: "translate(100px,100px)rotate(" + Math.floor(time / 10) % 360 + "deg)"});'
             });
             specialEngine.add({
                 text: '测试测试测试测试测试测试',
                 startTime: 1000,
                 endTime: 100000000,
-                renderCode: 'setStyle({transform: "translate(200px,200px) rotate(" + (360 - Math.floor(time / 10) % 360) + "deg)"});'
+                renderCode: 'setStyle({transform: "translate(200px,200px)rotate(" + (360 - Math.floor(time / 10) % 360) + "deg)"});'
             });
             specialEngine.add({
                 text: '测试测试测试测',
                 startTime: 1000,
                 endTime: 100000000,
-                renderCode: 'setStyle({transform: "translate(300px,300px) rotate(" + (360 - Math.floor(time) % 360) + "deg)"});'
+                renderCode: 'setStyle({transform: "translate(300px,300px)rotate(" + (360 - Math.floor(time) % 360) + "deg)"});'
             });
             specialEngine.add({
                 text: '测试',
