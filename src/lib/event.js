@@ -1,5 +1,5 @@
 import Resources from './resources'
-import Helper from './helper';
+import Helper from './helper'
 
 /**
  * 事件模型类
