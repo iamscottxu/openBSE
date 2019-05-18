@@ -39,7 +39,7 @@ export default class SpecialCss3Renderer extends SpecialBaseRenderer {
          * @override
          * @param {object} realTimeBulletScreen - 实时弹幕对象
         */
-        this.refresh = function (realTimeBulletScreen) {
+        this.refresh = function (oldStyle, realTimeBulletScreen) {
             let bulletScreenDiv = realTimeBulletScreen.div;
             bulletScreenDiv.style.position = 'absolute';
             bulletScreenDiv.style.whiteSpace = 'nowrap';
@@ -75,7 +75,7 @@ export default class SpecialCss3Renderer extends SpecialBaseRenderer {
         this.creat = function (realTimeBulletScreen) {
             let bulletScreenDiv = document.createElement('div');
             realTimeBulletScreen.div = bulletScreenDiv;
-            this.refresh(realTimeBulletScreen);
+            this.refresh(null, realTimeBulletScreen);
             _div.appendChild(bulletScreenDiv);
         }
 

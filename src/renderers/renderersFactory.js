@@ -33,7 +33,7 @@ const RENDERERS = {
      */
     canvas: {
         general: require('./generalCanvasRenderer').default,
-        special: require('./generalCanvasRenderer').default
+        special: require('./specialCanvasRenderer').default
     }
 }
 

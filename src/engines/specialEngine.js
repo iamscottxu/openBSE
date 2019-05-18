@@ -222,9 +222,6 @@ export default class SpecialEngine {
             _defaultBulletScreen.startTime = _options.clock();
             bulletScreen = Helper.setValues(bulletScreen, _defaultBulletScreen, _bulletScreenType); //设置默认值
 
-            bulletScreen.style = Helper.clone(_defaultStyle);
-            bulletScreen.style.text = bulletScreen.text;
-
             let newNode = new LinkedList.node(bulletScreen);
             _bulletScreenBuffer.forEach(function (node) {
                 let lastBulletScreen = node.element;
@@ -369,11 +366,19 @@ export default class SpecialEngine {
             _realTimeBulletScreens.forEach((node) => {
                 let realTimeBulletScreen = node.element;
                 let nowTime = _options.clock();
-                //创建解释器对象
-                let interpreter = new Interpreter(realTimeBulletScreen.renderCode, (interpreter, scope) =>
-                    InterpreterInit(interpreter, scope, realTimeBulletScreen));
-                if (realTimeBulletScreen.endTime > nowTime) interpreter.run();
-                else {
+                if (realTimeBulletScreen.bulletScreen.endTime > nowTime) {
+                    try {
+                        //创建解释器对象
+                        let interpreter = new Interpreter(realTimeBulletScreen.bulletScreen.renderCode, (interpreter, scope) =>
+                        InterpreterInit(interpreter, scope, realTimeBulletScreen));
+                        interpreter.run();
+                    }
+                    catch(ex) {
+                        console.error(ex);
+                        _renderer.delete(realTimeBulletScreen);
+                        return { remove: true };
+                    }
+                } else {
                     _renderer.delete(realTimeBulletScreen);
                     return { remove: true };
                 }
@@ -395,14 +400,26 @@ export default class SpecialEngine {
                 let nowTime = _options.clock();
                 if (bulletScreen.startTime > nowTime) return;
                 if (!_options.timeOutDiscard || !bulletScreen.canDiscard || bulletScreen.startTime > nowTime - Math.floor(1 / _refreshRate) * 60) {
-                    _renderer.creat(bulletScreen); //创建弹幕元素
-                    _realTimeBulletScreens.push(node, false);
-                } else {
-                    _delayBulletScreenCount++;
-                    node.remove();
-                }
+                    getRealTimeBulletScreen(bulletScreen);
+                } else _delayBulletScreenCount++;
+                node.remove();
                 times--;
             } while (_realTimeBulletScreens.length === 0 || times > 0);
+        }
+
+        /**
+         * 生成实时弹幕对象
+         * @private
+         * @param {openBSE~BulletScreen} bulletScreen - 弹幕的链表节点
+         */
+        function getRealTimeBulletScreen(bulletScreen) {
+            let realTimeBulletScreen = {};
+            realTimeBulletScreen.bulletScreen = bulletScreen;
+            realTimeBulletScreen.style = Helper.clone(_defaultStyle);
+            realTimeBulletScreen.style.text = bulletScreen.text;
+            let newNode = new LinkedList.node(realTimeBulletScreen);
+            _realTimeBulletScreens.push(newNode, false);
+            _renderer.creat(realTimeBulletScreen); //创建弹幕元素
         }
 
         /**
@@ -410,30 +427,30 @@ export default class SpecialEngine {
          * @private
          * @param {*} interpreter - 解释器对象
          * @param {*} scope - scope
-         * @param {*} bulletScreen - 弹幕对象
+         * @param {*} realTimeBulletScreen - 弹幕对象
          */
-        function InterpreterInit(interpreter, scope, bulletScreen) {
+        function InterpreterInit(interpreter, scope, realTimeBulletScreen) {
             interpreter.setProperty(scope, 'time', _options.clock());
-            interpreter.setProperty(scope, 'startTime', bulletScreen.startTime);
-            interpreter.setProperty(scope, 'endTime', bulletScreen.endTime);
+            interpreter.setProperty(scope, 'startTime', realTimeBulletScreen.startTime);
+            interpreter.setProperty(scope, 'endTime', realTimeBulletScreen.endTime);
             interpreter.setProperty(scope, 'elementWidth', _elementSize.width);
             interpreter.setProperty(scope, 'elementHeight', _elementSize.height);
             interpreter.setProperty(scope, 'scaling', devicePixelRatio * options.scaling);
-            interpreter.setProperty(scope, 'setStyle', interpreter.createNativeFunction((obj) => setStyle(obj.properties, bulletScreen)));
+            interpreter.setProperty(scope, 'setStyle', interpreter.createNativeFunction((obj) => setStyle(obj.properties, realTimeBulletScreen)));
         }
 
         /**
          * 设置弹幕样式
          * @private
          * @param {*} style - 弹幕样式
-         * @param {*} bulletScreen - 弹幕对象
+         * @param {*} realTimeBulletScreen - 弹幕对象
          */
-        function setStyle(style, bulletScreen) {
+        function setStyle(style, realTimeBulletScreen) {
             if (Helper.isEmpty(style) || style === {}) return;
-            let oldStyle = bulletScreen.style;
-            bulletScreen.style = Helper.setValues(style, bulletScreen.style, _defaultStyleType, true);
-            if (Helper.shallowEqual(oldStyle, bulletScreen.style)) return;
-            _renderer.refresh(bulletScreen);
+            let oldStyle = realTimeBulletScreen.style;
+            realTimeBulletScreen.style = Helper.setValues(style, realTimeBulletScreen.style, _defaultStyleType, true);
+            if (Helper.shallowEqual(oldStyle, realTimeBulletScreen.style)) return;
+            _renderer.refresh(oldStyle, realTimeBulletScreen);
         }
 
         /**

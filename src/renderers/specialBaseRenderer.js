@@ -90,7 +90,7 @@ export default class SpecialBaseRenderer {
        * @abstract
        * @param {object} realTimeBulletScreen - 实时弹幕对象
        */
-      this.refresh = function (realTimeBulletScreen) {
+      this.refresh = function (oldStyle, realTimeBulletScreen) {
         throw new SyntaxError();
       }
 
