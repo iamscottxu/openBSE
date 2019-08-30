@@ -75,7 +75,7 @@ window.onload = function () {
 
     if (Hls.isSupported()) {
         var hls = new Hls();
-        hls.loadSource('http://scott-xu.gitee.io/streams/x36xhzz/x36xhzz.m3u8');
+        hls.loadSource('https://scott-xu.gitee.io/streams/x36xhzz/x36xhzz.m3u8');
         hls.attachMedia(videoElement);
     }
     
