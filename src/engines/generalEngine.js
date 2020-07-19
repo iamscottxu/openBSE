@@ -21,7 +21,7 @@ export default class GeneralEngine {
     /**
      * 创建一个弹幕引擎对象。
      * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
-     * @param {openBSE~Options} [_options] - 全局选项：一个 {@link openBSE~Options} 结构。
+     * @param {openBSE~generalOptions} [options] - 全局选项：一个 {@link openBSE~generalOptions} 结构。
      * @param {string} [renderMode="canvas"] - 渲染模式：默认为“canvas”, “可选css3”， “webgl”和“svg”。一般建议使用“canvas”（特别是 FireFox 浏览器 CSS3 渲染效率较低）。在一些版本较老的浏览器中“window.devicePixelRatio”变量不被支持或支持不完整，这会导致在高DPI和页面被缩放的情况下“canvas”和“webgl”渲染模式弹幕显示不正常的情况（弹幕模糊），此时建议使用“css3”渲染模式。
      */
     constructor(element, options, renderMode = 'canvas') {
@@ -436,13 +436,13 @@ export default class GeneralEngine {
                 /**
                  * 获取引发事件的弹幕弹幕的数据
                  * @private
-                 * @returns {openBSE~BulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.BulletScreenEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
+                 * @returns {openBSE~GeneralBulletScreen} 引发事件的弹幕的数据：一个 {@link openBSE~GeneralBulletScreen} 结构。（注意：不要试图与[添加弹幕]{@link openBSE.GeneralEngine#addBulletScreen}时创建的对象进行比较，这个对象是克隆得到的，并不相等。正确的方法是在添加弹幕时一并插入 id 等自定义字段来唯一标识一条弹幕。）
                  */
                 getBulletScreen: () => Helper.clone(realTimeBulletScreen.bulletScreen),
                 /**
                  * 设置引发事件的弹幕弹幕的数据
                  * @private
-                 * @param {openBSE~BulletScreen} bulletScreen - 引发事件的弹幕的数据：一个 {@link openBSE~BulletScreen} 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。
+                 * @param {openBSE~GeneralBulletScreen} bulletScreen - 引发事件的弹幕的数据：一个 {@link openBSE~GeneralBulletScreen} 结构。设置此参数以便动态调整弹幕样式，但是一些参数在事件中修改无效，查看此结构的说明以了解详情。
                  * @param {boolean} [redraw=false] - 是否重绘弹幕：此参数在每次引发事件时的初始值为 false ，如果修改了 bulletScreen 中的值，此参数必须设为 true 。
                  */
                 setBulletScreen: (bulletScreen, redraw = false) => {
@@ -456,7 +456,7 @@ export default class GeneralEngine {
                 /**
                  * 获取引发事件的弹幕的播放状态
                  * @private
-                 * @returns {boolean} 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.BulletScreenEngine#playAllBulletScreens} 方法。
+                 * @returns {boolean} 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 {@link openBSE.GeneralEngine#playAllBulletScreens} 方法。
                  */
                 getPlayState: () => !realTimeBulletScreen.pause,
                 /**
