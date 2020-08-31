@@ -1,0 +1,9 @@
+{
+    "esversion": 6,
+    "undef": true,
+    "unused": true,
+    "devel": true,
+    "globals": {
+        "module": true
+    }
+}

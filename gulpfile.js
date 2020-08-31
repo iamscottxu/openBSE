@@ -9,6 +9,7 @@ const fs = require('fs-extra');
 const sourcemaps = require('gulp-sourcemaps');
 const buffer = require('vinyl-buffer');
 const babel = require("gulp-babel");
+const jshint = require("gulp-jshint");
 const buildConfig = require('./build.json');
 
 gulp.task('doc', function (cb) {
@@ -70,6 +71,12 @@ gulp.task('min', () => {
         .pipe(rename({ suffix: '.min' }))
         .pipe(sourcemaps.write('./'))
         .pipe(gulp.dest('dist'))
+});
+
+gulp.task('jshint', () => {
+    return gulp.src('src/js/*.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('default'))
 });
 
 gulp.task('default', gulp.series('es6', 'build', 'min', 'doc'));
