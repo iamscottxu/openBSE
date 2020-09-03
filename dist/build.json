@@ -1,1 +1,7 @@
-{"version":"3.0","home":"https://iamscottxu.github.io/openBSE/","name":"openBSE","description":"openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.","buildDate":"Sat, 18 May 2019 08:04:48 GMT"}
+{
+    "version": "3.0",
+    "home": "https://iamscottxu.github.io/openBSE/",
+    "name": "openBSE",
+    "description": "openBSE is a high-performance JavaScript bullet-screen (danmaku) engine.",
+    "buildDate": "Thu, 03 Sep 2020 08:37:08 GMT"
+}
