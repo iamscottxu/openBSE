@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iamscottxu/BulletScreenEngine.git"
+    "url": "git+https://github.com/iamscottxu/openBSE.git"
   },
   "keywords": [
     "弹幕",
@@ -23,9 +23,9 @@
   "email": "scottxu@scottxublog.com",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/iamscottxu/BulletScreenEngine/issues"
+    "url": "https://github.com/iamscottxu/openBSE/issues"
   },
-  "homepage": "https://github.com/iamscottxu/BulletScreenEngine#readme",
+  "homepage": "https://iamscottxu.github.io/openBSE/",
   "devDependencies": {
     "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
