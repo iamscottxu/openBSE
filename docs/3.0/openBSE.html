@@ -40,7 +40,14 @@
 			<li class="dropdown">
 				<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b class="caret"></b></a>
 				<ul class="dropdown-menu ">
-					<li><a href="openBSE.Contextmenu.html">openBSE.Contextmenu</a></li>
+					<li><a href="module.exports.html">module.exports</a></li><li><a href="openBSE.BrowserNotSupportError.html">openBSE.BrowserNotSupportError</a></li><li><a href="openBSE.Contextmenu.html">openBSE.Contextmenu</a></li><li><a href="openBSE.GeneralEngine.html">openBSE.GeneralEngine</a></li>
+				</ul>
+			</li>
+			
+			<li class="dropdown">
+				<a href="events.list.html" class="dropdown-toggle" data-toggle="dropdown">Events<b class="caret"></b></a>
+				<ul class="dropdown-menu ">
+					<li><a href="openBSE.GeneralEngine.html#event:click">openBSE.GeneralEngine#event:click</a></li><li><a href="openBSE.GeneralEngine.html#event:contextmenu">openBSE.GeneralEngine#event:contextmenu</a></li><li><a href="openBSE.GeneralEngine.html#event:mouseenter">openBSE.GeneralEngine#event:mouseenter</a></li><li><a href="openBSE.GeneralEngine.html#event:mouseleave">openBSE.GeneralEngine#event:mouseleave</a></li>
 				</ul>
 			</li>
 			
@@ -144,7 +151,13 @@
         <h3 class="subsection-title">Classes</h3>
 
         <dl>
+            <dt><a href="openBSE.BrowserNotSupportError.html">exports</a></dt>
+            <dd></dd>
+        
             <dt><a href="openBSE.Contextmenu.html">exports</a></dt>
+            <dd></dd>
+        
+            <dt><a href="openBSE.GeneralEngine.html">exports</a></dt>
             <dd></dd>
         </dl>
     
@@ -153,6 +166,232 @@
 
     
 
+    
+        <h3 class="subsection-title">Members</h3>
+
+        <dl>
+            
+<hr>
+<dt class="name" id=".GeneralType">
+    <h4 id=".GeneralType"><span class="type-signature">&lt;static, constant> </span>GeneralType<span class="type-signature"> :number</span></h4>
+
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        弹幕类型枚举
+    </div>
+    
+
+    
+        <h5>Type:</h5>
+        <ul>
+            <li>
+                
+<span class="param-type">number</span>
+
+
+
+            </li>
+        </ul>
+    
+
+    
+<dl class="details">
+    
+
+    <h5 class="subsection-title">Properties:</h5>
+
+    <dl>
+
+<table class="props table table-striped">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>rightToLeft</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    1
+                
+                </td>
+            
+
+            <td class="description last">从右到左弹幕</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>leftToRight</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    2
+                
+                </td>
+            
+
+            <td class="description last">从左到右弹幕（逆向弹幕）</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>top</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    4
+                
+                </td>
+            
+
+            <td class="description last">顶部弹幕</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bottom</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+
+            
+            </td>
+
+            
+
+            
+                <td class="default">
+                
+                    8
+                
+                </td>
+            
+
+            <td class="description last">底部弹幕</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+</dl>
+
+    
+
+	
+
+	
+
+	
+
+    
+
+    
+
+    
+
+    
+
+	
+
+	
+
+	
+
+	
+
+	
+
+
+
+	
+
+	
+
+	
+
+	
+</dl>
+
+
+    
+</dd>
+
+        </dl>
     
 
     
@@ -790,7 +1029,7 @@
             <td class="type">
             
                 
-<span class="param-type">openBSE.GeneralType</span>
+<span class="param-type"><a href="openBSE.html#.GeneralType">openBSE.GeneralType</a></span>
 
 
 
@@ -1093,7 +1332,7 @@
 
             
 
-            <td class="description last">获取引发事件的弹幕的播放状态：retun: boolean 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 openBSE.GeneralEngine#playAllBulletScreens 方法。</td>
+            <td class="description last">获取引发事件的弹幕的播放状态：retun: boolean 取引发事件的弹幕是否在播放/移动：如果设置为 true 则该弹幕暂停，直到将此参数设为 false 或调用 <a href="openBSE.GeneralEngine.html#playAllBulletScreens">openBSE.GeneralEngine#playAllBulletScreens</a> 方法。</td>
         </tr>
 
     
@@ -2032,7 +2271,7 @@
             <td class="type">
             
                 
-<span class="param-type">openBSE.GeneralType</span>
+<span class="param-type"><a href="openBSE.html#.GeneralType">openBSE.GeneralType</a></span>
 
 
 
@@ -2057,7 +2296,7 @@
                 </td>
             
 
-            <td class="description last">隐藏的弹幕类型：一个 openBSE.GeneralType 枚举。将要隐藏的弹幕类型相加，0为不隐藏任何类型的弹幕。</td>
+            <td class="description last">隐藏的弹幕类型：一个 <a href="openBSE.html#.GeneralType">openBSE.GeneralType</a> 枚举。将要隐藏的弹幕类型相加，0为不隐藏任何类型的弹幕。</td>
         </tr>
 
     
@@ -2450,7 +2689,7 @@
 <span class="jsdoc-message">
 	Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.5</a>
 	
-		on 2020-09-03T16:37:09+08:00
+		on 2020-09-03T17:38:15+08:00
 	
 	using the <a href="https://github.com/docstrap/docstrap">DocStrap template</a>.
 </span>
