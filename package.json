@@ -5,7 +5,9 @@
   "main": "./dist/openBSE.js",
   "scripts": {
     "test": "gulp eslint",
-    "build": "gulp"
+    "build": "gulp build",
+    "doc": "gulp doc",
+    "default": "gulp"
   },
   "repository": {
     "type": "git",
