@@ -16,7 +16,7 @@ const buildConfig = require('./build.json');
 gulp.task('doc', (cb) => {
     let config = require('./jsdoc.json');
     config.opts.destination = `./docs/${buildConfig.version}`;
-    gulp.src(['docs/README.md', 'src/**/*.js', '!src/lib/**/*', '!src/renderers/**/*'], { read: false })
+    gulp.src(['README.md', 'src/**/*.js', '!src/lib/**/*', '!src/renderers/**/*'], { read: false })
         .pipe(jsdoc(config, cb));
 });
 
