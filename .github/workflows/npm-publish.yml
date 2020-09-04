@@ -99,7 +99,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           force: true
-          branch: action_${ DATE }
+          branch: action_${{ env.DATE }}
           directory: ${{ github.workspace }}/openBSE-docs
           github_token: ${{ secrets.GITHUB_TOKEN }}
       
