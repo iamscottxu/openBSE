@@ -92,12 +92,12 @@ jobs:
       - name: Commit changes of openBSE-docs
         run: git commit -a -m "Upload docs"
       - name: Get time stamp
-        run: export date=$(date +"%s")
+        run: export DATE=$(date +"%s")
       - name: Push changes of openBSE-docs
         uses: ad-m/github-push-action@master
         with:
           force: true
-          branch: action_${{ date }}
+          branch: action_${ DATE }
           directory: ${{ github.workspace }}/openBSE-docs
           github_token: ${{ secrets.GITHUB_TOKEN }}
       
