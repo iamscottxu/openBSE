@@ -13,7 +13,7 @@ const babel = require("gulp-babel");
 const eslint = require('gulp-eslint');
 const buildConfig = require('./build.json');
 
-gulp.task('doc', function (cb) {
+gulp.task('doc', (cb) => {
     let config = require('./jsdoc.json');
     config.opts.destination = `./docs/${buildConfig.version}`;
     gulp.src(['docs/README.md', 'src/**/*.js', '!src/lib/**/*', '!src/renderers/**/*'], { read: false })
