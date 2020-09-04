@@ -1,8 +1,9 @@
 # openBSE
-[![Version 3.0](https://img.shields.io/badge/version-2.1-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v3.0)
+[![Version 3.0](https://img.shields.io/badge/version-3.0-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v3.0)
 [![NPM](https://img.shields.io/npm/v/openbse.svg?style=flat-square)](https://www.npmjs.com/package/openbse)
 [![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)
+[![Node.js Package](https://github.com/iamscottxu/openBSE/workflows/Node.js%20Package/badge.svg)](https://github.com/iamscottxu/openBSE/actions)
 
 [中文版本](https://github.com/iamscottxu/openBSE/blob/master/README.md) |
 [wiki](https://github.com/iamscottxu/openBSE/wiki) |
