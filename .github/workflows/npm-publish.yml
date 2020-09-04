@@ -22,14 +22,14 @@ jobs:
       - name: Test code
         run: npm test
 
- publish-npm:
+  publish-npm:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout openBSE
         uses: actions/checkout@v2
       - name: Setup node.js
-       uses: actions/setup-node@v1
+        uses: actions/setup-node@v1
         with:
           node-version: 12
           registry-url: https://registry.npmjs.org/
