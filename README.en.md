@@ -6,7 +6,7 @@
 
 [中文版本](https://github.com/iamscottxu/openBSE/blob/master/README.md) |
 [wiki](https://github.com/iamscottxu/openBSE/wiki) |
-[Demo](https:/scott-xu.gitee.io/openbse-demo/openBSEDemo.html)
+[Demo](https://scott-xu.gitee.io/openbse-demo/openBSEDemo.html)
 [Docs](https://iamscottxu.github.io/openBSE/docs/3.0/index.html)
 
 A high-performance JavaScript bullet-screen (danmaku) engine. 1000+ at the same time
