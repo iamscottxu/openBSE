@@ -11,38 +11,93 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Checkout openBSE
+        uses: actions/checkout@v2
+      - name: Setup node.js
+        uses: actions/setup-node@v1
         with:
           node-version: 12
-      - run: npm ci
-      - run: npm test
+      - name: Install node modules
+        run: npm ci
+      - name: Test code
+        run: npm test
 
- # publish-npm:
- #   needs: build
- #   runs-on: ubuntu-latest
- #   steps:
- #     - uses: actions/checkout@v2
- #     - uses: actions/setup-node@v1
- #       with:
- #         node-version: 12
- #         registry-url: https://registry.npmjs.org/
- #     - run: npm ci
- #     - run: npm publish
- #       env:
- #         NODE_AUTH_TOKEN: ${{secrets.npm_token}}
+ publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout openBSE
+        uses: actions/checkout@v2
+      - name: Setup node.js
+       uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - name: Install node modules
+        run: npm ci
+      - name: Build code and docs
+        run: npm run default
+      - name: Publish to npmjs.org
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
 
   publish-gpr:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Checkout openBSE
+        uses: actions/checkout@v2
+      - name: Setup node.js
+        uses: actions/setup-node@v1
         with:
           node-version: 12
           registry-url: https://npm.pkg.github.com/
-      - run: npm ci
-      - run: npm ci
-      - run: npm publish
+      - name: Install node modules
+        run: npm ci
+      - name: Build code and docs
+        run: npm run default
+      - name: Publish to github.com
+        run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+  push-docs:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout openBSE
+        uses: actions/checkout@v2
+        with:
+          path: ${{ github.workspace }}/openBSE
+      - name: enter the directory openBSE
+        run: cd openBSE
+      - name: Setup node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+      - name: Install node modules
+        run: npm ci
+      - name: Build docs
+        run: npm run doc
+      - name: leave the directory openBSE
+        run: cd ..
+      - name: Checkout openBSE-docs
+        uses: actions/checkout@v2
+        with:
+          repository: iamscottxu/openBSE-docs
+          path: ${{ github.workspace }}/openBSE-docs
+      - name: Copy new docs to openBSE-docs
+        run: cp -rf ./openBSE/* ./openBSE-docs/*
+      - name: Commit changes of openBSE-docs
+        run: git commit -a -m "Upload docs"
+      - name: Get time stamp
+        run: export date=$(date +"%s")
+      - name: Push changes of openBSE-docs
+        uses: ad-m/github-push-action@master
+        with:
+          force: true
+          branch: action_${{ date }}
+          directory: ${{ github.workspace }}/openBSE-docs
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+      
