@@ -86,7 +86,7 @@ jobs:
           repository: iamscottxu/openBSE-docs
           path: ${{ github.workspace }}/openBSE-docs
       - name: Copy new docs to openBSE-docs
-        run: cp -rf ./openBSE/* ./openBSE-docs/*
+        run: cp -rf ./openBSE/* ./openBSE-docs/
       - name: Commit changes of openBSE-docs
         working-directory: ${{ github.workspace }}/openBSE-docs
         run: git commit -a -m "Upload docs"
