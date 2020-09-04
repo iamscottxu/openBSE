@@ -49,7 +49,7 @@ gulp.task('es6', gulp.series(gulp.parallel(() => {
         .pipe(gulp.dest('dist'));
 }));
 
-gulp.task('build', () => {
+gulp.task('browserify', () => {
     let license = fs.readFileSync('./LICENSE').toString();
     return browserify({
         entries: 'dist/app.js',
@@ -93,8 +93,9 @@ gulp.task('copy', () => {
       .pipe(gulp.dest('dist'))
 });
 
-gulp.task('default', gulp.parallel(
-    gulp.series('es6', 'build', 'min'), 
-    gulp.series('doc'), 
+gulp.task('build', gulp.parallel(
+    gulp.series('es6', 'browserify', 'min'),
     gulp.series('copy'))
 );
+
+gulp.task('default', gulp.parallel('build','doc'));
