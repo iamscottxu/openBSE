@@ -103,5 +103,6 @@ jobs:
           force: true
           branch: action_${{ env.TIME_STAMP }}
           directory: ${{ github.workspace }}/openBSE-docs
+          repository: iamscottxu/openBSE-docs
           github_token: ${{ secrets.GITHUB_TOKEN }}
       
