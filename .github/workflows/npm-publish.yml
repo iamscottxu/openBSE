@@ -89,7 +89,10 @@ jobs:
         run: cp -rf ./openBSE/* ./openBSE-docs/
       - name: Commit changes of openBSE-docs
         working-directory: ${{ github.workspace }}/openBSE-docs
-        run: git commit -a -m "Upload docs"
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "Publish Action"
+          git commit -a -m "Upload docs"
       - name: Get time stamp
         run: export DATE=$(date +"%s")
       - name: Push changes of openBSE-docs
