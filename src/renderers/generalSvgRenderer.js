@@ -5,7 +5,7 @@ import Helper from '../lib/helper'
 /**
  * SVG 渲染器类
  */
-export default class GeneralSvgRenderer extends GeneralBaseRenderer {
+class GeneralSvgRenderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 SVG 渲染器类
      * @param {object} element - Element 元素
@@ -325,4 +325,4 @@ export default class GeneralSvgRenderer extends GeneralBaseRenderer {
         }
     }
 }
-
+export default GeneralSvgRenderer

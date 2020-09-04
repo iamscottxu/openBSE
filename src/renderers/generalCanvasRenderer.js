@@ -4,7 +4,7 @@ import BrowserNotSupportError from '../errors/browserNotSupportError'
 /**
  * Canvas 渲染器类
  */
-export default class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
+class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
     /**
      * 实例化一个 Canvas 渲染器类
      * @param {object} element - Element 元素
@@ -69,4 +69,4 @@ export default class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
         }
     }
 }
-
+export default GeneralCanvasRenderer

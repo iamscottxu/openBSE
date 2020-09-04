@@ -5,7 +5,7 @@ import Resources from '../lib/resources'
 import * as build from '../build.json'
 import Interpreter from '../lib/JS-Interpreter/interpreter'
 
-export default class SpecialEngine {
+class SpecialEngine {
     constructor(element, options, renderMode = 'canvas') {
         //变量初始化
         /**
@@ -486,3 +486,5 @@ export default class SpecialEngine {
         );
     }
 }
+
+export default SpecialEngine

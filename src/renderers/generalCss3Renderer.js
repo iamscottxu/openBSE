@@ -5,7 +5,7 @@ import Helper from '../lib/helper';
 /**
  * CSS3 渲染器类
  */
-export default class GeneralCss3Renderer extends GeneralBaseRenderer {
+class GeneralCss3Renderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 CSS3 渲染器类
      * @param {object} element - Element 元素
@@ -193,4 +193,4 @@ export default class GeneralCss3Renderer extends GeneralBaseRenderer {
         }
     }
 }
-
+export default GeneralCss3Renderer

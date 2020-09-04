@@ -1,7 +1,7 @@
 /**
  * 双向链表类
  */
-export default class LinkedList {
+class LinkedList {
     /**
      * 创建一个双向链表。
      */
@@ -149,3 +149,4 @@ export default class LinkedList {
     }
 }
 
+export default LinkedList

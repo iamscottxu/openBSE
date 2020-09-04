@@ -4,7 +4,7 @@ import BrowserNotSupportError from '../errors/browserNotSupportError'
 /**
  * WebGL 渲染器类
  */
-export default class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
+class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
     /**
      * 实例化一个 WebGL 渲染器类
      * @param {object} element - Element 元素
@@ -222,4 +222,4 @@ export default class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
         }
     }
 }
-
+export default GeneralWebglRenderer

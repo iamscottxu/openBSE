@@ -1,7 +1,7 @@
 /**
  * 渲染器抽象类
  */
-export default class GeneralBaseRenderer {
+class GeneralBaseRenderer {
     /**
      * 实例化一个渲染器抽象类
      * @param {object} element - Element 元素
@@ -159,4 +159,4 @@ export default class GeneralBaseRenderer {
         }
     }
 }
-
+export default GeneralBaseRenderer

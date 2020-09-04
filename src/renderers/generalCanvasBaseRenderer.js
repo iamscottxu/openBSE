@@ -5,7 +5,7 @@ import Helper from '../lib/helper'
 /**
  * Canvas 渲染器抽象类
  */
-export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
+class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
     /**
      * 实例化一个 Canvas 渲染器抽象类
      * @param {object} element - Element 元素
@@ -261,4 +261,4 @@ export default class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
         }
     }
 }
-
+export default GeneralCanvasBaseRenderer

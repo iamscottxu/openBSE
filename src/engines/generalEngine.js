@@ -17,7 +17,7 @@ import * as build from '../build.json'
  * @throws {openBSE.BrowserNotSupportError} 浏览器不支持特定渲染模式时引发错误。
  * @throws {TypeError} 传入的参数错误时引发错误。请参阅 MDN [TypeError]{@link https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/TypeError} 。
  */
-export default class GeneralEngine {
+class GeneralEngine {
     /**
      * 创建一个弹幕引擎对象。
      * @param {Element} element - 要加载弹幕的元素：有关 Element 接口的信息请参阅MDN [Element]{@link https://developer.mozilla.org/zh-CN/docs/Web/API/Element} 。
@@ -707,3 +707,5 @@ export default class GeneralEngine {
         );
     }
 }
+
+export default GeneralEngine

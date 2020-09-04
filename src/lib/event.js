@@ -4,7 +4,7 @@ import Helper from './helper'
 /**
  * 事件模型类
  */
-export default class Event {
+class Event {
     /**
      * 创建一个新的事件模型。
      */
@@ -94,3 +94,4 @@ export default class Event {
     }
 }
 
+export default Event

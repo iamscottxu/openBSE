@@ -40,7 +40,7 @@ const RENDERERS = {
 /**
  * 渲染器工厂
  */
-export default class RenderersFactory {
+class RenderersFactory {
     /**
      * 实例化一个渲染器工厂
      * @param {object} element - Element 元素
@@ -80,4 +80,4 @@ export default class RenderersFactory {
         this.getSpecialRenderer = (renderMode) => this.getRenderer(renderMode, 'special');
     }
 }
-
+export default RenderersFactory

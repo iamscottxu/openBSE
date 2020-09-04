@@ -1,6 +1,6 @@
 import Helper from './helper'
 
-export default class TransformFunctionsInterpreter {
+class TransformFunctionsInterpreter {
     constructor() {
         const functionStartCharRegex = /^[_a-zA-Z]$/;
         const functionCharRegex = /^\w$/;
@@ -298,3 +298,5 @@ export default class TransformFunctionsInterpreter {
         }
     }
 }
+
+export default TransformFunctionsInterpreter

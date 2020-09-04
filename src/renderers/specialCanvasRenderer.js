@@ -7,7 +7,7 @@ import TransformFunctionsInterpreter from '../lib/transformFunctionsInterpreter'
 /**
  * Canvas 渲染器类
  */
-export default class SpecialCanvasRenderer extends SpecialBaseRenderer {
+class SpecialCanvasRenderer extends SpecialBaseRenderer {
     /**
      * 实例化一个 Canvas 渲染器类
      * @param {object} element - Element 元素
@@ -219,4 +219,4 @@ export default class SpecialCanvasRenderer extends SpecialBaseRenderer {
         }
     }
 }
-
+export default SpecialCanvasRenderer
