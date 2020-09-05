@@ -98,4 +98,12 @@ gulp.task('build', gulp.parallel(
     gulp.series('copy'))
 );
 
+gulp.task('changename', () => {
+    return gulp.src("./package.json")
+    .pipe(jeditor({
+        'name': "@iamscottxu/openbse"
+    }))
+    .pipe(gulp.dest('./'))
+});
+
 gulp.task('default', gulp.parallel('build','doc'));
