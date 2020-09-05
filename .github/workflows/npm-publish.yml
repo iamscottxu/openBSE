@@ -56,7 +56,9 @@ jobs:
       - name: Install node modules
         run: npm ci
       - name: Build code and docs
-        run: npm run default
+        run: |
+          gulp changename
+          npm run default
       - name: Publish to github.com
         run: npm publish
         env:
