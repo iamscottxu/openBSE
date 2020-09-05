@@ -1,7 +1,5 @@
 # openBSE
-[![Version 3.0](https://img.shields.io/badge/version-3.0-brightgreen.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/releases/tag/v3.0)
 [![NPM](https://img.shields.io/npm/v/openbse.svg?style=flat-square)](https://www.npmjs.com/package/openbse)
-[![NPM](https://img.shields.io/npm/v/bullet-screen-engine.svg?style=flat-square)](https://www.npmjs.com/package/bullet-screen-engine)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)
 [![Node.js Package](https://github.com/iamscottxu/openBSE/workflows/Node.js%20Package/badge.svg)](https://github.com/iamscottxu/openBSE/actions)
 
@@ -17,7 +15,7 @@ This is a high-performance JavaScript bullet-screen (danmaku) engine and it is v
 
 ## Installation and use
 ### Installation
-You can click [here](https://github.com/iamscottxu/openBSE/releases/tag/v3.0) to download latest release version. You also can install NPM package using following commands.
+You can click [here](https://github.com/iamscottxu/openBSE/releases) to download latest release version. You also can install NPM package using following commands.
 ```Bash
 > npm install openbse
 ```
