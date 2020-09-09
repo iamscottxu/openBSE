@@ -2,8 +2,8 @@ import LinkedList from '../lib/linkedList'
 import RenderersFactory from '../renderers/renderersFactory'
 import Helper from '../lib/helper'
 import Resources from '../lib/resources'
-import * as build from '../build.json'
 import Interpreter from '../lib/JS-Interpreter/interpreter'
+import { requestAnimationFrame, cancelAnimationFrame } from '../lib/requestAnimationFrame'
 
 class SpecialEngine {
     constructor(element, options, renderMode = 'canvas') {
@@ -43,6 +43,10 @@ class SpecialEngine {
          * @private @type {boolean}
          */
         let _playing;
+        /**
+         * requestAnimationFrame 句柄
+         */
+        let _requestAnimationFrameHandel = null;
         /**
          * 刷新频率
          * @private @type {number}
@@ -166,18 +170,6 @@ class SpecialEngine {
             transform: ['string', 'null']
         }
 
-        /**
-         * requestAnimationFrame 定义（一些老式浏览器不支持 requestAnimationFrame ）
-         * @param {function} fun - 回调方法 
-         * @function
-         */
-        let requestAnimationFrame;
-        if (typeof window.requestAnimationFrame === 'function') requestAnimationFrame = window.requestAnimationFrame;
-        else {
-            console.warn(Resources.REQUESTANIMATIONFRAME_NOT_SUPPORT_WARN);
-            requestAnimationFrame = (fun) => window.setTimeout(fun, 17); //60fps
-        }
-
         _options = Helper.setValues(options, _defaultOptions, _optionsType); //设置默认值
         //初始化
         let _elementSize = {
@@ -244,7 +236,7 @@ class SpecialEngine {
                     _startTime += _options.clock() - _pauseTime;
                 _lastRefreshTime = null;
                 _playing = true;
-                requestAnimationFrame(refresh);
+                _requestAnimationFrameHandel = requestAnimationFrame(refresh);
             }
         };
 
@@ -256,6 +248,7 @@ class SpecialEngine {
             if (_playing) {
                 _pauseTime = _options.clock();
                 _playing = false;
+                cancelAnimationFrame(_requestAnimationFrameHandel);
             }
         };
 
@@ -355,7 +348,7 @@ class SpecialEngine {
             moveRealTimeBulletScreen();
             _renderer.draw(); //绘制弹幕
             if (_playing)
-                requestAnimationFrame(refresh);
+                _requestAnimationFrameHandel = requestAnimationFrame(refresh);
         }
 
         /**
@@ -473,17 +466,6 @@ class SpecialEngine {
                 if (!_playing) _renderer.draw(); //非播放状态则重绘
             }
         }
-
-        //IE Edge 浏览器不支持 %c
-        if (!!window.ActiveXObject || "ActiveXObject" in window || navigator.userAgent.indexOf("Trident") > -1 ||
-            navigator.userAgent.indexOf("MSIE") > -1 || navigator.userAgent.indexOf("Edge") > -1) console.info(
-                Resources.LOADED_INFO_IE.fillData(build)
-            );
-        //Other
-        else console.info(
-            Resources.LOADED_INFO.fillData(build),
-            'font-weight:bold; color:#0099FF;', '', 'font-style:italic;', ''
-        );
     }
 }
 

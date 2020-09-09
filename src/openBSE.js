@@ -1,19 +1,11 @@
-import Helper from './lib/helper'
 import GeneralEngine from './engines/generalEngine'
 import SpecialEngine from './engines/specialEngine'
 import BrowserNotSupportError from './errors/browserNotSupportError'
 import GeneralType from './engines/generalType'
 import Contextmenu from './contextmenu'
-import * as build from './build.json'
+import { getVersion, printInfo } from './versionInfo'
 
-/**
- * 获取版本信息。
- * @alias openBSE.getVersion
- * @returns {openBSE~VersionInfo} 版本信息：一个 {@link openBSE~VersionInfo} 结构。
- */
-function getVersion() {
-    return Helper.clone(build);
-}
+printInfo();
 
 export { GeneralEngine, SpecialEngine, BrowserNotSupportError, GeneralType, Contextmenu, getVersion }
 
