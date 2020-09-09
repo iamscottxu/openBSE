@@ -1,14 +1,12 @@
 const gulp = require('gulp');
-const browserify = require('browserify');
+const bro = require('gulp-bro');
 const uglify = require('gulp-uglify');
-const source = require('vinyl-source-stream');
 const rename = require("gulp-rename");
 const header = require('gulp-header');
 const jsdoc = require('gulp-jsdoc3');
 const jeditor = require('gulp-json-editor');
 const fs = require('fs-extra');
 const sourcemaps = require('gulp-sourcemaps');
-const buffer = require('vinyl-buffer');
 const babel = require("gulp-babel");
 const eslint = require('gulp-eslint');
 const buildConfig = require('./build.json');
@@ -51,14 +49,12 @@ gulp.task('es6', gulp.series(gulp.parallel(() => {
 
 gulp.task('browserify', () => {
     let license = fs.readFileSync('./LICENSE').toString();
-    return browserify({
-        entries: 'dist/app.js',
-        debug: true
-    })
-        .require('./dist/openBSE.js', { expose: 'openbse' })
-        .bundle()
-        .pipe(source(`${buildConfig.name}.all.js`))
-        .pipe(buffer())
+    return gulp.src('dist/app.js')
+        .pipe(bro({
+            debug: true,
+            require: './openBSE.js'
+        }))
+        .pipe(rename(`${buildConfig.name}.all.js`))
         .pipe(sourcemaps.init({ loadMaps: true }))
         .pipe(header('/*!\n${license}\nHome: ${home}\n*/\n', { license: license, home: buildConfig.home }))
         .pipe(sourcemaps.write('./'))
