@@ -1,4 +1,5 @@
 !dist
 !docs
+debug
 .github
 _config.yml
