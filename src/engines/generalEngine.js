@@ -9,7 +9,7 @@ import { requestAnimationFrame, cancelAnimationFrame, performance_now } from '..
 /** 
  * 弹幕引擎对象类 
  * @alias openBSE.GeneralEngine
- * @property {openBSE~Options} options - 设置或获取全局选项。
+ * @property {openBSE~generalOptions} options - 设置或获取全局选项。
  * @property {bool} visibility - 获取或设置弹幕可见性。
  * @property {string} renderMode - 获取渲染模式。取值为“canvas”、“css3”、“webgl”或“svg”。
  * @property {bool} playState - 获取播放状态。true：正在播放；false：已暂停/停止播放。
