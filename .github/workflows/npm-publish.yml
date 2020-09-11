@@ -96,7 +96,7 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -a -m "Upload docs"
+          git commit -am "Upload docs"
       - name: Get time stamp
         run: echo ::set-env name=TIME_STAMP::$(date +"%s")
       - name: Push changes of openBSE-docs
