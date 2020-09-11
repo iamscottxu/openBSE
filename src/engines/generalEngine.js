@@ -4,7 +4,7 @@ import RenderersFactory from '../renderers/renderersFactory'
 import GeneralType from './generalType'
 import Helper from '../lib/helper'
 import Resources from '../lib/resources'
-import { requestAnimationFrame, cancelAnimationFrame } from '../lib/requestAnimationFrame'
+import { requestAnimationFrame, cancelAnimationFrame, performance_now } from '../lib/requestAnimationFrame'
 
 /** 
  * 弹幕引擎对象类 
@@ -90,7 +90,7 @@ class GeneralEngine {
             /** 播放速度(倍数) */
             playSpeed: 1,
             /** 时间基准 */
-            clock: time => new Date().getTime() - _startTime,
+            clock: time => performance_now() - _startTime,
             /** 缩放比例 */
             scaling: 1,
             /** 超时丢弃 */
@@ -303,7 +303,7 @@ class GeneralEngine {
         this.play = function () {
             if (!_playing) {
                 if (!_startTime)
-                    _startTime = new Date().getTime();
+                    _startTime = performance_now();
                 if (_pauseTime)
                     _startTime += _options.clock() - _pauseTime;
                 _lastRefreshTime = null;
@@ -471,8 +471,8 @@ class GeneralEngine {
          * 刷新弹幕函数
          * @private
          */
-        function refresh() {
-            let nowTime = new Date().getTime();
+        function refresh(timestamp) {
+            let nowTime = timestamp;
             if (_lastRefreshTime != null)
                 _refreshRate = 1 / (nowTime - _lastRefreshTime);
             _lastRefreshTime = nowTime;
