@@ -92,6 +92,7 @@ jobs:
       - name: Get timestamp
         run: echo ::set-env name=TIMESTAMP::$(date +"%s")
       - name: Create and checkout new branch
+        working-directory: ${{ github.workspace }}/openBSE-docs
         run: |
           git branch action_${{ env.TIMESTAMP }}
           git checkout action_${{ env.TIMESTAMP }}
