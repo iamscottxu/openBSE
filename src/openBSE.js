@@ -15,7 +15,7 @@ export { GeneralEngine, SpecialEngine, BrowserNotSupportError, GeneralType, Cont
  * @description Option 结构用于存放全局选项。
  * @property {number} [verticalInterval=8] - 弹幕垂直行间距
  * @property {number} [playSpeed=1] - 弹幕播放速度（倍数）
- * @property {openBSE~clockCallback} [clock=time => new Date().getTime() - startTime] - 时间基准：此时间基准可指向一个方法用于获取播放器当前进度，这个方法返回值即为播放进度（单位：毫秒）。
+ * @property {openBSE~clockCallback} [clock=time => performance.now() - startTime] - 时间基准：此时间基准可指向一个方法用于获取播放器当前进度，这个方法返回值即为播放进度（单位：毫秒）。
  * @property {number} [scaling=1] 弹幕缩放比例（倍数）
  * @property {openBSE~GeneralBulletScreenStyle} [defaultStyle] 默认弹幕样式：一个 {@link openBSE~GeneralBulletScreenStyle} 结构。
  * @property {openBSE.GeneralType} [hiddenTypes=0] 隐藏的弹幕类型：一个 {@link openBSE.GeneralType} 枚举。将要隐藏的弹幕类型相加，0为不隐藏任何类型的弹幕。
