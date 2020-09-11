@@ -89,13 +89,6 @@ jobs:
           path: ${{ github.workspace }}/openBSE-docs
           persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal token
           fetch-depth: 0 # otherwise, you will failed to push refs to dest repo: 
-      - name: Get timestamp
-        run: echo ::set-env name=TIMESTAMP::$(date +"%s")
-      - name: Create and checkout new branch
-        working-directory: ${{ github.workspace }}/openBSE-docs
-        run: |
-          git branch action_${{ env.TIMESTAMP }}
-          git checkout action_${{ env.TIMESTAMP }}
       - name: Copy new docs to openBSE-docs
         run: cp -rf ./openBSE/docs/* ./openBSE-docs/
       - name: Commit changes of openBSE-docs
@@ -103,7 +96,10 @@ jobs:
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
-          git commit -am "Upload docs"
+          git add -A
+          git commit -m "Upload docs"
+      - name: Get timestamp
+        run: echo ::set-env name=TIMESTAMP::$(date +"%s")
       - name: Push changes of openBSE-docs
         uses: ad-m/github-push-action@master
         with:
