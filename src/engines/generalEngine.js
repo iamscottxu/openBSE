@@ -478,7 +478,7 @@ class GeneralEngine {
             _lastRefreshTime = nowTime;
             addRealTimeBulletScreens();
             moveRealTimeBulletScreen();
-            _renderer.draw(); //绘制弹幕
+            if (_renderer.getVisibility()) _renderer.draw(); //绘制弹幕(隐藏状态不绘制)
             if (_playing)
                 _requestAnimationFrameHandel = requestAnimationFrame(refresh);
         }
