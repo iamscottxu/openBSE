@@ -367,7 +367,7 @@ class GeneralEngine {
          */
         Object.defineProperty(this, 'visibility', {
             get: function () {
-                return renderer.getVisibility();
+                return _renderer.getVisibility();
             },
             set: function (visibility) {
                 if (visibility) _renderer.show();
