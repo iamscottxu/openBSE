@@ -38,7 +38,7 @@ class GeneralCss3Renderer extends GeneralBaseRenderer {
                     bulletScreenDiv.style.visibility = 'hidden';
                     continue;
                 }
-                bulletScreenDiv.style.visibility = 'visible';
+                bulletScreenDiv.style.visibility = 'inherit';
                 bulletScreenDiv.style.transform =
                     bulletScreenDiv.style.webkitTransform =
                     bulletScreenDiv.style.msTransform =
