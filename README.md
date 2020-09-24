@@ -2,6 +2,7 @@
 [![NPM](https://img.shields.io/npm/v/openbse.svg?style=flat-square)](https://www.npmjs.com/package/openbse)
 [![MIT](https://img.shields.io/github/license/mashape/apistatus.svg?style=flat-square)](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)
 [![Node.js Package](https://img.shields.io/github/workflow/status/iamscottxu/openBSE/Node.js%20Package?label=Node.js%20Package&logo=github&style=flat-square)](https://github.com/iamscottxu/openBSE/actions?query=workflow%3A%22Node.js+Package%22)
+
 [English Version](https://github.com/iamscottxu/openBSE/blob/master/README.en.md) |
 [wiki](https://github.com/iamscottxu/openBSE/wiki) |
 [Demo](https://scott-xu.gitee.io/openbse-demo/openBSEDemo.html) |
