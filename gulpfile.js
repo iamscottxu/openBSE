@@ -10,10 +10,11 @@ const sourcemaps = require('gulp-sourcemaps');
 const babel = require("gulp-babel");
 const eslint = require('gulp-eslint');
 const buildConfig = require('./build.json');
+const packageConfig = require('./package.json');
 
 gulp.task('doc', (cb) => {
     let config = require('./jsdoc.json');
-    config.opts.destination = `./docs/${buildConfig.version}`;
+    config.opts.destination = `./docs/${/^[0-9]*.[0-9]*/.exec(packageConfig.version)}`;
     gulp.src(['README.md', 'src/**/*.js', '!src/lib/**/*', '!src/renderers/**/*'], { read: false })
         .pipe(jsdoc(config, cb));
 });
@@ -21,7 +22,8 @@ gulp.task('doc', (cb) => {
 gulp.task('es6', gulp.series(gulp.parallel(() => {
     return gulp.src("./build.json")
     .pipe(jeditor({
-        'buildDate': new Date().toUTCString()
+        'buildDate': new Date().toUTCString(),
+        'version': packageConfig.version
     }))
     .pipe(gulp.dest('dist'))
 }, () => {
