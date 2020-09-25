@@ -17,7 +17,7 @@ This is a high-performance JavaScript bullet-screen (danmaku) engine and it is v
 
 ## Installation and use
 ### Installation
-You can click [here](https://github.com/iamscottxu/openBSE/releases) to download latest release version. You also can install NPM package using following commands.
+You can click [here](https://github.com/iamscottxu/openBSE/packages/386123) to download latest release version. You also can install NPM package using following commands.
 ```Bash
 > npm install openbse
 ```

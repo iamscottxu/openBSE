@@ -17,7 +17,7 @@
 
 ## 安装和使用
 ### 安装
-你可以直接点击[这里](https://github.com/iamscottxu/openBSE/releases)下载最新发行版本，也可以用以下命令安装NPM包。
+你可以直接点击[这里](https://github.com/iamscottxu/openBSE/packages/386123)下载最新发行版本，也可以用以下命令安装NPM包。
 ```Bash
 > npm install openbse
 ```
