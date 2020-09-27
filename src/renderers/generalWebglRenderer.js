@@ -1,5 +1,7 @@
 import GeneralCanvasBaseRenderer from './generalCanvasBaseRenderer'
 import BrowserNotSupportError from '../errors/browserNotSupportError'
+import VertexShaderSource  from './glsl/generalVertexShader'
+import FragmentShaderSource from './glsl/generalFragmentShader'
 
 /**
  * WebGL 渲染器类
@@ -147,37 +149,13 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
                 }
                 gl.deleteProgram(program);
             };
-            //顶点着色器代码
-            let vertexShaderSource = 'attribute vec2 a_position;';
-            vertexShaderSource += 'attribute vec2 a_texcoord;';
-            vertexShaderSource += 'uniform vec2 u_resolution;';
-            vertexShaderSource += 'varying vec2 v_texcoord;';
-            vertexShaderSource += 'void main() {';
-            // 从像素坐标转换到 0.0 到 1.0
-            vertexShaderSource += 'vec2 zeroToOne = a_position / u_resolution;';
-            // 再把 0->1 转换 0->2
-            vertexShaderSource += 'vec2 zeroToTwo = zeroToOne * 2.0;';
-            // 把 0->2 转换到 -1->+1 (裁剪空间)
-            vertexShaderSource += 'vec2 clipSpace = zeroToTwo - 1.0;';
-            vertexShaderSource += 'gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);';
-            // 传递纹理坐标到片断着色器
-            vertexShaderSource += 'v_texcoord = a_texcoord;';
-            vertexShaderSource += '}';
-            //片段着色器代码
-            let fragmentShaderSource = 'precision mediump float;';
-            // 从顶点着色器中传入的值
-            fragmentShaderSource += 'varying vec2 v_texcoord;';
-            // 纹理
-            fragmentShaderSource += 'uniform sampler2D u_texture;';
-            fragmentShaderSource += 'void main() {';
-            fragmentShaderSource += 'gl_FragColor = texture2D(u_texture, v_texcoord);';
-            fragmentShaderSource += '}';
+            
             _webglContext = _canvas.getContext('webgl');
             _webglContext.enable(_webglContext.BLEND); //开启混合功能
             _webglContext.clearColor(0, 0, 0, 0); //设置清除颜色
             _webglContext.blendFunc(_webglContext.SRC_ALPHA, _webglContext.ONE_MINUS_SRC_ALPHA);
-            let vertexShader = createShader(_webglContext, _webglContext.VERTEX_SHADER, vertexShaderSource); //创建顶点着色器
-            let fragmentShader = createShader(_webglContext, _webglContext.FRAGMENT_SHADER, fragmentShaderSource); //创建片段着色器
+            let vertexShader = createShader(_webglContext, _webglContext.VERTEX_SHADER, VertexShaderSource); //创建顶点着色器
+            let fragmentShader = createShader(_webglContext, _webglContext.FRAGMENT_SHADER, FragmentShaderSource); //创建片段着色器
             let program = createProgram(_webglContext, vertexShader, fragmentShader); //创建着色程序
             _webglContext.useProgram(program);
             _positionAttributeLocation = _webglContext.getAttribLocation(program, 'a_position');
