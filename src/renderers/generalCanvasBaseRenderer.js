@@ -1,5 +1,5 @@
 import GeneralBaseRenderer from './generalBaseRenderer'
-import LinkedList from '../lib/linkedList'
+import LinkedList from '@magic-power-research/linked-list-js'
 import Helper from '../lib/helper'
 
 /**

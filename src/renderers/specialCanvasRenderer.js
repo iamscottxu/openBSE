@@ -1,6 +1,6 @@
 import SpecialBaseRenderer from './specialBaseRenderer'
 import BrowserNotSupportError from '../errors/browserNotSupportError'
-import LinkedList from '../lib/linkedList'
+import LinkedList from '@magic-power-research/linked-list-js'
 import Helper from '../lib/helper';
 import TransformFunctionsInterpreter from '../lib/transformFunctionsInterpreter'
 

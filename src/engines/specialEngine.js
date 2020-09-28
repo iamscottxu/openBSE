@@ -1,4 +1,4 @@
-import LinkedList from '../lib/linkedList'
+import LinkedList from '@magic-power-research/linked-list-js'
 import RenderersFactory from '../renderers/renderersFactory'
 import Helper from '../lib/helper'
 import Resources from '../lib/resources'

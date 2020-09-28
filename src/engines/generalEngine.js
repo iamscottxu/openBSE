@@ -1,4 +1,4 @@
-import LinkedList from '../lib/linkedList'
+import LinkedList from '@magic-power-research/linked-list-js'
 import Event from '../lib/event'
 import RenderersFactory from '../renderers/renderersFactory'
 import GeneralType from './generalType'
