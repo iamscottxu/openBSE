@@ -1,6 +1,6 @@
 import GeneralCanvasBaseRenderer from './generalCanvasBaseRenderer'
 import BrowserNotSupportError from '../errors/browserNotSupportError'
-import VertexShaderSource  from './glsl/generalVertexShader'
+import VertexShaderSource from './glsl/generalVertexShader'
 import FragmentShaderSource from './glsl/generalFragmentShader'
 
 /**
@@ -28,7 +28,6 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
          * @private @type {object}
          */
         let _webglContext;
-        let _positionAttributeLocation;
         let _resolutionUniformLocation;
         let _scleUniformLocation;
         /**
@@ -63,27 +62,16 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
                 let x2 = x1 + realTimeBulletScreen.width + 8;
                 let y1 = realTimeBulletScreen.actualY - 4;
                 let y2 = y1 + realTimeBulletScreen.height + 8;
-                //绑定纹理
-                _webglContext.bindTexture(_webglContext.TEXTURE_2D, realTimeBulletScreen.texture2D);
-                //绑定范围
-                let positionBuffer = _webglContext.createBuffer();
-                // 将绑定点绑定到缓冲数据（positionBuffer）
-                _webglContext.bindBuffer(_webglContext.ARRAY_BUFFER, positionBuffer);
-                _webglContext.enableVertexAttribArray(_positionAttributeLocation);
-                // 告诉属性怎么从positionBuffer中读取数据 (ARRAY_BUFFER)
-                _webglContext.vertexAttribPointer(_positionAttributeLocation, 2, //size 每次迭代运行提取两个单位数据
-                    _webglContext.FLOAT, //type 每个单位的数据类型是32位浮点型
-                    false, //normalize 不需要归一化数据
-                    0, //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
-                    // 每次迭代运行运动多少内存到下一个数据开始点
-                    0 //offset 从缓冲起始位置开始读取
-                );
+
                 _webglContext.bufferData(_webglContext.ARRAY_BUFFER, new Float32Array([x1, y1,
                     x2, y1,
                     x1, y2,
                     x1, y2,
                     x2, y1,
                     x2, y2]), _webglContext.STATIC_DRAW);
+
+                //绑定纹理
+                _webglContext.bindTexture(_webglContext.TEXTURE_2D, realTimeBulletScreen.texture2D);
                 //绘制
                 _webglContext.drawArrays(_webglContext.TRIANGLES, //primitiveType
                     0, //offset
@@ -108,6 +96,7 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
             _webglContext.texParameteri(_webglContext.TEXTURE_2D, _webglContext.TEXTURE_WRAP_S, _webglContext.CLAMP_TO_EDGE);
             _webglContext.texParameteri(_webglContext.TEXTURE_2D, _webglContext.TEXTURE_WRAP_T, _webglContext.CLAMP_TO_EDGE);
             _webglContext.texImage2D(_webglContext.TEXTURE_2D, 0, _webglContext.RGBA, _webglContext.RGBA, _webglContext.UNSIGNED_BYTE, realTimeBulletScreen.hideCanvas);
+            realTimeBulletScreen.hideCanvas = null;
             realTimeBulletScreen.texture2D = texture;
         }
 
@@ -154,39 +143,61 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
                 gl.deleteProgram(program);
                 return null;
             };
-            
+
             _webglContext = _canvas.getContext('webgl');
             _webglContext.enable(_webglContext.BLEND); //开启混合功能
             _webglContext.clearColor(0, 0, 0, 0); //设置清除颜色
             _webglContext.pixelStorei(_webglContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
             _webglContext.blendFunc(_webglContext.ONE, _webglContext.ONE_MINUS_SRC_ALPHA);
-            let program = createAndUseProgram(_webglContext, VertexShaderSource, FragmentShaderSource); //创建着色程序
-            _positionAttributeLocation = _webglContext.getAttribLocation(program, 'a_position');
-            let texcoordAttributeLocation = _webglContext.getAttribLocation(program, 'a_texcoord');
-            _resolutionUniformLocation = _webglContext.getUniformLocation(program, 'u_resolution');
-            _scleUniformLocation = _webglContext.getUniformLocation(program, 'u_scale');
             _webglContext.viewport(0, 0, _canvas.width, _canvas.height);
-            _webglContext.uniform2f(_resolutionUniformLocation, _canvas.width, _canvas.height); // 设置全局变量 分辨率
-            _webglContext.uniform1f(_scleUniformLocation, this.getScale()); //设置缩放比例
-            //绑定范围
-            let texcoordBuffer = _webglContext.createBuffer();
-            // 将绑定点绑定到缓冲数据（texcoordBuffer）
-            _webglContext.bindBuffer(_webglContext.ARRAY_BUFFER, texcoordBuffer);
-            _webglContext.enableVertexAttribArray(texcoordAttributeLocation);
-            // 以浮点型格式传递纹理坐标
-            _webglContext.vertexAttribPointer(texcoordAttributeLocation, 2, //size 每次迭代运行提取两个单位数据
-                _webglContext.FLOAT, //type 每个单位的数据类型是32位浮点型
-                false, //normalize 不需要归一化数据 
-                0, //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
-                // 每次迭代运行运动多少内存到下一个数据开始点
-                0 //offset 从缓冲起始位置开始读取
-            );
-            _webglContext.bufferData(_webglContext.ARRAY_BUFFER, new Float32Array([0, 0,
-                1, 0,
-                0, 1,
-                0, 1,
-                1, 0,
-                1, 1]), _webglContext.STATIC_DRAW);
+
+            let program = createAndUseProgram(_webglContext, VertexShaderSource, FragmentShaderSource); //创建着色程序
+            {
+                _resolutionUniformLocation = _webglContext.getUniformLocation(program, 'u_resolution');
+                _webglContext.uniform2f(_resolutionUniformLocation, _canvas.width, _canvas.height); // 设置全局变量 分辨率
+            }
+            {
+                _scleUniformLocation = _webglContext.getUniformLocation(program, 'u_scale');
+                _webglContext.uniform1f(_scleUniformLocation, this.getScale()); //设置缩放比例
+            }
+            {
+                //绑定范围
+                let positionBuffer = _webglContext.createBuffer();
+                // 将绑定点绑定到缓冲数据（positionBuffer）
+                _webglContext.bindBuffer(_webglContext.ARRAY_BUFFER, positionBuffer);
+                let texcoordAttributeLocation = _webglContext.getAttribLocation(program, 'a_texcoord');
+                _webglContext.enableVertexAttribArray(texcoordAttributeLocation);
+                // 以浮点型格式传递纹理坐标
+                _webglContext.vertexAttribPointer(texcoordAttributeLocation, 2, //size 每次迭代运行提取两个单位数据
+                    _webglContext.FLOAT, //type 每个单位的数据类型是32位浮点型
+                    false, //normalize 不需要归一化数据 
+                    0, //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
+                    // 每次迭代运行运动多少内存到下一个数据开始点
+                    0 //offset 从缓冲起始位置开始读取
+                );
+                _webglContext.bufferData(_webglContext.ARRAY_BUFFER, new Float32Array([0, 0,
+                    1, 0,
+                    0, 1,
+                    0, 1,
+                    1, 0,
+                    1, 1]), _webglContext.STATIC_DRAW);
+            }
+            {
+                //绑定范围
+                let positionBuffer = _webglContext.createBuffer();
+                // 将绑定点绑定到缓冲数据（positionBuffer）
+                _webglContext.bindBuffer(_webglContext.ARRAY_BUFFER, positionBuffer);
+                let positionAttributeLocation = _webglContext.getAttribLocation(program, 'a_position');
+                _webglContext.enableVertexAttribArray(positionAttributeLocation);
+                // 告诉属性怎么从positionBuffer中读取数据 (ARRAY_BUFFER)
+                _webglContext.vertexAttribPointer(positionAttributeLocation, 2, //size 每次迭代运行提取两个单位数据
+                    _webglContext.FLOAT, //type 每个单位的数据类型是32位浮点型
+                    false, //normalize 不需要归一化数据
+                    0, //stride 0 = 移动单位数量 * 每个单位占用内存（sizeof(type)）
+                    // 每次迭代运行运动多少内存到下一个数据开始点
+                    0 //offset 从缓冲起始位置开始读取
+                );
+            }
         }
 
         /**
