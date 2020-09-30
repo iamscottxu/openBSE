@@ -30,12 +30,13 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
         let _webglContext;
         let _positionAttributeLocation;
         let _resolutionUniformLocation;
+        let _scleUniformLocation;
         /**
          * Canvas 元素
          * @private @type {object}
          */
         let _canvas = this.getCanvas();
-        init();
+        init.call(this);
 
         let _cleanScreen = this.cleanScreen;
         /**
@@ -52,17 +53,16 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
          * @override
          */
         this.draw = function () {
-            let devicePixelRatio = this.getDevicePixelRatio();
             // 清空画布
             _webglContext.clear(_webglContext.COLOR_BUFFER_BIT);
             _bulletScreensOnScreen.forEach((node) => {
                 let realTimeBulletScreen = node.element;
                 if (this.checkWhetherHide(realTimeBulletScreen)) return;
                 // 四个顶点坐标
-                let x1 = (realTimeBulletScreen.x - 4) * devicePixelRatio;
-                let x2 = x1 + (realTimeBulletScreen.width + 8) * devicePixelRatio;
-                let y1 = (realTimeBulletScreen.actualY - 4) * devicePixelRatio;
-                let y2 = y1 + (realTimeBulletScreen.height + 8) * devicePixelRatio;
+                let x1 = realTimeBulletScreen.x - 4;
+                let x2 = x1 + realTimeBulletScreen.width + 8;
+                let y1 = realTimeBulletScreen.actualY - 4;
+                let y2 = y1 + realTimeBulletScreen.height + 8;
                 //绑定纹理
                 _webglContext.bindTexture(_webglContext.TEXTURE_2D, realTimeBulletScreen.texture2D);
                 //绑定范围
@@ -120,6 +120,7 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
             _setSize();
             _webglContext.viewport(0, 0, _canvas.width, _canvas.height);
             _webglContext.uniform2f(_resolutionUniformLocation, _canvas.width, _canvas.height); // 设置全局变量 分辨率
+            _webglContext.uniform1f(_scleUniformLocation, this.getScale()); //设置缩放比例
         }
 
         /**
@@ -138,31 +139,35 @@ class GeneralWebglRenderer extends GeneralCanvasBaseRenderer {
                 gl.deleteShader(shader);
             };
             // 创建着色程序，输入参数：渲染上下文，顶点着色器，片段着色器
-            let createProgram = function (gl, vertexShader, fragmentShader) {
+            let createAndUseProgram = function (gl, VertexShaderSource, FragmentShaderSource) {
+                let vertexShader = createShader(gl, gl.VERTEX_SHADER, VertexShaderSource); //创建顶点着色器
+                let fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, FragmentShaderSource); //创建片段着色器
                 let program = gl.createProgram();
                 gl.attachShader(program, vertexShader);
                 gl.attachShader(program, fragmentShader);
                 gl.linkProgram(program);
                 let success = gl.getProgramParameter(program, gl.LINK_STATUS);
                 if (success) {
+                    gl.useProgram(program);
                     return program;
                 }
                 gl.deleteProgram(program);
+                return null;
             };
             
             _webglContext = _canvas.getContext('webgl');
             _webglContext.enable(_webglContext.BLEND); //开启混合功能
             _webglContext.clearColor(0, 0, 0, 0); //设置清除颜色
-            _webglContext.blendFunc(_webglContext.SRC_ALPHA, _webglContext.ONE_MINUS_SRC_ALPHA);
-            let vertexShader = createShader(_webglContext, _webglContext.VERTEX_SHADER, VertexShaderSource); //创建顶点着色器
-            let fragmentShader = createShader(_webglContext, _webglContext.FRAGMENT_SHADER, FragmentShaderSource); //创建片段着色器
-            let program = createProgram(_webglContext, vertexShader, fragmentShader); //创建着色程序
-            _webglContext.useProgram(program);
+            _webglContext.pixelStorei(_webglContext.UNPACK_PREMULTIPLY_ALPHA_WEBGL, true);
+            _webglContext.blendFunc(_webglContext.ONE, _webglContext.ONE_MINUS_SRC_ALPHA);
+            let program = createAndUseProgram(_webglContext, VertexShaderSource, FragmentShaderSource); //创建着色程序
             _positionAttributeLocation = _webglContext.getAttribLocation(program, 'a_position');
             let texcoordAttributeLocation = _webglContext.getAttribLocation(program, 'a_texcoord');
             _resolutionUniformLocation = _webglContext.getUniformLocation(program, 'u_resolution');
+            _scleUniformLocation = _webglContext.getUniformLocation(program, 'u_scale');
             _webglContext.viewport(0, 0, _canvas.width, _canvas.height);
             _webglContext.uniform2f(_resolutionUniformLocation, _canvas.width, _canvas.height); // 设置全局变量 分辨率
+            _webglContext.uniform1f(_scleUniformLocation, this.getScale()); //设置缩放比例
             //绑定范围
             let texcoordBuffer = _webglContext.createBuffer();
             // 将绑定点绑定到缓冲数据（texcoordBuffer）

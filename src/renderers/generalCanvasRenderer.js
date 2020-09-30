@@ -16,7 +16,6 @@ class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
     constructor(element, options, elementSize, eventTrigger) {
         supportCheck(); //浏览器支持检测
         super(element, options, elementSize, eventTrigger);
-
         /**
          * 屏幕上的弹幕
          * @private @type {LinkedList}
@@ -24,14 +23,37 @@ class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
         let _bulletScreensOnScreen = this.getBulletScreensOnScreen();
 
         let _cleanScreen = this.cleanScreen;
+
+        /**
+         * canvas 上下文
+         * @private @type {object}
+         */
+        let _canvasContext;
+        /**
+         * Canvas 元素
+         * @private @type {object}
+         */
+        let _canvas = this.getCanvas();
+        init.call(this);
+
         /**
          * 清除屏幕内容
          * @override
          */
         this.cleanScreen = function () {
             _cleanScreen();
-            let canvas = this.getCanvas();
-            canvas.getContext('2d').clearRect(0, 0, canvas.width, canvas.height);
+            _canvasContext.clearRect(0, 0, _canvas.width, _canvas.height);
+        }
+
+        let _setSize = this.setSize;
+        /**
+         * 设置尺寸
+         * @override
+         */
+        this.setSize = function () {
+            _setSize();
+            let scale = this.getScale();
+            _canvasContext.scale(scale, scale);
         }
 
         /**
@@ -39,20 +61,26 @@ class GeneralCanvasRenderer extends GeneralCanvasBaseRenderer {
          * @override
          */
         this.draw = function () {
-            let canvas = this.getCanvas();
-            let devicePixelRatio = this.getDevicePixelRatio();
-            let canvasContext = canvas.getContext('2d');
-            canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+            _canvasContext.clearRect(0, 0, _canvas.width, _canvas.height);
             _bulletScreensOnScreen.forEach((node) => {
                 let realTimeBulletScreen = node.element;
                 if (this.checkWhetherHide(realTimeBulletScreen)) return;
-                canvasContext.drawImage(realTimeBulletScreen.hideCanvas, 
-                    ((realTimeBulletScreen.x - 4) * devicePixelRatio).toFixed(1), 
-                    ((realTimeBulletScreen.actualY - 4) * devicePixelRatio).toFixed(1), 
-                    ((realTimeBulletScreen.width + 8) * devicePixelRatio).toFixed(1), 
-                    ((realTimeBulletScreen.height + 8) * devicePixelRatio).toFixed(1)
+                _canvasContext.drawImage(realTimeBulletScreen.hideCanvas, 
+                    (realTimeBulletScreen.x - 4).toFixed(1), 
+                    (realTimeBulletScreen.actualY - 4).toFixed(1), 
+                    (realTimeBulletScreen.width + 8).toFixed(1), 
+                    (realTimeBulletScreen.height + 8).toFixed(1)
                 );
             }, true);
+        }
+
+        /**
+         * 初始化
+         */
+        function init() {
+            _canvasContext = _canvas.getContext('2d');
+            let scale = this.getScale();
+            _canvasContext.scale(scale, scale);
         }
 
         /**

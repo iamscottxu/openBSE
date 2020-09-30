@@ -26,8 +26,8 @@ class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
          * DPI 缩放比例（倍数）
          * @private @type {number}
          */
-        let _devicePixelRatio = Helper.getDevicePixelRatio(true);
-        _devicePixelRatio *= options.scaling;
+        let _scale = Helper.getDevicePixelRatio(true);
+        _scale *= options.scaling;
         /**
          * 画布元素
          * @private @type {Element}
@@ -55,29 +55,29 @@ class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
             hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${realTimeBulletScreen.size}px ${bulletScreen.style.fontFamily}`;
             realTimeBulletScreen.width = hideCanvasContext.measureText(bulletScreen.text).width; //弹幕的宽度：像素
 
-            hideCanvas.width = (realTimeBulletScreen.width + 8) * _devicePixelRatio;
-            hideCanvas.height = (realTimeBulletScreen.height + 8) * _devicePixelRatio;
+            hideCanvas.width = (realTimeBulletScreen.width + 8) * _scale;
+            hideCanvas.height = (realTimeBulletScreen.height + 8) * _scale;
 
             hideCanvasContext.shadowColor = 'black';
-            hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${realTimeBulletScreen.size * _devicePixelRatio}px ${bulletScreen.style.fontFamily}`;
-            let textX = 4 * _devicePixelRatio;
-            let textY = (4 + realTimeBulletScreen.size * 0.8) * _devicePixelRatio;
+            hideCanvasContext.font = `${bulletScreen.style.fontWeight} ${realTimeBulletScreen.size * _scale}px ${bulletScreen.style.fontFamily}`;
+            let textX = 4 * _scale;
+            let textY = (4 + realTimeBulletScreen.size * 0.8) * _scale;
             if (bulletScreen.style.color != null) {
-                hideCanvasContext.shadowBlur = (bulletScreen.style.shadowBlur + 0.5) * _devicePixelRatio;
+                hideCanvasContext.shadowBlur = (bulletScreen.style.shadowBlur + 0.5) * _scale;
                 hideCanvasContext.fillStyle = bulletScreen.style.color;
                 hideCanvasContext.fillText(bulletScreen.text, textX, textY);
             }
             if (bulletScreen.style.borderColor != null) {
                 hideCanvasContext.shadowBlur = 0;
-                hideCanvasContext.lineWidth = 0.5 * _devicePixelRatio;
+                hideCanvasContext.lineWidth = 0.5 * _scale;
                 hideCanvasContext.strokeStyle = bulletScreen.style.borderColor;
                 hideCanvasContext.strokeText(bulletScreen.text, textX, textY);
             }
             if (bulletScreen.style.boxColor != null) {
                 hideCanvasContext.shadowBlur = 0;
-                hideCanvasContext.lineWidth = _devicePixelRatio;
+                hideCanvasContext.lineWidth = _scale;
                 hideCanvasContext.strokeStyle = bulletScreen.style.boxColor;
-                hideCanvasContext.strokeRect(_devicePixelRatio, _devicePixelRatio, hideCanvas.width - _devicePixelRatio, hideCanvas.height - _devicePixelRatio);
+                hideCanvasContext.strokeRect(_scale, _scale, hideCanvas.width - _scale, hideCanvas.height - _scale);
             }
             realTimeBulletScreen.hideCanvas = hideCanvas;
 
@@ -117,17 +117,17 @@ class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
          */
         this.setSize = function () {
             _setSize();
-            _devicePixelRatio = Helper.getDevicePixelRatio();
-            _devicePixelRatio *= options.scaling;
-            _canvas.width = elementSize.width * _devicePixelRatio;
-            _canvas.height = elementSize.height * _devicePixelRatio;
+            _scale = Helper.getDevicePixelRatio();
+            _scale *= options.scaling;
+            _canvas.width = elementSize.width * _scale;
+            _canvas.height = elementSize.height * _scale;
         }
 
         /**
          * 获取缩放比例
          * @returns {number} 缩放比例
          */
-        this.getDevicePixelRatio = () => _devicePixelRatio;
+        this.getScale = () => _scale;
 
         /**
          * 获取画布对象
@@ -150,8 +150,8 @@ class GeneralCanvasBaseRenderer extends GeneralBaseRenderer {
             let canvas = document.createElement('canvas'); //canvas对象
             Helper.cleanElement(element);
             element.appendChild(canvas);
-            canvas.width = elementSize.width * _devicePixelRatio;
-            canvas.height = elementSize.height * _devicePixelRatio;
+            canvas.width = elementSize.width * _scale;
+            canvas.height = elementSize.height * _scale;
             registerEvent(canvas); //注册事件响应程序
             return canvas;
         }
