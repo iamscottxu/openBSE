@@ -21,6 +21,11 @@ window.stats = function (statsTitle, min, max, color, container) {
 
     var statsGraph;
     var statsText;
+    var getDevicePixelRatio = function() {
+        if (typeof window.devicePixelRatio === 'number') return window.devicePixelRatio;
+        if (typeof window.screen.deviceXDPI === 'number' && typeof window.screen.logicalXDPI === 'number') return screen.deviceXDPI / screen.logicalXDPI;
+        return 1;
+    }
     var load = function () {
         while(statsDiv.hasChildNodes()) statsDiv.removeChild(statsDiv.firstChild);
         statsText = document.createElement('div');
@@ -28,30 +33,39 @@ window.stats = function (statsTitle, min, max, color, container) {
         statsText.innerHTML = statsTitle;
         statsDiv.appendChild(statsText);
 
-        statsGraph = document.createElement('div');
+        statsGraph = document.createElement('canvas');
         statsGraph.style.cssText = 'position:relative;width:' + GRAPH_WIDTH + 'px;height:' + GRAPH_HEIGHT + 'px;background-color:' + COLOR;
         statsDiv.appendChild(statsGraph);
-
-        while (statsGraph.children.length < GRAPH_WIDTH) {
-
-            var bar = document.createElement('span');
-            bar.style.cssText = 'top:0;left:' + statsGraph.children.length + 'px;position:absolute;width:1px;height:' + GRAPH_HEIGHT + 'px;background-color:rgba(0, 0, 0, 0.7)';
-            statsGraph.appendChild(bar);
-
-        }
     }
     load();
 
     var redrawGraph = function (dom) {
-        var _length = GRAPH_WIDTH - values.length;
-        [].forEach.call(dom.children, function (c, i) {
+        var devicePixelRatio = getDevicePixelRatio();
+        dom.width = GRAPH_WIDTH * devicePixelRatio;
+        dom.height = GRAPH_HEIGHT * devicePixelRatio;
+        var ctx = dom.getContext("2d");
+        ctx.scale(devicePixelRatio, devicePixelRatio);
+        ctx.fillStyle = "rgba(0,0,0,.7)";
+        ctx.beginPath();
+        ctx.moveTo(0 ,0);
+        /*var _length = GRAPH_WIDTH + 1 - values.length;
+        for (var i = 0; i <= GRAPH_WIDTH; i++) {
             var percent = 1;
             if (i >= _length) {
                 var value = values[i - _length];
                 percent = 1 - (value - _min) / (_max - _min);
             }
-            c.style.transform = "translate3d(0," + (percent - 1) * GRAPH_HEIGHT / 2 + "px,0)scale3d(1," + percent + ",1)";
+            ctx.lineTo(i, GRAPH_HEIGHT * percent);
+        };*/
+        values.forEach(function(value, index) {
+            ctx.lineTo(index, GRAPH_HEIGHT * (1 - (value - _min) / (_max - _min)));
         });
+        if (values.length < GRAPH_WIDTH) {
+            ctx.lineTo(values.length - 1, GRAPH_HEIGHT);
+            ctx.lineTo(GRAPH_WIDTH, GRAPH_HEIGHT);
+        }
+        ctx.lineTo(GRAPH_WIDTH, 0);
+        ctx.fill();
     };
 
     var setMaxAndMin = function () {
@@ -68,7 +82,7 @@ window.stats = function (statsTitle, min, max, color, container) {
 
         update: function (value, showValue) {
 
-            if (values.push(value) > GRAPH_WIDTH) values.shift();
+            if (values.push(value) > GRAPH_WIDTH + 1) values.shift();
 
             statsText.textContent = statsTitle + ": " + showValue;
 
