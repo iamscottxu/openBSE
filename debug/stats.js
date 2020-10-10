@@ -46,8 +46,6 @@ window.stats = function (statsTitle, min, max, color, container) {
         var ctx = dom.getContext("2d");
         ctx.scale(devicePixelRatio, devicePixelRatio);
         ctx.fillStyle = "rgba(0,0,0,.7)";
-        ctx.beginPath();
-        ctx.moveTo(0 ,0);
         /*var _length = GRAPH_WIDTH + 1 - values.length;
         for (var i = 0; i <= GRAPH_WIDTH; i++) {
             var percent = 1;
@@ -58,14 +56,9 @@ window.stats = function (statsTitle, min, max, color, container) {
             ctx.lineTo(i, GRAPH_HEIGHT * percent);
         };*/
         values.forEach(function(value, index) {
-            ctx.lineTo(index, GRAPH_HEIGHT * (1 - (value - _min) / (_max - _min)));
+            ctx.fillRect(index, 0, 1, GRAPH_HEIGHT * (1 - (value - _min) / (_max - _min)));
         });
-        if (values.length < GRAPH_WIDTH) {
-            ctx.lineTo(values.length - 1, GRAPH_HEIGHT);
-            ctx.lineTo(GRAPH_WIDTH, GRAPH_HEIGHT);
-        }
-        ctx.lineTo(GRAPH_WIDTH, 0);
-        ctx.fill();
+        ctx.fillRect(values.length, 0, GRAPH_WIDTH - values.length, GRAPH_HEIGHT);
     };
 
     var setMaxAndMin = function () {
