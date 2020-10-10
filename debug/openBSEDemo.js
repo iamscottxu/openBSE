@@ -83,7 +83,7 @@ function showDebugInfo() {
     document.getElementById("bufferBulletScreenCount").innerText = debugInfo.bufferBulletScreenCount;
     document.getElementById("delayBulletScreenCount").innerText = debugInfo.delayBulletScreenCount;
     delayStats.update(debugInfo.delay, debugInfo.delay.toFixed(2) + 'ms');
-    fpsStats.update(debugInfo.fps, debugInfo.fps);
+    fpsStats.update(debugInfo.fps, debugInfo.fps.toFixed(2));
     realTimeBulletScreenCountStats.update(debugInfo.realTimeBulletScreenCount, debugInfo.realTimeBulletScreenCount);
     if (document.getElementById('debug_info').style.display != 'none') setTimeout(showDebugInfo, 100);
 }

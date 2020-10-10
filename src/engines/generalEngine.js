@@ -407,7 +407,7 @@ class GeneralEngine {
                     bufferBulletScreenCount: _bulletScreenBuffer.length,
                     delay: _delay,
                     delayBulletScreenCount: _delayBulletScreenCount,
-                    fps: _playing ? Math.floor(_refreshRate * 1000) : 0 //帧频
+                    fps: _playing ? _refreshRate * 1000 : 0 //帧频
                 };
             }
         });
