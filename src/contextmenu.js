@@ -52,22 +52,26 @@ class Contextmenu {
 
         let isParent = (element, parentElement) => {
             do if (element === parentElement) return true;
-            while(document != (element = element.parentNode))
+            while(element !== null && document != (element = element.parentNode))
             return false;
         }
 
         let _closeContextmenu = function (e) {
             if (_getContextmenuState() && !isParent(e.target,element)) {
+                e.stopPropagation();
+                e.preventDefault();
                 element.style.display = 'none';
                 if (pause) element.bulletScreenEvent.setPlayState(true);
                 element.bulletScreenEvent.setBulletScreen({ _contextmenu: false }, false);
                 element.bulletScreenEvent = null;
-                if (e.type === 'click') e.stopPropagation();
             }
         }
+        
         window.addEventListener('click', _closeContextmenu, true);
         window.addEventListener('contextmenu', _closeContextmenu, true);
         window.addEventListener('scroll', _closeContextmenu, true);
+        window.addEventListener('touchmove', _closeContextmenu, true);
+        
 
         generalEngine.bind('contextmenu', function (e) {
             e.setBulletScreen({ layer: layer, _contextmenu: true }, layer != null);

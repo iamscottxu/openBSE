@@ -23,20 +23,22 @@ window.contextmenu = function (bindElement, contextmenuElement) {
 
     let isParent = function(element, parentElement) {
         do if (element === parentElement) return true;
-        while(document != (element = element.parentNode))
+        while(element !== null && document != (element = element.parentNode))
         return false;
     }
 
     let _closeContextmenu = function (e) {
-        if (_getContextmenuState() && !isParent(e.target,contextmenuElement)) {
+        if (_getContextmenuState() && !isParent(e.target, contextmenuElement)) {
+            e.stopPropagation();
+            e.preventDefault();
             contextmenuElement.style.display = 'none';
-            if (e.type === 'click') e.stopPropagation();
         }
     }
 
     window.addEventListener('click', _closeContextmenu, true);
     window.addEventListener('contextmenu', _closeContextmenu, true);
     window.addEventListener('scroll', _closeContextmenu, true);
+    window.addEventListener('touchmove', _closeContextmenu, true);
 
     
     bindElement.oncontextmenu = function (e) {
