@@ -51,9 +51,11 @@ bulletScreenEngine.play();
 
 详细使用说明请查看 [wiki](https://github.com/iamscottxu/openBSE/wiki) 。
 
-## 联系作者
-如果有任何问题请写下 [issues](https://github.com/iamscottxu/openBSE/issues) 。<br/>
-E-mail：[scottxu@scottxublog.com](mailto:scottxu@scottxublog.com)
+## 我有问题
+如果有任何问题请写下 [issues](https://github.com/iamscottxu/openBSE/issues) 。
+
+## 我要贡献代码
+如果你希望向本项目贡献任何代码，请先阅读 [CONTRIBUTING.md](https://github.com/iamscottxu/openBSE/blob/master/CONTRIBUTING.md)。
 
 ## 版权声明
 这个项目是一个开源项目，遵循 MIT 开源协议。要查看协议，请点击[这里](https://github.com/iamscottxu/openBSE/blob/master/LICENSE)。
